@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import { PromoTicker } from '@/components/promo-ticker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Trash2, Plus, Minus } from 'lucide-react'
@@ -60,8 +61,10 @@ export default function CartPage() {
   const total = subtotal + shipping
 
   return (
-    <main className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <>
+      <PromoTicker />
+      <section className="min-h-screen flex flex-col bg-background">
+        <Header />
 
       {/* Page Title */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 py-8 border-b">
@@ -215,7 +218,8 @@ export default function CartPage() {
         )}
       </div>
 
-      <Footer />
-    </main>
+        <Footer />
+      </section>
+    </>
   )
 }

@@ -1,5 +1,6 @@
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import { PromoTicker } from '@/components/promo-ticker'
 import { ProductCard } from '@/components/product-card'
 import { PRODUCTS } from '@/lib/mock-data'
 import { Button } from '@/components/ui/button'
@@ -11,8 +12,10 @@ export const metadata = {
 
 export default function ProductsPage() {
   return (
-    <main className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <>
+      <PromoTicker />
+      <main className="min-h-screen flex flex-col bg-background">
+        <Header />
 
       {/* Page Header */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 py-12 border-b">
@@ -174,7 +177,8 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      <Footer />
-    </main>
+        <Footer />
+      </main>
+    </>
   )
 }

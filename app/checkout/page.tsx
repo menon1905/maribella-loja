@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import { PromoTicker } from '@/components/promo-ticker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -45,8 +46,10 @@ export default function CheckoutPage() {
   const total = subtotal + shipping
 
   return (
-    <main className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <>
+      <PromoTicker />
+      <section className="min-h-screen flex flex-col bg-background">
+        <Header />
 
       {/* Steps */}
       <div className="bg-muted/50 border-b sticky top-16 z-10">
@@ -316,7 +319,8 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <Footer />
-    </main>
+        <Footer />
+      </section>
+    </>
   )
 }

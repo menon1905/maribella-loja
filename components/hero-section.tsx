@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 
 export function HeroSection() {
   return (
-    <section className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
+    <section className="relative w-full h-screen md:h-[700px] overflow-hidden pt-20 md:pt-24">
       <Image
         src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1600&h=900&fit=crop"
         alt="Hero Banner"
@@ -14,7 +14,7 @@ export function HeroSection() {
         className="object-cover"
         priority
       />
-      <div className="absolute inset-0 bg-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/40" />
       
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center text-white space-y-6 px-4 max-w-2xl">

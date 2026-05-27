@@ -5,6 +5,7 @@ import { ProductCarousel } from '@/components/product-carousel'
 import { CategoryGrid } from '@/components/category-grid'
 import { PromoSection } from '@/components/promo-section'
 import { NewsletterSection } from '@/components/newsletter-section'
+import { PromoTicker } from '@/components/promo-ticker'
 import { PRODUCTS, CATEGORIES, PROMO_ITEMS } from '@/lib/mock-data'
 
 export const metadata = {
@@ -28,11 +29,13 @@ export default function Page() {
   const newProducts = PRODUCTS.filter(p => p.isNew).slice(0, 8)
 
   return (
-    <main className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      {/* Hero Section */}
-      <HeroSection />
+    <>
+      <PromoTicker />
+      <main className="min-h-screen flex flex-col bg-background">
+        <Header />
+        
+        {/* Hero Section */}
+        <HeroSection />
 
       {/* Featured Products */}
       <ProductCarousel 
@@ -54,10 +57,11 @@ export default function Page() {
       {/* Categories */}
       <CategoryGrid categories={CATEGORIES} />
 
-      {/* Newsletter */}
-      <NewsletterSection />
+        {/* Newsletter */}
+        <NewsletterSection />
 
-      <Footer />
-    </main>
+        <Footer />
+      </main>
+    </>
   )
 }

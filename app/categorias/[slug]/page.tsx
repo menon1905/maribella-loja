@@ -1,5 +1,6 @@
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import { PromoTicker } from '@/components/promo-ticker'
 import { ProductCard } from '@/components/product-card'
 import { PRODUCTS, CATEGORIES } from '@/lib/mock-data'
 import { notFound } from 'next/navigation'
@@ -36,8 +37,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const categoryProducts = PRODUCTS.filter(p => p.category === slug)
 
   return (
-    <main className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <>
+      <PromoTicker />
+      <main className="min-h-screen flex flex-col bg-background">
+        <Header />
 
       {/* Category Header */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 py-12">
@@ -108,7 +111,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </div>
 
-      <Footer />
-    </main>
+        <Footer />
+      </main>
+    </>
   )
 }
