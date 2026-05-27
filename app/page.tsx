@@ -1,6 +1,6 @@
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-import { HeroSection } from '@/components/hero-section'
+import { HeroCarousel } from '@/components/hero-carousel'
 import { ProductCarousel } from '@/components/product-carousel'
 import { CategoryGrid } from '@/components/category-grid'
 import { PromoSection } from '@/components/promo-section'
@@ -34,8 +34,8 @@ export default function Page() {
       <main className="min-h-screen flex flex-col bg-background">
         <Header />
         
-        {/* Hero Section */}
-        <HeroSection />
+        {/* Hero Carousel */}
+        <HeroCarousel />
 
       {/* Featured Products */}
       <ProductCarousel 

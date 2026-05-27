@@ -2,7 +2,7 @@
 
 export function PromoTicker() {
   return (
-    <div className="relative w-full overflow-hidden bg-primary text-primary-foreground py-2 text-xs sm:text-sm font-medium">
+    <div className="relative w-full overflow-hidden bg-black text-white py-2.5 text-xs sm:text-sm font-semibold tracking-wide">
       <style>{`
         @keyframes scroll-text {
           0% {
@@ -15,14 +15,14 @@ export function PromoTicker() {
         
         .ticker-wrapper {
           display: flex;
-          gap: 2rem;
+          gap: 3rem;
         }
         
         .ticker-text {
-          animation: scroll-text 25s linear infinite;
+          animation: scroll-text 28s linear infinite;
           white-space: nowrap;
           display: inline-block;
-          padding-right: 2rem;
+          padding-right: 3rem;
         }
         
         .ticker-text:hover {
@@ -33,10 +33,10 @@ export function PromoTicker() {
       
       <div className="ticker-wrapper">
         <span className="ticker-text">
-          ✨ 5% OFF EM SUA PRIMEIRA COMPRA • USE: BEMVINDAS • Frete Grátis +R$150 • Parcelamos em 12x
+          5% OFF EM SUA PRIMEIRA COMPRA • USE O CUPOM: BEMVINDAS • FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 150
         </span>
         <span className="ticker-text">
-          ✨ 5% OFF EM SUA PRIMEIRA COMPRA • USE: BEMVINDAS • Frete Grátis +R$150 • Parcelamos em 12x
+          5% OFF EM SUA PRIMEIRA COMPRA • USE O CUPOM: BEMVINDAS • FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 150
         </span>
       </div>
     </div>
