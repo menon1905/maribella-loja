@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { Search, ShoppingCart, Menu, X, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -33,10 +34,15 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-5 md:py-6">
         <div className="flex items-center justify-between gap-6 md:gap-8">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
-            <div className={`text-2xl font-bold transition-colors ${logoColor}`}>
-              Closet<span className={isScrolled ? 'text-secondary' : 'text-white'}>Twins</span>
-            </div>
+          <Link href="/" className="flex-shrink-0 h-12">
+            <Image
+              src="/logo.png"
+              alt="Closet Twins"
+              width={150}
+              height={60}
+              className="h-full w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}
