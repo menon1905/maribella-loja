@@ -30,8 +30,8 @@ export function Header() {
   return (
     <header className={`fixed top-0 z-40 w-full transition-all duration-300 ${bgColor}`}>
       {/* Main header */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 py-5 md:py-6">
+        <div className="flex items-center justify-between gap-6 md:gap-8">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <div className={`text-2xl font-bold transition-colors ${logoColor}`}>
@@ -80,10 +80,10 @@ export function Header() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-4 ml-auto">
+          <div className="flex items-center gap-5 md:gap-6 ml-auto">
             {/* Search */}
             <div
-              className={`hidden lg:flex items-center rounded-full px-4 py-2 transition-colors ${
+              className={`hidden lg:flex items-center rounded-full px-5 py-3 transition-colors ${
                 isScrolled ? 'bg-muted' : 'bg-white/20'
               }`}
             >
@@ -179,9 +179,9 @@ export function Header() {
             >
               Maquiagem
             </Link>
-            <div className="pt-2">
+            <div className="pt-4 mt-4 border-t">
               <div
-                className={`flex items-center rounded-full px-4 py-2 transition-colors ${
+                className={`flex items-center rounded-full px-5 py-3 transition-colors ${
                   isScrolled ? 'bg-muted' : 'bg-white/20'
                 }`}
               >
