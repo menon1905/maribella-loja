@@ -72,7 +72,7 @@ export function HeroCarousel() {
   const slide = HERO_SLIDES[currentSlide]
 
   return (
-    <section className="relative w-full h-[400px] md:h-[500px] overflow-hidden pt-16 md:pt-20">
+    <section className="relative w-full h-[450px] md:h-[550px] overflow-hidden pt-24 md:pt-32">
       {/* Slides */}
       <div className="relative w-full h-full">
         {HERO_SLIDES.map((s, index) => (
@@ -95,7 +95,7 @@ export function HeroCarousel() {
       </div>
 
       {/* Content Overlay */}
-      <div className="absolute inset-0 flex items-center justify-start pt-16 md:pt-20 px-6 md:px-12">
+      <div className="absolute inset-0 flex items-center justify-start px-6 md:px-12">
         <div className="max-w-2xl">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-3 text-balance">
             {slide.title}
