@@ -72,7 +72,7 @@ export function HeroCarousel() {
   const slide = HERO_SLIDES[currentSlide]
 
   return (
-    <section className="relative w-full h-[450px] md:h-[550px] overflow-hidden pt-24 md:pt-32">
+    <section className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
       {/* Slides */}
       <div className="relative w-full h-full">
         {HERO_SLIDES.map((s, index) => (
