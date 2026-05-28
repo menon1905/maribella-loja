@@ -1,6 +1,7 @@
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { PromoTicker } from '@/components/promo-ticker'
+import { Breadcrumb } from '@/components/breadcrumb'
 import { ProductCard } from '@/components/product-card'
 import { PRODUCTS, CATEGORIES } from '@/lib/mock-data'
 import { notFound } from 'next/navigation'
@@ -41,6 +42,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       <PromoTicker />
       <main className="min-h-screen flex flex-col bg-background">
         <Header />
+
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: category.name, href: `/categorias/${category.slug}` }
+          ]}
+        />
 
       {/* Category Header */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 py-12">
