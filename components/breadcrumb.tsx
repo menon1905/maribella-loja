@@ -18,20 +18,21 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
   const router = useRouter()
 
   return (
-    <div className="flex items-center justify-between py-4 max-w-7xl mx-auto px-4 w-full border-b border-border">
-      {/* Back Button */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => router.back()}
-        className="flex items-center gap-2 text-primary hover:bg-primary/10"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Voltar
-      </Button>
+    <div className="w-full border-b border-border bg-background mt-14 md:mt-16">
+      <div className="flex items-center justify-between py-6 md:py-8 max-w-7xl mx-auto px-6 md:px-8 w-full">
+        {/* Back Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-primary hover:bg-primary/10"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Voltar
+        </Button>
 
-      {/* Breadcrumb Navigation */}
-      <nav className="flex items-center gap-2 text-sm">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center gap-3 text-sm md:text-base">
         {items.map((item, index) => (
           <div key={item.href} className="flex items-center gap-2">
             {index > 0 && <ChevronRight className="w-4 h-4 text-muted-foreground" />}
@@ -49,8 +50,9 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
         ))}
       </nav>
 
-      {/* Spacer */}
-      <div className="w-20" />
+        {/* Spacer */}
+        <div className="w-20" />
+      </div>
     </div>
   )
 }
