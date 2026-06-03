@@ -21,15 +21,8 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const logoColor = isScrolled ? 'text-primary' : 'text-white'
-  const textColor = isScrolled ? 'text-foreground' : 'text-white'
-  const navColor = isScrolled ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/80'
-  const bgColor = isScrolled
-    ? 'bg-white border-b border-border shadow-md'
-    : 'bg-transparent border-transparent'
-
   return (
-    <header className={`fixed top-0 z-40 w-full transition-all duration-300 ${bgColor}`}>
+    <header className="fixed top-0 z-40 w-full bg-primary border-b border-primary shadow-md">
       {/* Main header */}
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-5 md:py-6">
         <div className="flex items-center justify-between gap-6 md:gap-8">
@@ -47,40 +40,22 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link
-              href="/categorias/bolsas"
-              className={`text-sm font-medium transition ${navColor}`}
-            >
+            <Link href="/categorias/bolsas" className="text-sm font-medium text-white hover:text-white/80 transition">
               Bolsas
             </Link>
-            <Link
-              href="/categorias/roupas"
-              className={`text-sm font-medium transition ${navColor}`}
-            >
+            <Link href="/categorias/roupas" className="text-sm font-medium text-white hover:text-white/80 transition">
               Roupas
             </Link>
-            <Link
-              href="/categorias/calcados"
-              className={`text-sm font-medium transition ${navColor}`}
-            >
+            <Link href="/categorias/calcados" className="text-sm font-medium text-white hover:text-white/80 transition">
               Calçados
             </Link>
-            <Link
-              href="/categorias/acessorios"
-              className={`text-sm font-medium transition ${navColor}`}
-            >
+            <Link href="/categorias/acessorios" className="text-sm font-medium text-white hover:text-white/80 transition">
               Acessórios
             </Link>
-            <Link
-              href="/categorias/joias"
-              className={`text-sm font-medium transition ${navColor}`}
-            >
+            <Link href="/categorias/joias" className="text-sm font-medium text-white hover:text-white/80 transition">
               Jóias
             </Link>
-            <Link
-              href="/categorias/maquiagem"
-              className={`text-sm font-medium transition ${navColor}`}
-            >
+            <Link href="/categorias/maquiagem" className="text-sm font-medium text-white hover:text-white/80 transition">
               Maquiagem
             </Link>
           </nav>
@@ -88,42 +63,26 @@ export function Header() {
           {/* Actions */}
           <div className="flex items-center gap-5 md:gap-6 ml-auto">
             {/* Search */}
-            <div
-              className={`hidden lg:flex items-center rounded-full px-5 py-3 transition-colors ${
-                isScrolled ? 'bg-muted' : 'bg-white/20'
-              }`}
-            >
+            <div className="hidden lg:flex items-center rounded-full px-5 py-3 bg-white/20">
               <Input
                 type="text"
                 placeholder="Buscar produtos..."
-                className={`bg-transparent border-0 focus-visible:ring-0 text-sm ${
-                  isScrolled
-                    ? 'placeholder:text-muted-foreground'
-                    : 'text-white placeholder:text-white/60'
-                }`}
+                className="bg-transparent border-0 focus-visible:ring-0 text-sm text-white placeholder:text-white/60"
               />
-              <Search className={`w-4 h-4 ${isScrolled ? 'text-muted-foreground' : 'text-white'}`} />
+              <Search className="w-4 h-4 text-white" />
             </div>
 
             {/* User */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className={isScrolled ? 'text-foreground' : 'text-white hover:bg-white/10'}
-            >
+            <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
               <User className="w-5 h-5" />
             </Button>
 
             {/* Cart */}
             <Link href="/carrinho">
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`relative ${isScrolled ? 'text-foreground' : 'text-white hover:bg-white/10'}`}
-              >
+              <Button variant="ghost" size="icon" className="relative text-white hover:bg-white/10">
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-white text-primary text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -134,7 +93,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className={`md:hidden ${isScrolled ? 'text-foreground' : 'text-white hover:bg-white/10'}`}
+              className="md:hidden text-white hover:bg-white/10"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -144,65 +103,33 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav
-            className={`md:hidden mt-4 space-y-2 border-t pt-4 ${
-              isScrolled ? 'border-border text-foreground' : 'border-white/20 text-white'
-            }`}
-          >
-            <Link
-              href="/categorias/bolsas"
-              className={`block py-2 text-sm font-medium ${navColor}`}
-            >
+          <nav className="md:hidden mt-4 space-y-2 border-t border-white/20 pt-4 text-white">
+            <Link href="/categorias/bolsas" className="block py-2 text-sm font-medium hover:text-white/80">
               Bolsas
             </Link>
-            <Link
-              href="/categorias/roupas"
-              className={`block py-2 text-sm font-medium ${navColor}`}
-            >
+            <Link href="/categorias/roupas" className="block py-2 text-sm font-medium hover:text-white/80">
               Roupas
             </Link>
-            <Link
-              href="/categorias/calcados"
-              className={`block py-2 text-sm font-medium ${navColor}`}
-            >
+            <Link href="/categorias/calcados" className="block py-2 text-sm font-medium hover:text-white/80">
               Calçados
             </Link>
-            <Link
-              href="/categorias/acessorios"
-              className={`block py-2 text-sm font-medium ${navColor}`}
-            >
+            <Link href="/categorias/acessorios" className="block py-2 text-sm font-medium hover:text-white/80">
               Acessórios
             </Link>
-            <Link
-              href="/categorias/joias"
-              className={`block py-2 text-sm font-medium ${navColor}`}
-            >
+            <Link href="/categorias/joias" className="block py-2 text-sm font-medium hover:text-white/80">
               Jóias
             </Link>
-            <Link
-              href="/categorias/maquiagem"
-              className={`block py-2 text-sm font-medium ${navColor}`}
-            >
+            <Link href="/categorias/maquiagem" className="block py-2 text-sm font-medium hover:text-white/80">
               Maquiagem
             </Link>
-            <div className="pt-4 mt-4 border-t">
-              <div
-                className={`flex items-center rounded-full px-5 py-3 transition-colors ${
-                  isScrolled ? 'bg-muted' : 'bg-white/20'
-                }`}
-              >
+            <div className="pt-4 mt-4 border-t border-white/20">
+              <div className="flex items-center rounded-full px-5 py-3 bg-white/20">
                 <Input
                   type="text"
                   placeholder="Buscar..."
-                  className={`bg-transparent border-0 focus-visible:ring-0 text-sm ${
-                    isScrolled
-                      ? 'placeholder:text-muted-foreground'
-                      : 'text-white placeholder:text-white/60'
-                  }`}
+                  className="bg-transparent border-0 focus-visible:ring-0 text-sm text-white placeholder:text-white/60"
                 />
-                <Search
-                  className={`w-4 h-4 ${isScrolled ? 'text-muted-foreground' : 'text-white'}`}
-                />
+                <Search className="w-4 h-4 text-white" />
               </div>
             </div>
           </nav>
