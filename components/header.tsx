@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Search, ShoppingCart, Menu, X, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,19 +10,9 @@ import { Input } from '@/components/ui/input'
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cartCount, setCartCount] = useState(0)
-  const [isScrolled, setIsScrolled] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 300)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   return (
-    <header className="fixed top-0 z-40 w-full bg-primary border-b border-primary shadow-md">
+    <header className="fixed top-0 z-40 w-full border-b border-primary shadow-md" style={{ backgroundColor: '#FF1493' }}>
       {/* Main header */}
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-5 md:py-6">
         <div className="flex items-center justify-between gap-6 md:gap-8">
