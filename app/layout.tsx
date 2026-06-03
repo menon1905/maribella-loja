@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import { Montserrat } from 'next/font/google'
+import { Montserrat, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const montserrat = Montserrat({ subsets: ["latin"] });
+const playfair = Playfair_Display({ subsets: ["latin"], variable: '--font-serif' });
 
 export const metadata: Metadata = {
   title: 'Closet Twins - Moda, Acessórios e Beleza',
@@ -34,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className="bg-background">
+    <html lang="pt-BR" className={`bg-background ${playfair.variable}`}>
       <body className={`${montserrat.className} antialiased bg-background`}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}

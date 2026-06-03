@@ -97,7 +97,7 @@ export function HeroCarousel() {
       {/* Content Overlay */}
       <div className="absolute inset-0 flex items-center justify-start px-6 md:px-12">
         <div className="max-w-2xl">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-3 text-balance">
+          <h2 className="text-5xl md:text-6xl font-serif text-white mb-3 text-balance">
             {slide.title}
           </h2>
           <p className="text-lg md:text-xl text-white/90 mb-6 text-pretty">
