@@ -7,13 +7,13 @@ export function HeroCarousel() {
   return (
     <section className="relative w-full overflow-hidden bg-[#FD9FC3]">
       <Link href="/produtos" className="block w-full cursor-pointer">
-        <div className="relative w-full aspect-[1280/520] max-h-[380px] md:max-h-[420px] bg-[#FD9FC3]">
+        <div className="relative w-full max-w-[1280px] mx-auto aspect-[1280/520]">
           <Image
             src="/banner_frete_gratis.jpg"
             alt="Frete Grátis na Maribella"
             fill
             priority
-            className="object-contain object-center"
+            className="object-cover object-center"
           />
         </div>
       </Link>
