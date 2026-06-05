@@ -55,10 +55,10 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-[#ff66b2] shadow-md flex flex-col">
+      <header className="sticky top-0 z-50 w-full bg-[#ff9edb] shadow-md flex flex-col">
         {/* Top Announcement Bar */}
         <div className="bg-gray-900 text-white py-2 text-center text-[10px] md:text-xs font-semibold tracking-wider h-9 overflow-hidden flex items-center justify-center relative">
-          <div className="transition-all duration-500 ease-in-out transform uppercase tracking-widest text-[#ff66b2] px-4">
+          <div className="transition-all duration-500 ease-in-out transform uppercase tracking-widest text-[#ff9edb] px-4">
             {announcements[announcementIndex]}
           </div>
         </div>
@@ -160,10 +160,10 @@ export function Header() {
                 placeholder="O que você está procurando hoje?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 rounded-full border-gray-200 focus-visible:ring-[#ff66b2]"
+                className="flex-1 rounded-full border-gray-200 focus-visible:ring-[#ff9edb]"
                 autoFocus
               />
-              <Button type="submit" className="bg-[#ff66b2] hover:bg-[#e0559e] text-white rounded-full px-6">
+              <Button type="submit" className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white rounded-full px-6">
                 Buscar
               </Button>
             </form>
@@ -208,7 +208,7 @@ export function Header() {
                   name="q"
                   type="text"
                   placeholder="Buscar no site..."
-                  className="w-full rounded-full border-gray-200 pr-10 focus-visible:ring-[#ff66b2]"
+                  className="w-full rounded-full border-gray-200 pr-10 focus-visible:ring-[#ff9edb]"
                 />
                 <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                   <Search className="w-4 h-4" />
@@ -227,7 +227,7 @@ export function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="group flex items-center rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff66b2]/10 hover:text-[#ff66b2] transition-colors"
+                  className="group flex items-center rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
