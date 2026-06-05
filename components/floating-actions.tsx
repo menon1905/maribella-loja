@@ -61,14 +61,14 @@ export function FloatingActions() {
               {/* Coupon 2 */}
               <div className="flex items-center justify-between bg-pink-50/50 p-2.5 rounded-xl border border-pink-100/50">
                 <div>
-                  <span className="font-extrabold text-gray-800 text-xs tracking-wider block">FRETE150</span>
-                  <span className="text-[10px] text-gray-500 font-medium">Frete Grátis acima de R$ 150</span>
+                  <span className="font-extrabold text-gray-800 text-xs tracking-wider block">FRETE200</span>
+                  <span className="text-[10px] text-gray-500 font-medium">Frete Grátis acima de R$ 200</span>
                 </div>
                 <button
-                  onClick={() => handleCopy('FRETE150')}
+                  onClick={() => handleCopy('FRETE200')}
                   className="bg-white hover:bg-pink-100/30 text-[#ff9edb] p-2 rounded-lg border border-pink-100 transition shadow-xs"
                 >
-                  {copiedCoupon === 'FRETE150' ? (
+                  {copiedCoupon === 'FRETE200' ? (
                     <Check className="w-3.5 h-3.5 text-green-500 stroke-[2.5]" />
                   ) : (
                     <Copy className="w-3.5 h-3.5 stroke-[2]" />

@@ -14,9 +14,9 @@ export function Header() {
   const [cartCount, setCartCount] = useState(0)
 
   const announcements = [
-    "5% OFF na sua primeira compra • Use o cupom: BEMVINDAS 💖",
-    "Brindes em todas as compras 🎁",
-    "Frete grátis em compras acima de R$ 150 🚚"
+    "5% OFF na sua primeira compra • Use o cupom: BEMVINDAS",
+    "Brindes em todas as compras",
+    "Frete grátis em compras acima de R$ 200"
   ]
   const [announcementIndex, setAnnouncementIndex] = useState(0)
 

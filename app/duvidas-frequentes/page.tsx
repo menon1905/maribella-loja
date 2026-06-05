@@ -37,7 +37,7 @@ const faqs = [
   {
     question: 'O frete é grátis?',
     answer:
-      'Sim! Para compras acima de R$ 150,00 o frete é grátis via PAC para todo o Brasil. Para compras menores, o valor do frete é calculado de acordo com o seu CEP.',
+      'Sim! Para compras acima de R$ 200,00 o frete é grátis via PAC para todo o Brasil. Para compras menores, o valor do frete é calculado de acordo com o seu CEP.',
   },
   {
     question: 'Quanto tempo leva para meu pedido chegar?',
