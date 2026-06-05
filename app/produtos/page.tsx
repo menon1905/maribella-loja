@@ -26,7 +26,7 @@ export default function ProductsPage() {
             <Link 
               key={sub} 
               href={`/produtos?sub=${sub}`} 
-              className="hover:text-[#ff66b2] transition-colors leading-none"
+              className="hover:text-[#ff9edb] transition-colors leading-none"
               onClick={() => onClose && onClose()}
             >
               {sub}
@@ -58,7 +58,7 @@ export default function ProductsPage() {
               { name: 'Vinho', count: 2, colorClass: 'bg-[#58111a]' },
             ].map((item) => (
               <label key={item.name} className="flex items-center gap-2 cursor-pointer group">
-                <input type="checkbox" className="rounded border-gray-300 text-[#ff66b2] focus:ring-[#ff66b2] cursor-pointer" />
+                <input type="checkbox" className="rounded border-gray-300 text-[#ff9edb] focus:ring-[#ff9edb] cursor-pointer" />
                 <span className="group-hover:text-gray-900 transition-colors">
                   {item.name} <span className="text-gray-400 text-xs font-normal">({item.count})</span>
                 </span>
@@ -153,7 +153,7 @@ export default function ProductsPage() {
               <div className="relative flex w-full max-w-xs flex-col bg-white py-6 px-6 pb-12 shadow-2xl animate-in slide-in-from-left duration-300 overflow-y-auto">
                 <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
                   <h3 className="font-extrabold text-sm text-gray-900 uppercase tracking-widest flex items-center gap-2">
-                    <SlidersHorizontal className="w-4 h-4 text-[#ff66b2]" />
+                    <SlidersHorizontal className="w-4 h-4 text-[#ff9edb]" />
                     Filtros
                   </h3>
                   <Button 

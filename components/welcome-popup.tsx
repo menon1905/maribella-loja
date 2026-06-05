@@ -41,7 +41,7 @@ export function WelcomePopup() {
       />
       
       {/* Modal */}
-      <div className="relative w-full max-w-md bg-[#ff66b2] rounded-[2rem] p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-300">
+      <div className="relative w-full max-w-md bg-[#ff9edb] rounded-[2rem] p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-300">
         {/* Close Button */}
         <button 
           onClick={closePopup}
@@ -64,13 +64,13 @@ export function WelcomePopup() {
         {/* Ticket Container */}
         <div className="bg-white rounded-2xl relative overflow-hidden shadow-sm mx-2">
           {/* Left Cutout */}
-          <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-6 h-6 bg-[#ff66b2] rounded-full" />
+          <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-6 h-6 bg-[#ff9edb] rounded-full" />
           {/* Right Cutout */}
-          <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 w-6 h-6 bg-[#ff66b2] rounded-full" />
+          <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 w-6 h-6 bg-[#ff9edb] rounded-full" />
           
           {/* Top Half */}
           <div className="text-center pt-8 pb-5 border-b-2 border-dashed border-gray-100 mx-6">
-             <span className="text-5xl font-black text-[#ff66b2] tracking-tighter">5%</span>
+             <span className="text-5xl font-black text-[#ff9edb] tracking-tighter">5%</span>
           </div>
           
           {/* Bottom Half */}
@@ -81,7 +81,7 @@ export function WelcomePopup() {
                onClick={copyCoupon} 
                className="border-2 border-dashed border-gray-300 rounded-xl py-3 px-6 flex items-center justify-center gap-3 mx-auto hover:bg-gray-50 active:scale-95 transition-all w-full max-w-[240px]"
              >
-               <span className="text-[#ff66b2] font-black text-xl tracking-widest">BEMVINDAS</span>
+               <span className="text-[#ff9edb] font-black text-xl tracking-widest">BEMVINDAS</span>
                {copied ? (
                  <Check className="w-5 h-5 text-green-500" />
                ) : (

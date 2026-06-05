@@ -124,17 +124,17 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
       <div className="bg-pink-50/20 border-b sticky top-[120px] z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-widest text-gray-500">
-            <div className={`flex items-center gap-2 ${step === 'shipping' || step === 'payment' || step === 'confirmation' ? 'text-[#ff66b2] font-bold' : ''}`}>
+            <div className={`flex items-center gap-2 ${step === 'shipping' || step === 'payment' || step === 'confirmation' ? 'text-[#ff9edb] font-bold' : ''}`}>
               <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-bold">1</div>
               <span className="hidden sm:inline">Endereço</span>
             </div>
             <div className="flex-1 h-px bg-gray-200 mx-4" />
-            <div className={`flex items-center gap-2 ${step === 'payment' || step === 'confirmation' ? 'text-[#ff66b2] font-bold' : ''}`}>
+            <div className={`flex items-center gap-2 ${step === 'payment' || step === 'confirmation' ? 'text-[#ff9edb] font-bold' : ''}`}>
               <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-bold">2</div>
               <span className="hidden sm:inline">Finalização</span>
             </div>
             <div className="flex-1 h-px bg-gray-200 mx-4" />
-            <div className={`flex items-center gap-2 ${step === 'confirmation' ? 'text-[#ff66b2] font-bold' : ''}`}>
+            <div className={`flex items-center gap-2 ${step === 'confirmation' ? 'text-[#ff9edb] font-bold' : ''}`}>
               <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-bold">3</div>
               <span className="hidden sm:inline">Confirmação</span>
             </div>
@@ -160,7 +160,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         value={formData.firstName}
                         onChange={handleChange}
                         required
-                        className="focus-visible:ring-[#ff66b2]"
+                        className="focus-visible:ring-[#ff9edb]"
                       />
                       <Input
                         placeholder="Sobrenome"
@@ -168,7 +168,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         value={formData.lastName}
                         onChange={handleChange}
                         required
-                        className="focus-visible:ring-[#ff66b2]"
+                        className="focus-visible:ring-[#ff9edb]"
                       />
                     </div>
 
@@ -180,7 +180,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="focus-visible:ring-[#ff66b2]"
+                        className="focus-visible:ring-[#ff9edb]"
                       />
                       <Input
                         type="tel"
@@ -189,7 +189,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         value={formData.phone}
                         onChange={handleChange}
                         required
-                        className="focus-visible:ring-[#ff66b2]"
+                        className="focus-visible:ring-[#ff9edb]"
                       />
                     </div>
 
@@ -200,7 +200,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         value={formData.zipCode}
                         onChange={handleChange}
                         required
-                        className="col-span-2 focus-visible:ring-[#ff66b2]"
+                        className="col-span-2 focus-visible:ring-[#ff9edb]"
                       />
                       <Input
                         placeholder="Cidade"
@@ -208,7 +208,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         value={formData.city}
                         onChange={handleChange}
                         required
-                        className="focus-visible:ring-[#ff66b2]"
+                        className="focus-visible:ring-[#ff9edb]"
                       />
                       <Input
                         placeholder="UF"
@@ -217,7 +217,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         onChange={handleChange}
                         maxLength={2}
                         required
-                        className="focus-visible:ring-[#ff66b2]"
+                        className="focus-visible:ring-[#ff9edb]"
                       />
                     </div>
 
@@ -227,7 +227,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                       value={formData.street}
                       onChange={handleChange}
                       required
-                      className="focus-visible:ring-[#ff66b2]"
+                      className="focus-visible:ring-[#ff9edb]"
                     />
 
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -237,14 +237,14 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         value={formData.number}
                         onChange={handleChange}
                         required
-                        className="focus-visible:ring-[#ff66b2]"
+                        className="focus-visible:ring-[#ff9edb]"
                       />
                       <Input
                         placeholder="Complemento (opcional)"
                         name="complement"
                         value={formData.complement}
                         onChange={handleChange}
-                        className="focus-visible:ring-[#ff66b2]"
+                        className="focus-visible:ring-[#ff9edb]"
                       />
                     </div>
 
@@ -254,7 +254,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                       value={formData.neighborhood}
                       onChange={handleChange}
                       required
-                      className="focus-visible:ring-[#ff66b2]"
+                      className="focus-visible:ring-[#ff9edb]"
                     />
                   </div>
 
@@ -264,7 +264,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         Voltar
                       </Button>
                     </Link>
-                    <Button type="submit" className="flex-1 bg-[#ff66b2] hover:bg-[#e0559e] text-white font-bold cursor-pointer">
+                    <Button type="submit" className="flex-1 bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold cursor-pointer">
                       Continuar para Finalização
                     </Button>
                   </div>
@@ -280,7 +280,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                     Revisamos as informações para envio. Ao clicar no botão abaixo, você será redirecionado para o WhatsApp da Maribella para finalizar a forma de pagamento e entrega.
                   </p>
 
-                  <div className="bg-[#ff66b2]/10 border border-[#ff66b2]/20 rounded-lg p-6 space-y-4 text-sm text-gray-700 mb-8">
+                  <div className="bg-[#ff9edb]/10 border border-[#ff9edb]/20 rounded-lg p-6 space-y-4 text-sm text-gray-700 mb-8">
                     <h3 className="font-bold text-gray-900 uppercase tracking-wider text-xs">Dados de Entrega cadastrados:</h3>
                     <p>
                       <strong>Destinatário:</strong> {formData.firstName} {formData.lastName}<br />
@@ -315,7 +315,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
             {step === 'confirmation' && (
               <div className="space-y-6">
                 <div className="text-center py-12 bg-pink-50/50 border border-pink-100 rounded-lg">
-                  <div className="text-6xl mb-4 text-[#ff66b2]">✓</div>
+                  <div className="text-6xl mb-4 text-[#ff9edb]">✓</div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-2 uppercase tracking-wider">Pedido Recebido!</h2>
                   <p className="text-gray-600 text-sm max-w-md mx-auto">
                     Redirecionamos você para o WhatsApp. Por favor, envie a mensagem gerada para prosseguir com o pagamento e a entrega dos seus produtos.
@@ -344,7 +344,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                     </Button>
                   </Link>
                   <Link href="/produtos" className="flex-1">
-                    <Button className="w-full bg-[#ff66b2] hover:bg-[#e0559e] text-white font-bold cursor-pointer">
+                    <Button className="w-full bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold cursor-pointer">
                       Continuar Comprando
                     </Button>
                   </Link>
@@ -406,13 +406,13 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
 
               <div className="bg-pink-50 border border-pink-100 rounded-lg p-4 text-xs text-gray-500 space-y-2">
                 <p className="flex items-center gap-1.5">
-                  <span className="text-[#ff66b2] font-bold">✓</span> Atendimento personalizado
+                  <span className="text-[#ff9edb] font-bold">✓</span> Atendimento personalizado
                 </p>
                 <p className="flex items-center gap-1.5">
-                  <span className="text-[#ff66b2] font-bold">✓</span> Pagamento combinado via chat
+                  <span className="text-[#ff9edb] font-bold">✓</span> Pagamento combinado via chat
                 </p>
                 <p className="flex items-center gap-1.5">
-                  <span className="text-[#ff66b2] font-bold">✓</span> Envio rápido para todo o Brasil
+                  <span className="text-[#ff9edb] font-bold">✓</span> Envio rápido para todo o Brasil
                 </p>
               </div>
             </div>

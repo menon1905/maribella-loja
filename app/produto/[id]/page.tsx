@@ -279,7 +279,7 @@ function ProductInfo({ product }: { product: Product }) {
                   onClick={() => setSelectedSize(size)}
                   className={`border rounded py-2 px-3 text-sm font-medium transition ${
                     selectedSize === size
-                      ? 'border-[#ff66b2] bg-[#ff66b2]/10 text-[#ff66b2] font-bold shadow-xs'
+                      ? 'border-[#ff9edb] bg-[#ff9edb]/10 text-[#ff9edb] font-bold shadow-xs'
                       : 'hover:border-gray-400'
                   }`}
                 >
@@ -300,7 +300,7 @@ function ProductInfo({ product }: { product: Product }) {
                   onClick={() => setSelectedColor(color)}
                   className={`border rounded py-2 px-4 text-sm font-medium transition ${
                     selectedColor === color
-                      ? 'border-[#ff66b2] bg-[#ff66b2]/10 text-[#ff66b2] font-bold shadow-xs'
+                      ? 'border-[#ff9edb] bg-[#ff9edb]/10 text-[#ff9edb] font-bold shadow-xs'
                       : 'hover:border-gray-400'
                   }`}
                 >

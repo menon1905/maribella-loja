@@ -38,7 +38,7 @@ export function ProductCarousel({ products, title, viewAllHref }: ProductCarouse
           {viewAllHref && (
             <Link
               href={viewAllHref}
-              className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-[#ff66b2] transition-colors border-b border-gray-300 hover:border-[#ff66b2] pb-0.5"
+              className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-[#ff9edb] transition-colors border-b border-gray-300 hover:border-[#ff9edb] pb-0.5"
             >
               Ver Todos
             </Link>
@@ -91,7 +91,7 @@ export function ProductCarousel({ products, title, viewAllHref }: ProductCarouse
           <div className="mt-5 flex justify-center md:hidden">
             <Link
               href={viewAllHref}
-              className="border border-gray-300 text-[10px] font-bold tracking-widest text-gray-700 uppercase px-6 py-2 rounded-full hover:bg-gray-50 hover:border-[#ff66b2] hover:text-[#ff66b2] transition"
+              className="border border-gray-300 text-[10px] font-bold tracking-widest text-gray-700 uppercase px-6 py-2 rounded-full hover:bg-gray-50 hover:border-[#ff9edb] hover:text-[#ff9edb] transition"
             >
               Ver Todos os Produtos
             </Link>

@@ -50,7 +50,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
               <Link
                 key={sub}
                 href={`/categorias/roupas?sub=${sub}`}
-                className="hover:text-[#ff66b2] transition-colors leading-none"
+                className="hover:text-[#ff9edb] transition-colors leading-none"
                 onClick={() => onClose && onClose()}
               >
                 {sub}
@@ -61,7 +61,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
               <Link
                 key={sub}
                 href={`/categorias/${category.slug}?filter=${sub}`}
-                className="hover:text-[#ff66b2] transition-colors leading-none lowercase"
+                className="hover:text-[#ff9edb] transition-colors leading-none lowercase"
                 onClick={() => onClose && onClose()}
               >
                 {sub}
@@ -94,7 +94,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
               { name: 'Vinho', count: 2, colorClass: 'bg-[#58111a]' },
             ].map((item) => (
               <label key={item.name} className="flex items-center gap-2 cursor-pointer group">
-                <input type="checkbox" className="rounded border-gray-300 text-[#ff66b2] focus:ring-[#ff66b2] cursor-pointer" />
+                <input type="checkbox" className="rounded border-gray-300 text-[#ff9edb] focus:ring-[#ff9edb] cursor-pointer" />
                 <span className="group-hover:text-gray-900 transition-colors">
                   {item.name} <span className="text-gray-400 text-[10px] font-normal">({item.count})</span>
                 </span>
@@ -125,7 +125,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
           <div className="relative">
             <button
               onClick={() => setIsSortOpen(v => !v)}
-              className="flex items-center gap-1.5 border border-gray-200 rounded-full px-3.5 py-2 text-[11px] font-semibold text-gray-700 bg-white hover:border-[#ff66b2] transition"
+              className="flex items-center gap-1.5 border border-gray-200 rounded-full px-3.5 py-2 text-[11px] font-semibold text-gray-700 bg-white hover:border-[#ff9edb] transition"
             >
               <ChevronDown className="w-3.5 h-3.5" />
               {currentSort.label}
@@ -136,7 +136,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
                   <button
                     key={opt.value}
                     onClick={() => { setSortValue(opt.value); setIsSortOpen(false) }}
-                    className={`w-full text-left px-4 py-2.5 text-xs font-medium transition ${sortValue === opt.value ? 'bg-pink-50 text-[#ff66b2]' : 'text-gray-700 hover:bg-gray-50'}`}
+                    className={`w-full text-left px-4 py-2.5 text-xs font-medium transition ${sortValue === opt.value ? 'bg-pink-50 text-[#ff9edb]' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
                     {opt.label}
                   </button>
@@ -148,7 +148,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
           {/* Filter button (mobile) */}
           <button
             onClick={() => setIsMobileFiltersOpen(true)}
-            className="flex items-center gap-1.5 bg-[#ff66b2] hover:bg-[#e0559e] text-white rounded-full px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider transition cursor-pointer"
+            className="flex items-center gap-1.5 bg-[#ff9edb] hover:bg-[#ff80cb] text-white rounded-full px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider transition cursor-pointer"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
             Filtrar
@@ -176,7 +176,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
             <div className="relative flex w-full max-w-xs flex-col bg-white py-6 px-6 pb-12 shadow-2xl animate-in slide-in-from-left duration-300 overflow-y-auto">
               <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
                 <h3 className="font-extrabold text-sm text-gray-900 uppercase tracking-widest flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4 text-[#ff66b2]" />
+                  <SlidersHorizontal className="w-4 h-4 text-[#ff9edb]" />
                   Filtros
                 </h3>
                 <Button
@@ -203,7 +203,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
             <div className="relative">
               <button
                 onClick={() => setIsSortOpen(v => !v)}
-                className="flex items-center gap-1.5 border border-gray-200 rounded-full px-4 py-2 text-xs font-semibold text-gray-700 bg-white hover:border-[#ff66b2] transition"
+                className="flex items-center gap-1.5 border border-gray-200 rounded-full px-4 py-2 text-xs font-semibold text-gray-700 bg-white hover:border-[#ff9edb] transition"
               >
                 <ChevronDown className="w-3.5 h-3.5" />
                 {currentSort.label}
@@ -214,7 +214,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
                     <button
                       key={opt.value}
                       onClick={() => { setSortValue(opt.value); setIsSortOpen(false) }}
-                      className={`w-full text-left px-4 py-2.5 text-xs font-medium transition ${sortValue === opt.value ? 'bg-pink-50 text-[#ff66b2]' : 'text-gray-700 hover:bg-gray-50'}`}
+                      className={`w-full text-left px-4 py-2.5 text-xs font-medium transition ${sortValue === opt.value ? 'bg-pink-50 text-[#ff9edb]' : 'text-gray-700 hover:bg-gray-50'}`}
                     >
                       {opt.label}
                     </button>

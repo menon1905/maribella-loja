@@ -69,7 +69,7 @@ export default function DuvidasFrequentesPage() {
       {/* Breadcrumb */}
       <div className="bg-pink-50/40 border-b border-pink-100/50">
         <div className="max-w-4xl mx-auto px-4 py-3 text-sm text-gray-500">
-          <Link href="/" className="hover:text-[#ff66b2] transition-colors">Início</Link>
+          <Link href="/" className="hover:text-[#ff9edb] transition-colors">Início</Link>
           <span className="mx-2">›</span>
           <span className="text-gray-800">Dúvidas Frequentes</span>
         </div>
@@ -88,7 +88,7 @@ export default function DuvidasFrequentesPage() {
             >
               <summary className="flex items-center justify-between px-6 py-5 cursor-pointer bg-white hover:bg-pink-50/40 transition-colors duration-200 list-none">
                 <span className="font-semibold text-gray-800 text-sm pr-4">{faq.question}</span>
-                <span className="text-[#ff66b2] text-xl font-bold flex-shrink-0 transition-transform duration-200 group-open:rotate-45">+</span>
+                <span className="text-[#ff9edb] text-xl font-bold flex-shrink-0 transition-transform duration-200 group-open:rotate-45">+</span>
               </summary>
               <div className="px-6 pb-6 pt-2 bg-white">
                 <p className="text-gray-600 text-sm leading-relaxed">{faq.answer}</p>
@@ -98,14 +98,14 @@ export default function DuvidasFrequentesPage() {
         </div>
 
         {/* CTA */}
-        <div className="mt-12 bg-[#ff66b2] rounded-2xl p-8 text-white text-center">
+        <div className="mt-12 bg-[#ff9edb] rounded-2xl p-8 text-white text-center">
           <h3 className="text-xl font-bold mb-2">Ainda tem dúvidas?</h3>
           <p className="text-white/80 text-sm mb-5">Nossa equipe está sempre pronta para te ajudar!</p>
           <a
             href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida!"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-[#ff66b2] font-bold px-8 py-3 rounded-full hover:bg-pink-50 transition-colors duration-200 shadow-md"
+            className="inline-flex items-center gap-2 bg-white text-[#ff9edb] font-bold px-8 py-3 rounded-full hover:bg-pink-50 transition-colors duration-200 shadow-md"
           >
             💬 Falar no WhatsApp
           </a>

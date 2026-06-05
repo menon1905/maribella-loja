@@ -27,7 +27,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
               className="group flex flex-col items-center gap-3 cursor-pointer select-none w-full md:w-auto"
             >
               {/* Circle */}
-              <div className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] md:w-[140px] md:h-[140px] rounded-full overflow-hidden border-4 border-transparent group-hover:border-[#ff66b2] transition-all duration-300 shadow-md group-hover:shadow-xl group-hover:shadow-pink-200/60">
+              <div className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] md:w-[140px] md:h-[140px] rounded-full overflow-hidden border-4 border-transparent group-hover:border-[#ff9edb] transition-all duration-300 shadow-md group-hover:shadow-xl group-hover:shadow-pink-200/60">
                 <Image
                   src={category.image}
                   alt={category.name}
@@ -35,11 +35,11 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
                   className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                 />
                 {/* Subtle overlay on hover */}
-                <div className="absolute inset-0 bg-[#ff66b2]/0 group-hover:bg-[#ff66b2]/10 transition-colors duration-300 rounded-full" />
+                <div className="absolute inset-0 bg-[#ff9edb]/0 group-hover:bg-[#ff9edb]/10 transition-colors duration-300 rounded-full" />
               </div>
 
               {/* Label */}
-              <span className="text-xs sm:text-sm font-bold text-gray-700 group-hover:text-[#ff66b2] tracking-widest uppercase transition-colors duration-200 text-center">
+              <span className="text-xs sm:text-sm font-bold text-gray-700 group-hover:text-[#ff9edb] tracking-widest uppercase transition-colors duration-200 text-center">
                 {category.name}
               </span>
             </Link>

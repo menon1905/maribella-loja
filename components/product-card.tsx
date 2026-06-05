@@ -16,7 +16,7 @@ const getColorHex = (colorName: string): string => {
   const mapping: Record<string, string> = {
     'Preto': '#000000',
     'Caramelo': '#c68e17',
-    'Rosa': '#ff66b2',
+    'Rosa': '#ff9edb',
     'Azul': '#1e40af',
     'Branco': '#ffffff',
     'Ouro': '#ffd700',
@@ -96,10 +96,10 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
               e.preventDefault()
               setIsFavorited(!isFavorited)
             }}
-            className="absolute top-2.5 left-2.5 z-10 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-gray-500 hover:text-[#ff66b2] flex items-center justify-center shadow transition duration-200 cursor-pointer"
+            className="absolute top-2.5 left-2.5 z-10 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-gray-500 hover:text-[#ff9edb] flex items-center justify-center shadow transition duration-200 cursor-pointer"
             aria-label="Adicionar aos favoritos"
           >
-            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-[#ff66b2] text-[#ff66b2]' : ''}`} />
+            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-[#ff9edb] text-[#ff9edb]' : ''}`} />
           </button>
 
           {/* Floating Quick Add shopping bag */}
@@ -109,7 +109,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
               e.stopPropagation()
               handleQuickAdd()
             }}
-            className="absolute bottom-2.5 right-2.5 z-10 w-9.5 h-9.5 rounded-full bg-[#ff66b2] hover:bg-[#e0559e] text-white flex items-center justify-center shadow-lg transition duration-200 active:scale-90 cursor-pointer"
+            className="absolute bottom-2.5 right-2.5 z-10 w-9.5 h-9.5 rounded-full bg-[#ff9edb] hover:bg-[#ff80cb] text-white flex items-center justify-center shadow-lg transition duration-200 active:scale-90 cursor-pointer"
             aria-label="Adicionar rápido ao carrinho"
           >
             <ShoppingBag className="w-4.5 h-4.5 stroke-[2]" />
@@ -117,7 +117,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
 
           {/* Discount badge */}
           {hasDiscount && (
-            <div className="absolute top-12 left-2.5 z-10 bg-[#ff66b2] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow">
+            <div className="absolute top-12 left-2.5 z-10 bg-[#ff9edb] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow">
               -{discount}%
             </div>
           )}
@@ -144,7 +144,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
           )}
 
           {/* Name */}
-          <h3 className="text-[11px] sm:text-[13px] text-gray-800 font-medium capitalize tracking-wide group-hover:text-[#ff66b2] transition-colors duration-200 line-clamp-2 text-center leading-tight px-1">
+          <h3 className="text-[11px] sm:text-[13px] text-gray-800 font-medium capitalize tracking-wide group-hover:text-[#ff9edb] transition-colors duration-200 line-clamp-2 text-center leading-tight px-1">
             {product.name}
           </h3>
 

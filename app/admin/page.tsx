@@ -144,7 +144,7 @@ export default function AdminPage() {
 
           <Button 
             onClick={handleOpenAdd}
-            className="bg-[#ff66b2] hover:bg-[#e0559e] text-white font-bold tracking-wide uppercase text-xs px-5 py-5 rounded-full flex items-center gap-2 cursor-pointer shadow-sm self-start sm:self-center"
+            className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold tracking-wide uppercase text-xs px-5 py-5 rounded-full flex items-center gap-2 cursor-pointer shadow-sm self-start sm:self-center"
           >
             <Plus className="w-4 h-4" /> Adicionar Produto
           </Button>
@@ -274,7 +274,7 @@ export default function AdminPage() {
                     onChange={handleFormChange}
                     placeholder="Ex: Vestido Fleur Pink"
                     required
-                    className="focus-visible:ring-[#ff66b2]"
+                    className="focus-visible:ring-[#ff9edb]"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -283,7 +283,7 @@ export default function AdminPage() {
                     name="category"
                     value={formData.category}
                     onChange={handleFormChange}
-                    className="w-full h-10 px-3 border border-input rounded-md text-sm bg-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff66b2] cursor-pointer"
+                    className="w-full h-10 px-3 border border-input rounded-md text-sm bg-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff9edb] cursor-pointer"
                   >
                     {CATEGORIES.map((c) => (
                       <option key={c.id} value={c.slug}>{c.name}</option>
@@ -301,7 +301,7 @@ export default function AdminPage() {
                   placeholder="Ex: Vestido confeccionado em viscose, leve e romântico com detalhes..."
                   rows={3}
                   required
-                  className="w-full px-3 py-2 border border-input rounded-md text-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff66b2]"
+                  className="w-full px-3 py-2 border border-input rounded-md text-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff9edb]"
                 />
               </div>
 
@@ -317,7 +317,7 @@ export default function AdminPage() {
                     type="number"
                     step="0.01"
                     required
-                    className="focus-visible:ring-[#ff66b2]"
+                    className="focus-visible:ring-[#ff9edb]"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -329,7 +329,7 @@ export default function AdminPage() {
                     placeholder="Ex: 199.90"
                     type="number"
                     step="0.01"
-                    className="focus-visible:ring-[#ff66b2]"
+                    className="focus-visible:ring-[#ff9edb]"
                   />
                 </div>
               </div>
@@ -343,7 +343,7 @@ export default function AdminPage() {
                     value={formData.image}
                     onChange={handleFormChange}
                     placeholder="Ex: /cat_roupas.png ou URL da imagem"
-                    className="flex-grow focus-visible:ring-[#ff66b2]"
+                    className="flex-grow focus-visible:ring-[#ff9edb]"
                   />
                 </div>
                 <p className="text-[10px] text-gray-400">
@@ -360,7 +360,7 @@ export default function AdminPage() {
                     value={formData.sizes}
                     onChange={handleFormChange}
                     placeholder="Ex: P, M, G, GG"
-                    className="focus-visible:ring-[#ff66b2]"
+                    className="focus-visible:ring-[#ff9edb]"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -370,7 +370,7 @@ export default function AdminPage() {
                     value={formData.colors}
                     onChange={handleFormChange}
                     placeholder="Ex: Preto, Nude, Rosa"
-                    className="focus-visible:ring-[#ff66b2]"
+                    className="focus-visible:ring-[#ff9edb]"
                   />
                 </div>
               </div>
@@ -383,7 +383,7 @@ export default function AdminPage() {
                     name="inStock"
                     checked={formData.inStock}
                     onChange={handleFormChange}
-                    className="rounded border-gray-300 text-[#ff66b2] focus:ring-[#ff66b2]"
+                    className="rounded border-gray-300 text-[#ff9edb] focus:ring-[#ff9edb]"
                   />
                   Em Estoque
                 </label>
@@ -393,7 +393,7 @@ export default function AdminPage() {
                     name="isNew"
                     checked={formData.isNew}
                     onChange={handleFormChange}
-                    className="rounded border-gray-300 text-[#ff66b2] focus:ring-[#ff66b2]"
+                    className="rounded border-gray-300 text-[#ff9edb] focus:ring-[#ff9edb]"
                   />
                   Novidade
                 </label>
@@ -403,7 +403,7 @@ export default function AdminPage() {
                     name="isFeatured"
                     checked={formData.isFeatured}
                     onChange={handleFormChange}
-                    className="rounded border-gray-300 text-[#ff66b2] focus:ring-[#ff66b2]"
+                    className="rounded border-gray-300 text-[#ff9edb] focus:ring-[#ff9edb]"
                   />
                   Destaque
                 </label>
@@ -421,7 +421,7 @@ export default function AdminPage() {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-[#ff66b2] hover:bg-[#e0559e] text-white font-bold cursor-pointer"
+                  className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold cursor-pointer"
                 >
                   {editingProduct ? 'Salvar Alterações' : 'Criar Produto'}
                 </Button>

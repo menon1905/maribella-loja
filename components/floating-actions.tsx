@@ -28,7 +28,7 @@ export function FloatingActions() {
           <div className="bg-white border border-pink-100 rounded-2xl p-4 shadow-2xl w-72 mb-2 animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center justify-between border-b pb-2 mb-3">
               <h5 className="font-extrabold text-gray-900 text-sm tracking-wide uppercase flex items-center gap-1.5">
-                <Tag className="w-4 h-4 text-[#ff66b2]" />
+                <Tag className="w-4 h-4 text-[#ff9edb]" />
                 Cupons Ativos
               </h5>
               <button 
@@ -48,7 +48,7 @@ export function FloatingActions() {
                 </div>
                 <button
                   onClick={() => handleCopy('BEMVINDAS')}
-                  className="bg-white hover:bg-pink-100/30 text-[#ff66b2] p-2 rounded-lg border border-pink-100 transition shadow-xs"
+                  className="bg-white hover:bg-pink-100/30 text-[#ff9edb] p-2 rounded-lg border border-pink-100 transition shadow-xs"
                 >
                   {copiedCoupon === 'BEMVINDAS' ? (
                     <Check className="w-3.5 h-3.5 text-green-500 stroke-[2.5]" />
@@ -66,7 +66,7 @@ export function FloatingActions() {
                 </div>
                 <button
                   onClick={() => handleCopy('FRETE150')}
-                  className="bg-white hover:bg-pink-100/30 text-[#ff66b2] p-2 rounded-lg border border-pink-100 transition shadow-xs"
+                  className="bg-white hover:bg-pink-100/30 text-[#ff9edb] p-2 rounded-lg border border-pink-100 transition shadow-xs"
                 >
                   {copiedCoupon === 'FRETE150' ? (
                     <Check className="w-3.5 h-3.5 text-green-500 stroke-[2.5]" />
@@ -81,7 +81,7 @@ export function FloatingActions() {
 
         <button
           onClick={() => setShowCupons(!showCupons)}
-          className="w-12 h-12 sm:w-14 sm:h-14 bg-[#ff66b2] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform duration-200 cursor-pointer animate-pulse"
+          className="w-12 h-12 sm:w-14 sm:h-14 bg-[#ff9edb] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform duration-200 cursor-pointer animate-pulse"
           aria-label="Cupons e descontos"
         >
           <Tag className="w-6 h-6 stroke-[2]" />

@@ -16,7 +16,7 @@ export default function PoliticaPrivacidadePage() {
       {/* Breadcrumb */}
       <div className="bg-pink-50/40 border-b border-pink-100/50">
         <div className="max-w-4xl mx-auto px-4 py-3 text-sm text-gray-500">
-          <Link href="/" className="hover:text-[#ff66b2] transition-colors">Início</Link>
+          <Link href="/" className="hover:text-[#ff9edb] transition-colors">Início</Link>
           <span className="mx-2">›</span>
           <span className="text-gray-800">Política de Privacidade</span>
         </div>
@@ -28,7 +28,7 @@ export default function PoliticaPrivacidadePage() {
 
         <div className="prose prose-gray max-w-none space-y-6 text-gray-600 leading-relaxed">
           <p>
-            Na <strong className="text-[#ff66b2]">Maribella</strong>, sua privacidade é nossa prioridade. Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações pessoais quando você utiliza nosso site e serviços.
+            Na <strong className="text-[#ff9edb]">Maribella</strong>, sua privacidade é nossa prioridade. Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações pessoais quando você utiliza nosso site e serviços.
           </p>
 
           <h2 className="text-xl font-bold text-gray-900 mt-8">1. Informações que Coletamos</h2>
@@ -73,7 +73,7 @@ export default function PoliticaPrivacidadePage() {
           <h2 className="text-xl font-bold text-gray-900 mt-8">6. Contato</h2>
           <p>
             Para dúvidas sobre esta política, entre em contato conosco pelo e-mail{' '}
-            <a href="mailto:contato@maribellaloja.com.br" className="text-[#ff66b2] hover:underline">
+            <a href="mailto:contato@maribellaloja.com.br" className="text-[#ff9edb] hover:underline">
               contato@maribellaloja.com.br
             </a>{' '}
             ou pelo WhatsApp.

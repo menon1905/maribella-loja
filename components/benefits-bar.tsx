@@ -25,7 +25,7 @@ export function BenefitsBar() {
 
           {/* Benefit 1: Envios Todo BR */}
           <div className="flex flex-col items-center text-center gap-2 px-2 py-3 md:flex-row md:text-left md:gap-4 md:px-4 md:py-2 hover:bg-pink-50/50 rounded-xl transition duration-200">
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#ff66b2] flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#ff9edb] flex items-center justify-center text-white flex-shrink-0 shadow-sm">
               <Truck className="w-4.5 h-4.5 md:w-5.5 md:h-5.5 stroke-[2]" />
             </div>
             <div>
@@ -40,7 +40,7 @@ export function BenefitsBar() {
 
           {/* Benefit 2: Parcele Até 12x */}
           <div className="flex flex-col items-center text-center gap-2 px-2 py-3 md:flex-row md:text-left md:gap-4 md:px-4 md:py-2 hover:bg-pink-50/50 rounded-xl transition duration-200">
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#ff66b2] flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#ff9edb] flex items-center justify-center text-white flex-shrink-0 shadow-sm">
               <CreditCard className="w-4.5 h-4.5 md:w-5.5 md:h-5.5 stroke-[2]" />
             </div>
             <div>
@@ -58,7 +58,7 @@ export function BenefitsBar() {
             onClick={handleCopyCoupon}
             className="flex flex-col items-center text-center gap-2 px-2 py-3 md:flex-row md:text-left md:gap-4 md:px-4 md:py-2 hover:bg-pink-50/50 rounded-xl transition duration-200 cursor-pointer group"
           >
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#ff66b2] flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#ff9edb] flex items-center justify-center text-white flex-shrink-0 shadow-sm">
               <Tag className="w-4.5 h-4.5 md:w-5.5 md:h-5.5 stroke-[2]" />
             </div>
             <div>
@@ -67,10 +67,10 @@ export function BenefitsBar() {
               </h4>
               <div className="flex items-center justify-center md:justify-start gap-1 mt-0.5">
                 <p className="text-[10px] md:text-xs text-gray-500 font-semibold leading-tight">
-                  <span className="text-[#ff66b2] font-bold">BEMVINDAS</span>
+                  <span className="text-[#ff9edb] font-bold">BEMVINDAS</span>
                 </p>
                 <button
-                  className="text-gray-400 group-hover:text-[#ff66b2] transition-colors p-0.5 rounded-sm"
+                  className="text-gray-400 group-hover:text-[#ff9edb] transition-colors p-0.5 rounded-sm"
                   aria-label="Copiar cupom"
                 >
                   {copied ? (
@@ -90,14 +90,14 @@ export function BenefitsBar() {
             rel="noopener noreferrer"
             className="flex flex-col items-center text-center gap-2 px-2 py-3 md:flex-row md:text-left md:gap-4 md:px-4 md:py-2 hover:bg-pink-50/50 rounded-xl transition duration-200"
           >
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#ff66b2] flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#ff9edb] flex items-center justify-center text-white flex-shrink-0 shadow-sm">
               <MessageCircle className="w-4.5 h-4.5 md:w-5.5 md:h-5.5 stroke-[2]" />
             </div>
             <div>
               <h4 className="font-semibold text-gray-900 text-[10px] md:text-xs tracking-[0.12em] uppercase leading-tight">
                 Suporte Maribella
               </h4>
-              <p className="text-[10px] md:text-xs text-gray-500 font-semibold mt-0.5 hover:text-[#ff66b2] transition-colors leading-tight">
+              <p className="text-[10px] md:text-xs text-gray-500 font-semibold mt-0.5 hover:text-[#ff9edb] transition-colors leading-tight">
                 Fale conosco
               </p>
             </div>

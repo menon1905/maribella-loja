@@ -16,7 +16,7 @@ export default function PrazosEntregasPage() {
       {/* Breadcrumb */}
       <div className="bg-pink-50/40 border-b border-pink-100/50">
         <div className="max-w-4xl mx-auto px-4 py-3 text-sm text-gray-500">
-          <Link href="/" className="hover:text-[#ff66b2] transition-colors">Início</Link>
+          <Link href="/" className="hover:text-[#ff9edb] transition-colors">Início</Link>
           <span className="mx-2">›</span>
           <span className="text-gray-800">Prazos e Entregas</span>
         </div>
@@ -53,7 +53,7 @@ export default function PrazosEntregasPage() {
             </p>
             <div className="overflow-x-auto rounded-xl border border-gray-100">
               <table className="w-full text-sm">
-                <thead className="bg-[#ff66b2] text-white">
+                <thead className="bg-[#ff9edb] text-white">
                   <tr>
                     <th className="py-3 px-5 text-left font-semibold">Região</th>
                     <th className="py-3 px-5 text-left font-semibold">Prazo Estimado</th>
@@ -95,7 +95,7 @@ export default function PrazosEntregasPage() {
                 href="https://www.correios.com.br/rastreamento"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#ff66b2] hover:underline font-medium"
+                className="text-[#ff9edb] hover:underline font-medium"
               >
                 Correios
               </a>
@@ -120,12 +120,12 @@ export default function PrazosEntregasPage() {
                 href="https://wa.me/5511999999999"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#ff66b2] hover:underline font-medium"
+                className="text-[#ff9edb] hover:underline font-medium"
               >
                 WhatsApp
               </a>{' '}
               ou pelo e-mail{' '}
-              <a href="mailto:contato@maribellaloja.com.br" className="text-[#ff66b2] hover:underline">
+              <a href="mailto:contato@maribellaloja.com.br" className="text-[#ff9edb] hover:underline">
                 contato@maribellaloja.com.br
               </a>
               .
