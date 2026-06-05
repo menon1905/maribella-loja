@@ -8,22 +8,16 @@ export function WelcomePopup() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    // Check if user has already seen the popup
-    const hasSeenPopup = localStorage.getItem('hasSeenWelcomePopup')
+    // Show popup after 3 seconds
+    const timer = setTimeout(() => {
+      setIsOpen(true)
+    }, 3000)
     
-    if (!hasSeenPopup) {
-      // Show popup after 3 seconds
-      const timer = setTimeout(() => {
-        setIsOpen(true)
-      }, 3000)
-      
-      return () => clearTimeout(timer)
-    }
+    return () => clearTimeout(timer)
   }, [])
 
   const closePopup = () => {
     setIsOpen(false)
-    localStorage.setItem('hasSeenWelcomePopup', 'true')
   }
 
   const copyCoupon = async () => {
