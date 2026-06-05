@@ -65,7 +65,7 @@ export default function TrocasDevolucoesPage() {
               <li>
                 Via WhatsApp:{' '}
                 <a
-                  href="https://wa.me/5511999999999"
+                  href="https://wa.me/5519992394672"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#ff9edb] hover:underline font-medium"

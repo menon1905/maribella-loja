@@ -91,7 +91,7 @@ export function FloatingActions() {
       {/* Right: Floating WhatsApp Button */}
       <div className="pointer-events-auto">
         <a
-          href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20estou%20no%20site%20da%20Maribella%20e%20gostaria%20de%20ajuda!"
+          href="https://wa.me/5519992394672?text=Ol%C3%A1%2C%20estou%20no%20site%20da%20Maribella%20e%20gostaria%20de%20ajuda!"
           target="_blank"
           rel="noopener noreferrer"
           className="w-12 h-12 sm:w-14 sm:h-14 bg-[#25d366] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform duration-200 cursor-pointer"

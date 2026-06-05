@@ -85,7 +85,7 @@ export function BenefitsBar() {
 
           {/* Benefit 4: Suporte Maribella */}
           <a
-            href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20as%20roupas!"
+            href="https://wa.me/5519992394672?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20as%20roupas!"
             target="_blank"
             rel="noopener noreferrer"
             className="flex flex-col items-center text-center gap-2 px-2 py-3 md:flex-row md:text-left md:gap-4 md:px-4 md:py-2 hover:bg-pink-50/50 rounded-xl transition duration-200"

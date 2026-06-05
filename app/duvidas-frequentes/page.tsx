@@ -102,7 +102,7 @@ export default function DuvidasFrequentesPage() {
           <h3 className="text-xl font-bold mb-2">Ainda tem dúvidas?</h3>
           <p className="text-white/80 text-sm mb-5">Nossa equipe está sempre pronta para te ajudar!</p>
           <a
-            href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida!"
+            href="https://wa.me/5519992394672?text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida!"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-white text-[#ff9edb] font-bold px-8 py-3 rounded-full hover:bg-pink-50 transition-colors duration-200 shadow-md"

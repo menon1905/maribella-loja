@@ -88,7 +88,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm opacity-75">
               <li>
                 <a
-                  href="https://wa.me/5511999999999"
+                  href="https://wa.me/5519992394672"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:opacity-100 transition"
@@ -160,7 +160,7 @@ export function Footer() {
             </div>
             <p className="text-xs opacity-75 mt-4">
               Email: contato@maribellaloja.com.br<br />
-              Telefone: (11) 3000-0000
+              WhatsApp: (19) 99239-4672
             </p>
           </div>
         </div>

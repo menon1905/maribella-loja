@@ -95,7 +95,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
 
     // Redirect to WhatsApp
     const encodedText = encodeURIComponent(message)
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=5511999999999&text=${encodedText}`
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=5519992394672&text=${encodedText}`
     
     window.open(whatsappUrl, '_blank')
 
