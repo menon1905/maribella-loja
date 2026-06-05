@@ -57,7 +57,7 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 w-full bg-[#ff9edb] shadow-md flex flex-col">
         {/* Top Announcement Bar */}
-        <div className="bg-gray-900 text-white py-2 text-center text-[10px] md:text-xs font-semibold tracking-wider h-9 overflow-hidden flex items-center justify-center relative">
+        <div className="bg-white text-gray-900 py-2 text-center text-[10px] md:text-xs font-semibold tracking-wider h-9 overflow-hidden flex items-center justify-center relative border-b border-[#ff9edb]/20">
           <div className="transition-all duration-500 ease-in-out transform uppercase tracking-widest text-[#ff9edb] px-4">
             {announcements[announcementIndex]}
           </div>
