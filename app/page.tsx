@@ -1,67 +1,61 @@
+'use client'
+
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { HeroCarousel } from '@/components/hero-carousel'
+import { BenefitsBar } from '@/components/benefits-bar'
+import { FloatingActions } from '@/components/floating-actions'
 import { ProductCarousel } from '@/components/product-carousel'
 import { CategoryGrid } from '@/components/category-grid'
 import { PromoSection } from '@/components/promo-section'
 import { NewsletterSection } from '@/components/newsletter-section'
-import { PromoTicker } from '@/components/promo-ticker'
-import { PRODUCTS, CATEGORIES, PROMO_ITEMS } from '@/lib/mock-data'
-
-export const metadata = {
-  title: 'Closet Twins - Moda, Acessórios e Beleza',
-  description: 'Descubra moda, acessórios e produtos de beleza na Closet Twins - seu destino de estilo.',
-  openGraph: {
-    title: 'Closet Twins',
-    description: 'Sua loja de moda, acessórios e beleza online',
-    images: [
-      {
-        url: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&h=630&fit=crop',
-        width: 1200,
-        height: 630,
-      }
-    ]
-  }
-}
+import { CATEGORIES, PROMO_ITEMS } from '@/lib/mock-data'
+import { useProducts } from '@/components/products-context'
 
 export default function Page() {
-  const featuredProducts = PRODUCTS.filter(p => p.isFeatured).slice(0, 8)
-  const newProducts = PRODUCTS.filter(p => p.isNew).slice(0, 8)
+  const { products } = useProducts()
+  const featuredProducts = products.filter(p => p.isFeatured).slice(0, 8)
+  const newProducts = products.filter(p => p.isNew).slice(0, 8)
 
   return (
     <>
-      <PromoTicker />
-      <main className="min-h-screen flex flex-col bg-background">
+      <main className="min-h-screen flex flex-col bg-background pb-16">
         <Header />
         
         {/* Hero Carousel */}
         <HeroCarousel />
 
-      {/* Featured Products */}
-      <ProductCarousel 
-        products={featuredProducts} 
-        title="Produtos em Destaque"
-        viewAllHref="/produtos"
-      />
+        {/* Benefits Bar */}
+        <BenefitsBar />
 
-      {/* Promo Section */}
-      <PromoSection items={PROMO_ITEMS} />
+        {/* Categories Circular List */}
+        <CategoryGrid categories={CATEGORIES} />
 
-      {/* New Arrivals */}
-      <ProductCarousel 
-        products={newProducts} 
-        title="Novidades"
-        viewAllHref="/produtos?filter=new"
-      />
+        {/* Featured Products */}
+        <ProductCarousel 
+          products={featuredProducts} 
+          title="Produtos em Destaque"
+          viewAllHref="/produtos"
+        />
 
-      {/* Categories */}
-      <CategoryGrid categories={CATEGORIES} />
+        {/* Promo Section */}
+        <PromoSection items={PROMO_ITEMS} />
+
+        {/* New Arrivals */}
+        <ProductCarousel 
+          products={newProducts} 
+          title="Novidades"
+          viewAllHref="/produtos?filter=new"
+        />
 
         {/* Newsletter */}
         <NewsletterSection />
 
         <Footer />
       </main>
+
+      {/* Floating Buttons */}
+      <FloatingActions />
     </>
   )
 }

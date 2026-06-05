@@ -1,15 +1,15 @@
 'use client'
 
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { ProductCarousel } from '@/components/product-carousel'
 import { Button } from '@/components/ui/button'
 import { Heart, Share2, Truck, Shield, RotateCcw } from 'lucide-react'
-import { PRODUCTS } from '@/lib/mock-data'
-import { notFound } from 'next/navigation'
+import { useProducts } from '@/components/products-context'
+import { Product } from '@/lib/mock-data'
 
 interface ProductPageProps {
   params: Promise<{
@@ -17,15 +17,28 @@ interface ProductPageProps {
   }>
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params
-  const product = PRODUCTS.find(p => p.id === id)
+export default function ProductPage({ params }: ProductPageProps) {
+  const { id } = React.use(params)
+  const { products } = useProducts()
+  const product = products.find(p => p.id === id)
 
   if (!product) {
-    notFound()
+    return (
+      <main className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <div className="flex-grow flex flex-col items-center justify-center p-12 text-center my-20">
+          <h1 className="text-3xl font-bold mb-4">Produto não encontrado</h1>
+          <p className="text-muted-foreground mb-8">O produto que você está procurando não existe ou foi removido.</p>
+          <Link href="/produtos">
+            <Button className="bg-primary hover:bg-primary/90">Ver todos os produtos</Button>
+          </Link>
+        </div>
+        <Footer />
+      </main>
+    )
   }
 
-  const relatedProducts = PRODUCTS.filter(
+  const relatedProducts = products.filter(
     p => p.category === product.category && p.id !== product.id
   ).slice(0, 8)
 
@@ -47,7 +60,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </div>
 
       {/* Product Details */}
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 py-12">
+      <div className="flex-grow max-w-7xl mx-auto w-full px-4 py-12">
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Product Image */}
           <div className="relative">
@@ -64,7 +77,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   NOVO
                 </div>
               )}
-              {product.originalPrice && product.originalPrice > product.price && (
+              {product.originalPrice && product.originalPrice > product.price && product.discount && (
                 <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded font-bold text-sm">
                   -{product.discount}%
                 </div>
@@ -162,23 +175,56 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </div>
 
       {/* Related Products */}
-      <ProductCarousel
-        products={relatedProducts}
-        title="Produtos Relacionados"
-      />
+      {relatedProducts.length > 0 && (
+        <ProductCarousel
+          products={relatedProducts}
+          title="Produtos Relacionados"
+        />
+      )}
 
       <Footer />
     </main>
   )
 }
 
-function ProductInfo({ product }: { product: typeof PRODUCTS[0] }) {
+function ProductInfo({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1)
   const [isFavorited, setIsFavorited] = useState(false)
+  const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || '')
+  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || '')
 
   const handleAddToCart = () => {
-    // Integrar com carrinho
-    console.log(`Added ${quantity} of ${product.name} to cart`)
+    try {
+      const cart = localStorage.getItem('cart')
+      let items = cart ? JSON.parse(cart) : []
+      
+      const existingIndex = items.findIndex((item: any) => 
+        item.id === product.id && 
+        item.size === selectedSize && 
+        item.color === selectedColor
+      )
+      
+      if (existingIndex > -1) {
+        items[existingIndex].quantity += quantity
+      } else {
+        items.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: quantity,
+          image: product.image,
+          size: selectedSize,
+          color: selectedColor
+        })
+      }
+      
+      localStorage.setItem('cart', JSON.stringify(items))
+      window.dispatchEvent(new Event('cart-updated'))
+      
+      alert('Produto adicionado ao carrinho!')
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (
@@ -230,7 +276,12 @@ function ProductInfo({ product }: { product: typeof PRODUCTS[0] }) {
               {product.sizes.map((size) => (
                 <button
                   key={size}
-                  className="border rounded py-2 px-3 text-sm font-medium hover:border-primary hover:bg-primary/5 transition"
+                  onClick={() => setSelectedSize(size)}
+                  className={`border rounded py-2 px-3 text-sm font-medium transition ${
+                    selectedSize === size
+                      ? 'border-[#ff66b2] bg-[#ff66b2]/10 text-[#ff66b2] font-bold shadow-xs'
+                      : 'hover:border-gray-400'
+                  }`}
                 >
                   {size}
                 </button>
@@ -242,11 +293,16 @@ function ProductInfo({ product }: { product: typeof PRODUCTS[0] }) {
         {product.colors && product.colors.length > 0 && (
           <div>
             <label className="font-medium mb-2 block">Selecione a Cor</label>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {product.colors.map((color) => (
                 <button
                   key={color}
-                  className="border rounded py-2 px-4 text-sm font-medium hover:border-primary hover:bg-primary/5 transition"
+                  onClick={() => setSelectedColor(color)}
+                  className={`border rounded py-2 px-4 text-sm font-medium transition ${
+                    selectedColor === color
+                      ? 'border-[#ff66b2] bg-[#ff66b2]/10 text-[#ff66b2] font-bold shadow-xs'
+                      : 'hover:border-gray-400'
+                  }`}
                 >
                   {color}
                 </button>
@@ -296,7 +352,7 @@ function ProductInfo({ product }: { product: typeof PRODUCTS[0] }) {
       </div>
 
       {/* Share */}
-      <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition">
+      <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition cursor-pointer">
         <Share2 className="w-4 h-4" />
         Compartilhar Produto
       </button>

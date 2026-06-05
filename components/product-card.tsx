@@ -2,9 +2,9 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart, ShoppingCart } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Heart, ShoppingBag } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import type { Product } from '@/lib/mock-data'
 
 interface ProductCardProps {
@@ -12,128 +12,160 @@ interface ProductCardProps {
   variant?: 'default' | 'compact'
 }
 
+const getColorHex = (colorName: string): string => {
+  const mapping: Record<string, string> = {
+    'Preto': '#000000',
+    'Caramelo': '#c68e17',
+    'Rosa': '#ff66b2',
+    'Azul': '#1e40af',
+    'Branco': '#ffffff',
+    'Ouro': '#ffd700',
+    'Prata': '#c0c0c0',
+    'Rosa Gold': '#b76e79',
+    'Nude': '#e3bc9a',
+    'Rose': '#f43f5e',
+    'Cinza': '#9ca3af',
+  }
+  return mapping[colorName] || '#cccccc'
+}
+
 export function ProductCard({ product, variant = 'default' }: ProductCardProps) {
   const [isFavorited, setIsFavorited] = useState(false)
   const discount = product.discount || 0
-  const hasDiscount = product.originalPrice && product.originalPrice > product.price
+  const hasDiscount = !!(product.originalPrice && product.originalPrice > product.price)
 
-  if (variant === 'compact') {
-    return (
-      <Link href={`/produto/${product.id}`}>
-        <div className="group cursor-pointer">
-          <div className="relative bg-muted rounded-lg overflow-hidden mb-3 aspect-square">
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-cover group-hover:scale-110 transition duration-300"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-            {product.isNew && (
-              <div className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded">
-                NOVO
-              </div>
-            )}
-            {hasDiscount && (
-              <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                -{discount}%
-              </div>
-            )}
-          </div>
-          <h3 className="font-medium text-sm line-clamp-2 group-hover:text-primary transition">
-            {product.name}
-          </h3>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-lg font-bold text-primary">R$ {product.price.toFixed(2)}</span>
-            {hasDiscount && (
-              <span className="text-sm text-muted-foreground line-through">
-                R$ {product.originalPrice?.toFixed(2)}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-1 mt-1">
-            <div className="flex text-yellow-400 text-xs">
-              {'★'.repeat(Math.floor(product.rating))}
-              {'☆'.repeat(5 - Math.floor(product.rating))}
-            </div>
-            <span className="text-xs text-muted-foreground">({product.reviews})</span>
-          </div>
-        </div>
-      </Link>
-    )
+  const handleQuickAdd = () => {
+    try {
+      const cart = localStorage.getItem('cart')
+      let items = cart ? JSON.parse(cart) : []
+      
+      const defaultSize = product.sizes?.[0] || undefined
+      const defaultColor = product.colors?.[0] || undefined
+
+      const existingIndex = items.findIndex((item: any) => 
+        item.id === product.id && 
+        item.size === defaultSize && 
+        item.color === defaultColor
+      )
+      
+      if (existingIndex > -1) {
+        items[existingIndex].quantity += 1
+      } else {
+        items.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          image: product.image,
+          size: defaultSize,
+          color: defaultColor
+        })
+      }
+      
+      localStorage.setItem('cart', JSON.stringify(items))
+      localStorage.setItem('maribella_cart', JSON.stringify(items))
+      window.dispatchEvent(new Event('cart-updated'))
+      toast.success(`${product.name} adicionado ao carrinho!`)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (
-    <Link href={`/produto/${product.id}`}>
-      <div className="group cursor-pointer h-full">
-        <div className="relative bg-muted rounded-lg overflow-hidden mb-4 aspect-square mb-4">
+    <Link href={`/produto/${product.id}`} className="group block">
+      <div className="flex flex-col">
+
+        {/* Image Container — portrait, clean */}
+        <div className="relative overflow-hidden aspect-[2/3] bg-gray-100">
           <Image
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-110 transition duration-300"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-103 transition-transform duration-500"
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
           />
 
-          {/* Badges */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition" />
-          {product.isNew && (
-            <div className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded">
-              NOVO
-            </div>
-          )}
+          {/* Slide Indicator Badge */}
+          <div className="absolute top-2.5 right-2.5 z-10 bg-black/40 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow-sm">
+            1/{product.id === '1' ? '5' : product.id === '2' ? '4' : '3'}
+          </div>
+
+          {/* Wishlist Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              setIsFavorited(!isFavorited)
+            }}
+            className="absolute top-2.5 left-2.5 z-10 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-gray-500 hover:text-[#ff66b2] flex items-center justify-center shadow transition duration-200 cursor-pointer"
+            aria-label="Adicionar aos favoritos"
+          >
+            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-[#ff66b2] text-[#ff66b2]' : ''}`} />
+          </button>
+
+          {/* Floating Quick Add shopping bag */}
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              handleQuickAdd()
+            }}
+            className="absolute bottom-2.5 right-2.5 z-10 w-9.5 h-9.5 rounded-full bg-[#ff66b2] hover:bg-[#e0559e] text-white flex items-center justify-center shadow-lg transition duration-200 active:scale-90 cursor-pointer"
+            aria-label="Adicionar rápido ao carrinho"
+          >
+            <ShoppingBag className="w-4.5 h-4.5 stroke-[2]" />
+          </button>
+
+          {/* Discount badge */}
           {hasDiscount && (
-            <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded">
+            <div className="absolute top-12 left-2.5 z-10 bg-[#ff66b2] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow">
               -{discount}%
             </div>
           )}
-
-          {/* Actions on Hover */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 opacity-0 group-hover:opacity-100 transition translate-y-2 group-hover:translate-y-0">
-            <Button
-              size="sm"
-              className="w-full bg-white text-black hover:bg-white/90 font-medium"
-              onClick={(e) => {
-                e.preventDefault()
-              }}
-            >
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              Adicionar ao Carrinho
-            </Button>
-          </div>
         </div>
 
-        <div className="space-y-2">
-          <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition">
+        {/* Text block */}
+        <div className="pt-2 md:pt-3 pb-3 md:pb-4 border-b border-gray-200 flex flex-col items-center">
+          {/* Color Dots */}
+          {product.colors && product.colors.length > 0 && (
+            <div className="flex items-center justify-center gap-1 md:gap-1.5 mb-1.5 md:mb-2.5">
+              {product.colors.slice(0, 3).map((color) => (
+                <div
+                  key={color}
+                  className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full border border-gray-200 shadow-xs"
+                  style={{ backgroundColor: getColorHex(color) }}
+                />
+              ))}
+              {product.colors.length > 3 && (
+                <span className="text-[9px] md:text-[10px] text-gray-400 font-medium ml-0.5">
+                  +{product.colors.length - 3}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Name */}
+          <h3 className="text-[11px] sm:text-[13px] text-gray-800 font-medium capitalize tracking-wide group-hover:text-[#ff66b2] transition-colors duration-200 line-clamp-2 text-center leading-tight px-1">
             {product.name}
           </h3>
 
-          <p className="text-xs text-muted-foreground line-clamp-2">{product.description}</p>
-
-          {/* Rating */}
-          <div className="flex items-center gap-2 pt-1">
-            <div className="flex text-yellow-400 text-xs">
-              {'★'.repeat(Math.floor(product.rating))}
-              {'☆'.repeat(5 - Math.floor(product.rating))}
-            </div>
-            <span className="text-xs text-muted-foreground">({product.reviews})</span>
-          </div>
-
-          {/* Price */}
-          <div className="flex items-baseline gap-2 pt-2">
-            <span className="text-lg font-bold text-primary">R$ {product.price.toFixed(2)}</span>
+          {/* Price row */}
+          <div className="mt-1 flex items-center justify-center gap-1.5">
+            <span className="text-xs sm:text-base font-extrabold text-gray-900">
+              R$ {product.price.toFixed(2).replace('.', ',')}
+            </span>
             {hasDiscount && (
-              <span className="text-xs text-muted-foreground line-through">
-                R$ {product.originalPrice?.toFixed(2)}
+              <span className="text-[10px] text-gray-400 line-through font-normal">
+                R$ {product.originalPrice?.toFixed(2).replace('.', ',')}
               </span>
             )}
           </div>
 
-          {/* Stock Status */}
-          <p className="text-xs font-medium text-green-600 pt-1">
-            {product.inStock ? '✓ Em Estoque' : 'Fora de Estoque'}
+          {/* Installments */}
+          <p className="text-[9px] md:text-[10px] text-gray-400 font-light text-center mt-0.5">
+            12x de R$ {(product.price / 12).toFixed(2).replace('.', ',')}
           </p>
         </div>
+
       </div>
     </Link>
   )

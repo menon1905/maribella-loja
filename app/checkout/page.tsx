@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
@@ -12,6 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function CheckoutPage() {
   const [step, setStep] = useState<'shipping' | 'payment' | 'confirmation'>('shipping')
+  const [cartItems, setCartItems] = useState<any[]>([])
+  const [orderNumber, setOrderNumber] = useState('')
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -24,8 +26,28 @@ export default function CheckoutPage() {
     city: '',
     state: '',
     zipCode: '',
-    paymentMethod: 'credit-card'
   })
+
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
+
+  // Load cart items on mount
+  useEffect(() => {
+    try {
+      const cart = localStorage.getItem('maribella_cart') || localStorage.getItem('cart')
+      if (cart) {
+        setCartItems(JSON.parse(cart))
+      }
+      const storedCoupon = localStorage.getItem('applied_coupon')
+      if (storedCoupon) {
+        setAppliedCoupon(storedCoupon)
+      }
+      // Generate a random order number
+      const rand = Math.floor(100000 + Math.random() * 900000)
+      setOrderNumber(`#MB-${new Date().getFullYear()}-${rand}`)
+    } catch (e) {
+      console.error(e)
+    }
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -36,37 +58,84 @@ export default function CheckoutPage() {
     e.preventDefault()
     if (step === 'shipping') {
       setStep('payment')
-    } else if (step === 'payment') {
-      setStep('confirmation')
     }
   }
 
-  const subtotal = 489.80
-  const shipping = 0
-  const total = subtotal + shipping
+  const handleFinalizeWhatsApp = () => {
+    // Format WhatsApp message
+    const formattedItems = cartItems
+      .map(item => `- *${item.name}* ${item.size ? `(Tam: ${item.size})` : ''} ${item.color ? `(Cor: ${item.color})` : ''} x${item.quantity} - R$ ${(item.price * item.quantity).toFixed(2)}`)
+      .join('\n')
+
+    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
+    const shipping = subtotal > 0 && (subtotal - discount) > 150 ? 0 : 15
+    const total = subtotal - discount + shipping
+
+    const message = `Olá, Maribella! Gostaria de finalizar meu pedido.
+
+*Número do Pedido:* ${orderNumber}
+
+*Produtos:*
+${formattedItems}
+
+*Resumo Financeiro:*
+- *Subtotal:* R$ ${subtotal.toFixed(2)}
+${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(2)}\n` : ''}- *Frete:* ${shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2)}`}
+- *Total Geral:* R$ ${total.toFixed(2)}
+
+*Dados de Entrega:*
+- *Nome:* ${formData.firstName} ${formData.lastName}
+- *E-mail:* ${formData.email}
+- *Telefone:* ${formData.phone}
+- *CEP:* ${formData.zipCode}
+- *Endereço:* ${formData.street}, Nº ${formData.number} ${formData.complement ? `(${formData.complement})` : ''}
+- *Bairro:* ${formData.neighborhood}
+- *Cidade/UF:* ${formData.city}/${formData.state}`
+
+    // Redirect to WhatsApp
+    const encodedText = encodeURIComponent(message)
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=5511999999999&text=${encodedText}`
+    
+    window.open(whatsappUrl, '_blank')
+
+    // Clear cart, coupon and notify components
+    localStorage.removeItem('cart')
+    localStorage.removeItem('maribella_cart')
+    localStorage.removeItem('applied_coupon')
+    window.dispatchEvent(new Event('cart-updated'))
+    setCartItems([])
+
+    // Move to confirmation step
+    setStep('confirmation')
+  }
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
+  const shipping = subtotal > 0 && (subtotal - discount) > 150 ? 0 : (subtotal === 0 ? 0 : 15)
+  const total = subtotal - discount + shipping
 
   return (
     <>
-      <PromoTicker />
       <section className="min-h-screen flex flex-col bg-background">
         <Header />
 
       {/* Steps */}
-      <div className="bg-muted/50 border-b sticky top-16 z-10">
+      <div className="bg-pink-50/20 border-b sticky top-[120px] z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between text-sm">
-            <div className={`flex items-center gap-2 ${step === 'shipping' || step === 'payment' || step === 'confirmation' ? 'text-primary font-bold' : 'text-muted-foreground'}`}>
-              <div className="w-8 h-8 rounded-full border-2 flex items-center justify-center">1</div>
+          <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-widest text-gray-500">
+            <div className={`flex items-center gap-2 ${step === 'shipping' || step === 'payment' || step === 'confirmation' ? 'text-[#ff66b2] font-bold' : ''}`}>
+              <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-bold">1</div>
               <span className="hidden sm:inline">Endereço</span>
             </div>
-            <div className="flex-1 h-0.5 bg-border mx-2" />
-            <div className={`flex items-center gap-2 ${step === 'payment' || step === 'confirmation' ? 'text-primary font-bold' : 'text-muted-foreground'}`}>
-              <div className="w-8 h-8 rounded-full border-2 flex items-center justify-center">2</div>
-              <span className="hidden sm:inline">Pagamento</span>
+            <div className="flex-1 h-px bg-gray-200 mx-4" />
+            <div className={`flex items-center gap-2 ${step === 'payment' || step === 'confirmation' ? 'text-[#ff66b2] font-bold' : ''}`}>
+              <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-bold">2</div>
+              <span className="hidden sm:inline">Finalização</span>
             </div>
-            <div className="flex-1 h-0.5 bg-border mx-2" />
-            <div className={`flex items-center gap-2 ${step === 'confirmation' ? 'text-primary font-bold' : 'text-muted-foreground'}`}>
-              <div className="w-8 h-8 rounded-full border-2 flex items-center justify-center">3</div>
+            <div className="flex-1 h-px bg-gray-200 mx-4" />
+            <div className={`flex items-center gap-2 ${step === 'confirmation' ? 'text-[#ff66b2] font-bold' : ''}`}>
+              <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-bold">3</div>
               <span className="hidden sm:inline">Confirmação</span>
             </div>
           </div>
@@ -81,7 +150,7 @@ export default function CheckoutPage() {
             {step === 'shipping' && (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold mb-6">Endereço de Entrega</h2>
+                  <h2 className="text-2xl font-bold mb-6 text-gray-900 uppercase tracking-wider">Endereço de Entrega</h2>
                   
                   <div className="space-y-4">
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -91,6 +160,7 @@ export default function CheckoutPage() {
                         value={formData.firstName}
                         onChange={handleChange}
                         required
+                        className="focus-visible:ring-[#ff66b2]"
                       />
                       <Input
                         placeholder="Sobrenome"
@@ -98,6 +168,7 @@ export default function CheckoutPage() {
                         value={formData.lastName}
                         onChange={handleChange}
                         required
+                        className="focus-visible:ring-[#ff66b2]"
                       />
                     </div>
 
@@ -109,14 +180,16 @@ export default function CheckoutPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
+                        className="focus-visible:ring-[#ff66b2]"
                       />
                       <Input
                         type="tel"
-                        placeholder="Telefone"
+                        placeholder="Telefone / Celular (com DDD)"
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
                         required
+                        className="focus-visible:ring-[#ff66b2]"
                       />
                     </div>
 
@@ -127,7 +200,7 @@ export default function CheckoutPage() {
                         value={formData.zipCode}
                         onChange={handleChange}
                         required
-                        className="col-span-2"
+                        className="col-span-2 focus-visible:ring-[#ff66b2]"
                       />
                       <Input
                         placeholder="Cidade"
@@ -135,6 +208,7 @@ export default function CheckoutPage() {
                         value={formData.city}
                         onChange={handleChange}
                         required
+                        className="focus-visible:ring-[#ff66b2]"
                       />
                       <Input
                         placeholder="UF"
@@ -143,15 +217,17 @@ export default function CheckoutPage() {
                         onChange={handleChange}
                         maxLength={2}
                         required
+                        className="focus-visible:ring-[#ff66b2]"
                       />
                     </div>
 
                     <Input
-                      placeholder="Rua"
+                      placeholder="Rua / Logradouro"
                       name="street"
                       value={formData.street}
                       onChange={handleChange}
                       required
+                      className="focus-visible:ring-[#ff66b2]"
                     />
 
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -161,12 +237,14 @@ export default function CheckoutPage() {
                         value={formData.number}
                         onChange={handleChange}
                         required
+                        className="focus-visible:ring-[#ff66b2]"
                       />
                       <Input
                         placeholder="Complemento (opcional)"
                         name="complement"
                         value={formData.complement}
                         onChange={handleChange}
+                        className="focus-visible:ring-[#ff66b2]"
                       />
                     </div>
 
@@ -176,17 +254,18 @@ export default function CheckoutPage() {
                       value={formData.neighborhood}
                       onChange={handleChange}
                       required
+                      className="focus-visible:ring-[#ff66b2]"
                     />
                   </div>
 
-                  <div className="mt-6 flex gap-3">
+                  <div className="mt-8 flex gap-3">
                     <Link href="/carrinho">
-                      <Button variant="outline" type="button">
+                      <Button variant="outline" type="button" className="cursor-pointer">
                         Voltar
                       </Button>
                     </Link>
-                    <Button type="submit" className="flex-1 bg-primary hover:bg-primary/90">
-                      Continuar para Pagamento
+                    <Button type="submit" className="flex-1 bg-[#ff66b2] hover:bg-[#e0559e] text-white font-bold cursor-pointer">
+                      Continuar para Finalização
                     </Button>
                   </div>
                 </div>
@@ -194,82 +273,78 @@ export default function CheckoutPage() {
             )}
 
             {step === 'payment' && (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold mb-6">Método de Pagamento</h2>
+                  <h2 className="text-2xl font-bold mb-4 text-gray-900 uppercase tracking-wider">Finalização do Pedido</h2>
+                  <p className="text-gray-500 mb-6 text-sm">
+                    Revisamos as informações para envio. Ao clicar no botão abaixo, você será redirecionado para o WhatsApp da Maribella para finalizar a forma de pagamento e entrega.
+                  </p>
 
-                  <div className="space-y-3">
-                    <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition">
-                      <input type="radio" name="payment" value="credit-card" defaultChecked className="mr-3" />
-                      <span className="font-medium">Cartão de Crédito</span>
-                    </label>
-                    <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition">
-                      <input type="radio" name="payment" value="debit" className="mr-3" />
-                      <span className="font-medium">Cartão de Débito</span>
-                    </label>
-                    <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition">
-                      <input type="radio" name="payment" value="pix" className="mr-3" />
-                      <span className="font-medium">Pix</span>
-                    </label>
-                    <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition">
-                      <input type="radio" name="payment" value="installments" className="mr-3" />
-                      <span className="font-medium">Parcelado (até 12x)</span>
-                    </label>
-                  </div>
-
-                  <div className="mt-6 bg-blue-50 border border-blue-200 rounded p-4 text-sm">
-                    <p className="text-blue-900">
-                      ℹ️ Esta é uma demonstração. Não será processado nenhum pagamento real.
+                  <div className="bg-[#ff66b2]/10 border border-[#ff66b2]/20 rounded-lg p-6 space-y-4 text-sm text-gray-700 mb-8">
+                    <h3 className="font-bold text-gray-900 uppercase tracking-wider text-xs">Dados de Entrega cadastrados:</h3>
+                    <p>
+                      <strong>Destinatário:</strong> {formData.firstName} {formData.lastName}<br />
+                      <strong>Contato:</strong> {formData.phone} ({formData.email})<br />
+                      <strong>Endereço:</strong> {formData.street}, Nº {formData.number} {formData.complement ? `(${formData.complement})` : ''} - {formData.neighborhood}, {formData.city}/{formData.state} - CEP: {formData.zipCode}
                     </p>
                   </div>
 
-                  <div className="mt-6 flex gap-3">
+                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
                     <Button
                       variant="outline"
                       type="button"
                       onClick={() => setStep('shipping')}
+                      className="cursor-pointer"
                     >
-                      Voltar
+                      Editar Endereço
                     </Button>
-                    <Button type="submit" className="flex-1 bg-primary hover:bg-primary/90">
-                      Revisar Pedido
+                    <Button 
+                      onClick={handleFinalizeWhatsApp} 
+                      className="flex-1 bg-[#25d366] hover:bg-[#1ebd59] text-white font-bold flex items-center justify-center gap-2 cursor-pointer py-6 text-lg"
+                    >
+                      <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.437 0 9.862-4.404 9.866-9.817.002-2.623-1.01-5.09-2.852-6.937C16.438 1.999 13.979 1.01 11.999 1.01c-5.444 0-9.873 4.406-9.877 9.82-.001 1.836.5 3.55 1.446 4.996L2.52 21.05l5.293-1.389c.001-.001.001-.001.002-.001z" />
+                      </svg>
+                      Finalizar Pedido via WhatsApp
                     </Button>
                   </div>
                 </div>
-              </form>
+              </div>
             )}
 
             {step === 'confirmation' && (
               <div className="space-y-6">
-                <div className="text-center py-12 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="text-6xl mb-4">✓</div>
-                  <h2 className="text-2xl font-bold text-green-900 mb-2">Pedido Confirmado!</h2>
-                  <p className="text-green-700">Seu pedido foi realizado com sucesso</p>
+                <div className="text-center py-12 bg-pink-50/50 border border-pink-100 rounded-lg">
+                  <div className="text-6xl mb-4 text-[#ff66b2]">✓</div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2 uppercase tracking-wider">Pedido Recebido!</h2>
+                  <p className="text-gray-600 text-sm max-w-md mx-auto">
+                    Redirecionamos você para o WhatsApp. Por favor, envie a mensagem gerada para prosseguir com o pagamento e a entrega dos seus produtos.
+                  </p>
                 </div>
 
                 <div className="bg-muted/50 p-6 rounded-lg space-y-4">
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Número do Pedido</p>
-                    <p className="text-xl font-bold">#CT-2024-001234</p>
+                    <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-1">Número do Pedido</p>
+                    <p className="text-xl font-bold text-gray-900">{orderNumber}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Data</p>
-                    <p className="font-medium">{new Date().toLocaleDateString('pt-BR')}</p>
+                    <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-1">Status</p>
+                    <p className="font-semibold text-amber-600">Aguardando atendimento no WhatsApp</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Tempo de Entrega</p>
-                    <p className="font-medium">3-7 dias úteis</p>
+                    <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-1">Data</p>
+                    <p className="font-medium text-gray-700">{new Date().toLocaleDateString('pt-BR')}</p>
                   </div>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-3 pt-4">
                   <Link href="/" className="flex-1">
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline" className="w-full cursor-pointer">
                       Voltar para Home
                     </Button>
                   </Link>
                   <Link href="/produtos" className="flex-1">
-                    <Button className="w-full bg-primary hover:bg-primary/90">
+                    <Button className="w-full bg-[#ff66b2] hover:bg-[#e0559e] text-white font-bold cursor-pointer">
                       Continuar Comprando
                     </Button>
                   </Link>
@@ -280,40 +355,66 @@ export default function CheckoutPage() {
 
           {/* Summary */}
           <div className="lg:col-span-1">
-            <div className="border rounded-lg p-6 space-y-6 sticky top-40">
-              <h3 className="font-bold text-lg">Resumo do Pedido</h3>
+            <div className="border rounded-lg p-6 space-y-6 sticky top-40 bg-white">
+              <h3 className="font-bold text-lg text-gray-900 uppercase tracking-wider border-b pb-4">Resumo do Pedido</h3>
 
-              <div className="space-y-3 border-b pb-4">
-                <div className="flex justify-between text-sm">
-                  <span>Bolsa Tote Premium x1</span>
-                  <span>R$ 189,90</span>
+              {cartItems.length > 0 ? (
+                <div className="space-y-4 border-b pb-4">
+                  {cartItems.map((item, idx) => (
+                    <div key={idx} className="flex gap-3 text-sm justify-between items-start">
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-800 leading-tight">{item.name}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          {item.size ? `Tamanho: ${item.size}` : ''}
+                          {item.size && item.color ? ' | ' : ''}
+                          {item.color ? `Cor: ${item.color}` : ''}
+                          {item.size || item.color ? ' | ' : ''} Qtd: {item.quantity}
+                        </p>
+                      </div>
+                      <span className="font-medium text-gray-700 flex-shrink-0">
+                        R$ {(item.price * item.quantity).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>Tênis Esportivo x1</span>
-                  <span>R$ 299,90</span>
-                </div>
-              </div>
+              ) : (
+                <p className="text-sm text-gray-400 italic">Carrinho vazio ou finalizado.</p>
+              )}
 
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span>R$ {subtotal.toFixed(2)}</span>
+                  <span className="text-gray-500">Subtotal</span>
+                  <span className="font-medium text-gray-700">R$ {subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-sm text-green-600">
-                  <span className="text-muted-foreground">Frete</span>
-                  <span>Grátis</span>
+                {discount > 0 && (
+                  <div className="flex justify-between text-sm text-green-600 font-medium">
+                    <span>Desconto (BEMVINDAS)</span>
+                    <span>- R$ {discount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Frete</span>
+                  <span className="text-green-600 font-bold uppercase tracking-wider text-xs">
+                    {shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2)}`}
+                  </span>
                 </div>
-                <div className="flex justify-between font-bold text-lg border-t pt-2">
-                  <span>Total</span>
-                  <span className="text-primary">R$ {total.toFixed(2)}</span>
+                <div className="flex justify-between font-bold text-lg border-t pt-3 mt-2">
+                  <span className="text-gray-900">Total</span>
+                  <span className="text-gray-900">R$ {total.toFixed(2)}</span>
                 </div>
               </div>
 
-              {step === 'confirmation' && (
-                <div className="bg-green-50 text-green-900 text-sm p-3 rounded">
-                  ✓ Sua compra foi confirmada e seu código de rastreamento foi enviado para o email cadastrado.
-                </div>
-              )}
+              <div className="bg-pink-50 border border-pink-100 rounded-lg p-4 text-xs text-gray-500 space-y-2">
+                <p className="flex items-center gap-1.5">
+                  <span className="text-[#ff66b2] font-bold">✓</span> Atendimento personalizado
+                </p>
+                <p className="flex items-center gap-1.5">
+                  <span className="text-[#ff66b2] font-bold">✓</span> Pagamento combinado via chat
+                </p>
+                <p className="flex items-center gap-1.5">
+                  <span className="text-[#ff66b2] font-bold">✓</span> Envio rápido para todo o Brasil
+                </p>
+              </div>
             </div>
           </div>
         </div>

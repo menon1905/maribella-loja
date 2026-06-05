@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 
 export function HeroSection() {
   return (
-    <section className="relative w-full h-screen md:h-[700px] overflow-hidden pt-20 md:pt-24">
+    <section className="relative w-full h-screen md:h-[700px] overflow-hidden">
       <Image
         src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1600&h=900&fit=crop"
         alt="Hero Banner"
