@@ -2,13 +2,31 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
-import { Search, ShoppingBag, Menu, X, User } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Search, ShoppingBag, Menu, X, User, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
+const ROUPA_SUBCATS = [
+  { label: 'Todas', href: '/categorias/roupas' },
+  { label: 'Blusa', href: '/categorias/roupas?sub=blusa' },
+  { label: 'Body', href: '/categorias/roupas?sub=body' },
+  { label: 'Camisa e Kimono', href: '/categorias/roupas?sub=camisa e kimono' },
+  { label: 'Calça', href: '/categorias/roupas?sub=calça' },
+  { label: 'Conjunto', href: '/categorias/roupas?sub=conjunto' },
+  { label: 'Cropped', href: '/categorias/roupas?sub=cropped' },
+  { label: 'Jaqueta, Casaco e Blazer', href: '/categorias/roupas?sub=jaqueta, casaco e blazer' },
+  { label: 'Macacão', href: '/categorias/roupas?sub=macacão' },
+  { label: 'Saia', href: '/categorias/roupas?sub=saia' },
+  { label: 'Vestido', href: '/categorias/roupas?sub=vestido' },
+  { label: 'Biquínis', href: '/categorias/roupas?sub=biquínis' },
+]
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isRoupasOpen, setIsRoupasOpen] = useState(false)
+  const [isMobileRoupasOpen, setIsMobileRoupasOpen] = useState(false)
+  const roupasRef = useRef<HTMLDivElement>(null)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [cartCount, setCartCount] = useState(0)
@@ -132,21 +150,69 @@ export function Header() {
         {/* Desktop Categories Bar */}
         <div className="hidden md:flex border-t border-gray-900/10 w-full">
           <nav className="max-w-5xl mx-auto w-full flex items-center justify-center gap-8 lg:gap-12 py-3.5">
-            {[
-              { name: 'Início', href: '/' },
-              { name: 'Roupas', href: '/categorias/roupas' },
-              { name: 'Bolsas', href: '/categorias/bolsas' },
-              { name: 'Calçados', href: '/categorias/calcados' },
-              { name: 'Jóias', href: '/categorias/joias' },
-            ].map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest"
+            <Link href="/" className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest">
+              Início
+            </Link>
+
+            {/* Roupas with dropdown */}
+            <div
+              ref={roupasRef}
+              className="relative"
+              onMouseEnter={() => setIsRoupasOpen(true)}
+              onMouseLeave={() => setIsRoupasOpen(false)}
+            >
+              <button
+                className="flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest cursor-pointer"
+                onClick={() => setIsRoupasOpen(v => !v)}
               >
-                {item.name}
-              </Link>
-            ))}
+                Roupas
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isRoupasOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isRoupasOpen && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-[200] w-72">
+                  {/* Invisible bridge — fills the gap so mouse doesn't trigger onMouseLeave */}
+                  <div className="absolute top-0 left-0 right-0 h-3" />
+                  <div className="bg-white border border-pink-100 rounded-2xl shadow-[0_20px_60px_-10px_rgba(255,158,219,0.35)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+
+                  {/* Pink header */}
+                  <Link
+                    href="/categorias/roupas"
+                    onClick={() => setIsRoupasOpen(false)}
+                    className="flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-[#ff9edb] to-[#ffb5e4] text-white group"
+                  >
+                    <span className="text-xs font-extrabold uppercase tracking-[0.15em]">Ver Todas as Roupas</span>
+                    <span className="text-white/80 group-hover:translate-x-0.5 transition-transform text-sm">→</span>
+                  </Link>
+
+                  {/* 2-column subcategory grid */}
+                  <div className="grid grid-cols-2 gap-px bg-pink-50/50 p-3">
+                    {ROUPA_SUBCATS.filter(s => s.label !== 'Todas').map((sub) => (
+                      <Link
+                        key={sub.label}
+                        href={sub.href}
+                        onClick={() => setIsRoupasOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[11px] font-semibold text-gray-600 uppercase tracking-wider hover:bg-pink-50 hover:text-[#ff9edb] transition-all duration-150 group"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-pink-200 group-hover:bg-[#ff9edb] transition-colors flex-shrink-0" />
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                  </div>{/* end white card */}
+                </div>
+              )}
+            </div>
+
+            <Link href="/categorias/bolsas" className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest">
+              Bolsas
+            </Link>
+            <Link href="/categorias/calcados" className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest">
+              Calçados
+            </Link>
+            <Link href="/categorias/joias" className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest">
+              Jóias
+            </Link>
           </nav>
         </div>
 
@@ -217,9 +283,44 @@ export function Header() {
             </div>
 
             <nav className="flex-1 space-y-1 px-3 py-6 overflow-y-auto">
+              <Link
+                href="/"
+                className="flex items-center rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Início
+              </Link>
+
+              {/* Roupas accordion */}
+              <div>
+                <button
+                  onClick={() => setIsMobileRoupasOpen(v => !v)}
+                  className="w-full flex items-center justify-between rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors cursor-pointer"
+                >
+                  Roupas
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileRoupasOpen ? 'rotate-180 text-[#ff9edb]' : ''}`} />
+                </button>
+                {isMobileRoupasOpen && (
+                  <div className="ml-4 border-l-2 border-pink-100 pl-3 pb-1 flex flex-col gap-0.5">
+                    {ROUPA_SUBCATS.map((sub) => (
+                      <Link
+                        key={sub.label}
+                        href={sub.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                          sub.label === 'Todas'
+                            ? 'text-[#ff9edb] font-bold'
+                            : 'text-gray-500 hover:text-[#ff9edb] hover:bg-pink-50'
+                        }`}
+                      >
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {[
-                { name: 'Início', href: '/' },
-                { name: 'Roupas', href: '/categorias/roupas' },
                 { name: 'Bolsas', href: '/categorias/bolsas' },
                 { name: 'Calçados', href: '/categorias/calcados' },
                 { name: 'Jóias', href: '/categorias/joias' },
@@ -227,7 +328,7 @@ export function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="group flex items-center rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors"
+                  className="flex items-center rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
