@@ -38,17 +38,17 @@ export function Footer() {
             <h4 className="text-xs font-semibold mb-5 text-white uppercase tracking-[0.2em]">Sobre Maribella</h4>
             <ul className="space-y-2 text-sm opacity-75">
               <li>
-                <Link href="/" className="hover:opacity-100 transition">
+                <Link href="/sobre#quem-somos" className="hover:opacity-100 transition">
                   Quem Somos
                 </Link>
               </li>
               <li>
-                <Link href="/" className="hover:opacity-100 transition">
+                <Link href="/sobre#nossa-historia" className="hover:opacity-100 transition">
                   Nossa História
                 </Link>
               </li>
               <li>
-                <Link href="/" className="hover:opacity-100 transition">
+                <Link href="/sobre#sustentabilidade" className="hover:opacity-100 transition">
                   Sustentabilidade
                 </Link>
               </li>
