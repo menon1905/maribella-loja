@@ -165,7 +165,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="text-gray-900 hover:bg-pink-50 rounded-full h-11 w-11 flex items-center justify-center cursor-pointer"
+              className="text-gray-900 hover:bg-white/15 rounded-full h-11 w-11 flex items-center justify-center cursor-pointer"
               onClick={() => setIsMenuOpen(true)}
               aria-label="Abrir menu"
             >
@@ -174,7 +174,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="hidden md:flex text-gray-900 hover:bg-pink-50 rounded-full h-11 w-11 items-center justify-center cursor-pointer"
+              className="hidden md:flex text-gray-900 hover:bg-white/15 rounded-full h-11 w-11 items-center justify-center cursor-pointer"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               aria-label="Buscar produtos"
             >
@@ -202,11 +202,11 @@ export function Header() {
             <div ref={userMenuRef} className="relative">
               <button
                 onClick={() => userEmail ? setIsUserMenuOpen(v => !v) : null}
-                className="text-gray-900 hover:bg-white/30 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer transition-colors"
+                className="text-gray-900 hover:bg-white/15 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer transition-colors"
                 aria-label="Perfil do usuário"
               >
                 {userEmail ? (
-                  <div className="w-8 h-8 rounded-full bg-pink-600 text-white flex items-center justify-center text-xs font-bold border border-white/10 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-[#d672a9] text-white flex items-center justify-center text-xs font-bold border border-white/20 shadow-sm">
                     {userEmail[0].toUpperCase()}
                   </div>
                 ) : (
@@ -261,7 +261,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-gray-900 hover:bg-pink-50 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer"
+                className="text-gray-900 hover:bg-white/15 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer"
                 aria-label="Ver favoritos"
               >
                 <Heart className="w-5.5 h-5.5 stroke-[2]" />
@@ -277,11 +277,11 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-gray-900 hover:bg-pink-50 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer"
+                className="text-gray-900 hover:bg-white/15 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer"
                 aria-label="Ver carrinho"
               >
                 <ShoppingBag className="w-5.5 h-5.5 stroke-[2]" />
-                <span className="absolute top-0.5 right-0.5 bg-[#ff9edb] text-white text-[9px] font-extrabold rounded-full w-4.5 h-4.5 flex items-center justify-center shadow-sm">
+                <span className="absolute top-0.5 right-0.5 bg-gray-900 text-white text-[9px] font-extrabold rounded-full w-4.5 h-4.5 flex items-center justify-center shadow-sm">
                   {cartCount}
                 </span>
               </Button>
