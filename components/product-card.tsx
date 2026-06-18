@@ -13,20 +13,50 @@ interface ProductCardProps {
 }
 
 const getColorHex = (colorName: string): string => {
+  const cleanName = colorName.trim().toLowerCase()
   const mapping: Record<string, string> = {
-    'Preto': '#000000',
-    'Caramelo': '#c68e17',
-    'Rosa': '#ff9edb',
-    'Azul': '#1e40af',
-    'Branco': '#ffffff',
-    'Ouro': '#ffd700',
-    'Prata': '#c0c0c0',
-    'Rosa Gold': '#b76e79',
-    'Nude': '#e3bc9a',
-    'Rose': '#f43f5e',
-    'Cinza': '#9ca3af',
+    'preto': '#000000',
+    'caramelo': '#c68e17',
+    'rosa': '#ff9edb',
+    'azul': '#1e40af',
+    'branco': '#ffffff',
+    'ouro': '#ffd700',
+    'dourado': '#ffd700',
+    'prata': '#c0c0c0',
+    'rosa gold': '#b76e79',
+    'rose gold': '#b76e79',
+    'nude': '#e3bc9a',
+    'rose': '#f43f5e',
+    'cinza': '#9ca3af',
+    'verde': '#10b981',
+    'vermelho': '#ef4444',
+    'amarelo': '#eab308',
+    'laranja': '#f97316',
+    'roxo': '#a855f7',
+    'lilás': '#c084fc',
+    'lilas': '#c084fc',
+    'marrom': '#7b3f00',
+    'vinho': '#800020',
+    'bordô': '#800020',
+    'bordo': '#800020',
+    'bege': '#f5f5dc',
+    'fúcsia': '#d946ef',
+    'fucsia': '#d946ef',
+    'turquesa': '#06b6d4',
   }
-  return mapping[colorName] || '#cccccc'
+  
+  if (mapping[cleanName]) {
+    return mapping[cleanName]
+  }
+
+  if (cleanName.includes('listra') || cleanName.includes('listrado')) {
+    return 'repeating-linear-gradient(45deg, #ffffff, #ffffff 2px, #888888 2px, #888888 4px)'
+  }
+  if (cleanName.includes('estampa') || cleanName.includes('estampado') || cleanName.includes('floral') || cleanName.includes('florido')) {
+    return 'radial-gradient(circle, #ff9edb 30%, #ffd700 70%)'
+  }
+
+  return '#cccccc'
 }
 
 export function ProductCard({ product, variant = 'default' }: ProductCardProps) {
@@ -165,7 +195,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
                 <div
                   key={color}
                   className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full border border-gray-200 shadow-xs"
-                  style={{ backgroundColor: getColorHex(color) }}
+                  style={{ background: getColorHex(color) }}
                 />
               ))}
               {product.colors.length > 3 && (
