@@ -33,28 +33,28 @@ export const CATEGORIES: Category[] = [
     id: '1',
     name: 'Bolsas',
     slug: 'bolsas',
-    image: '/cat_bolsas.png',
+    image: '/icon_bolsas.png',
     description: 'Bolsas e acessórios para todos os estilos'
   },
   {
     id: '2',
     name: 'Roupas',
     slug: 'roupas',
-    image: '/cat_roupas.png',
+    image: '/icon_roupas.png',
     description: 'Looks incríveis para qualquer ocasião'
   },
   {
     id: '3',
     name: 'Calçados',
     slug: 'calcados',
-    image: '/cat_calcados.png',
+    image: '/icon_calcados.png',
     description: 'Sapatos e tênis de primeira qualidade'
   },
   {
     id: '4',
     name: 'Jóias',
     slug: 'joias',
-    image: '/cat_joias.png',
+    image: '/icon_joias.png',
     description: 'Joias e bijuterias elegantes'
   },
 ]
