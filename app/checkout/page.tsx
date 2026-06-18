@@ -10,7 +10,10 @@ import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
+import { useProducts } from '@/components/products-context'
+
 export default function CheckoutPage() {
+  const { products } = useProducts()
   const [step, setStep] = useState<'shipping' | 'payment' | 'confirmation'>('shipping')
   const [cartItems, setCartItems] = useState<any[]>([])
   const [orderNumber, setOrderNumber] = useState('')
@@ -61,13 +64,23 @@ export default function CheckoutPage() {
     }
   }
 
+  // Obter itens de carrinho sincronizados com os preços/nomes em tempo real do banco de dados
+  const syncCartItems = cartItems.map(item => {
+    const freshProduct = products.find(p => p.id === String(item.id))
+    return {
+      ...item,
+      name: freshProduct ? freshProduct.name : item.name,
+      price: freshProduct ? freshProduct.price : item.price
+    }
+  })
+
   const handleFinalizeWhatsApp = () => {
     // Format WhatsApp message
-    const formattedItems = cartItems
+    const formattedItems = syncCartItems
       .map(item => `- *${item.name}* ${item.size ? `(Tam: ${item.size})` : ''} ${item.color ? `(Cor: ${item.color})` : ''} x${item.quantity} - R$ ${(item.price * item.quantity).toFixed(2)}`)
       .join('\n')
 
-    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
     const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
     const shipping = subtotal > 0 && (subtotal - discount) > 200 ? 0 : 15
     const total = subtotal - discount + shipping
@@ -110,10 +123,11 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
     setStep('confirmation')
   }
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
   const shipping = subtotal > 0 && (subtotal - discount) > 200 ? 0 : (subtotal === 0 ? 0 : 15)
   const total = subtotal - discount + shipping
+
 
   return (
     <>
@@ -264,7 +278,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         Voltar
                       </Button>
                     </Link>
-                    <Button type="submit" className="flex-1 bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold cursor-pointer">
+                    <Button type="submit" className="flex-1 bg-[#b83070] hover:bg-[#9e2860] text-white font-bold transition-colors cursor-pointer">
                       Continuar para Finalização
                     </Button>
                   </div>
@@ -358,9 +372,9 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
             <div className="border rounded-lg p-6 space-y-6 sticky top-40 bg-white">
               <h3 className="font-bold text-lg text-gray-900 uppercase tracking-wider border-b pb-4">Resumo do Pedido</h3>
 
-              {cartItems.length > 0 ? (
+              {syncCartItems.length > 0 ? (
                 <div className="space-y-4 border-b pb-4">
-                  {cartItems.map((item, idx) => (
+                  {syncCartItems.map((item, idx) => (
                     <div key={idx} className="flex gap-3 text-sm justify-between items-start">
                       <div className="flex-1">
                         <p className="font-semibold text-gray-800 leading-tight">{item.name}</p>

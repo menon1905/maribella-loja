@@ -3,9 +3,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
-import { Search, ShoppingBag, Menu, X, User, ChevronDown } from 'lucide-react'
+import { Search, ShoppingBag, Menu, X, User, ChevronDown, LogOut, ShieldCheck, Heart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { supabase, getUserRole } from '@/lib/supabase'
 
 const ROUPA_SUBCATS = [
   { label: 'Todas', href: '/categorias/roupas' },
@@ -30,6 +31,11 @@ export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [cartCount, setCartCount] = useState(0)
+  const [favoritesCount, setFavoritesCount] = useState(0)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
 
   const announcements = [
     "5% OFF na sua primeira compra • Use o cupom: BEMVINDAS",
@@ -44,6 +50,51 @@ export function Header() {
     }, 4000)
     return () => clearInterval(timer)
   }, [])
+
+  // Auth state
+  useEffect(() => {
+    const loadSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user?.email) {
+        setUserEmail(session.user.email)
+        const role = await getUserRole(session.user.id)
+        setIsAdmin(role === 'admin')
+      }
+    }
+    loadSession()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user?.email) {
+        setUserEmail(session.user.email)
+        const role = await getUserRole(session.user.id)
+        setIsAdmin(role === 'admin')
+      } else {
+        setUserEmail(null)
+        setIsAdmin(false)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  // Close user dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    localStorage.removeItem('user_email')
+    setUserEmail(null)
+    setIsAdmin(false)
+    setIsUserMenuOpen(false)
+  }
 
   // Listen to cart changes in localStorage if client-side
   useEffect(() => {
@@ -71,6 +122,31 @@ export function Header() {
     }
   }, [])
 
+  // Listen to favorites changes in localStorage
+  useEffect(() => {
+    const updateFavoritesCount = () => {
+      try {
+        const favs = localStorage.getItem('maribella_favorites')
+        if (favs) {
+          setFavoritesCount(JSON.parse(favs).length)
+        } else {
+          setFavoritesCount(0)
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    }
+
+    updateFavoritesCount()
+    window.addEventListener('storage', updateFavoritesCount)
+    window.addEventListener('favorites-updated', updateFavoritesCount)
+
+    return () => {
+      window.removeEventListener('storage', updateFavoritesCount)
+      window.removeEventListener('favorites-updated', updateFavoritesCount)
+    }
+  }, [])
+
   return (
     <>
       <header className="sticky top-0 z-50 w-full bg-[#ff9edb] shadow-md flex flex-col">
@@ -89,7 +165,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="text-gray-900 hover:bg-white/30 rounded-full h-11 w-11 flex items-center justify-center cursor-pointer"
+              className="text-gray-900 hover:bg-pink-50 rounded-full h-11 w-11 flex items-center justify-center cursor-pointer"
               onClick={() => setIsMenuOpen(true)}
               aria-label="Abrir menu"
             >
@@ -98,7 +174,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="text-gray-900 hover:bg-white/30 rounded-full h-11 w-11 flex items-center justify-center cursor-pointer"
+              className="hidden md:flex text-gray-900 hover:bg-pink-50 rounded-full h-11 w-11 items-center justify-center cursor-pointer"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               aria-label="Buscar produtos"
             >
@@ -121,24 +197,91 @@ export function Header() {
 
           {/* Right Side: User & Cart Icons */}
           <div className="flex items-center gap-1 md:gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-900 hover:bg-white/30 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer"
-              aria-label="Perfil do usuário"
-            >
-              <User className="w-5.5 h-5.5 stroke-[2]" />
-            </Button>
+            
+            {/* User Menu */}
+            <div ref={userMenuRef} className="relative">
+              <button
+                onClick={() => userEmail ? setIsUserMenuOpen(v => !v) : null}
+                className="text-gray-900 hover:bg-white/30 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer transition-colors"
+                aria-label="Perfil do usuário"
+              >
+                {userEmail ? (
+                  <div className="w-8 h-8 rounded-full bg-pink-600 text-white flex items-center justify-center text-xs font-bold border border-white/10 shadow-sm">
+                    {userEmail[0].toUpperCase()}
+                  </div>
+                ) : (
+                  <Link href="/login">
+                    <User className="w-5.5 h-5.5 stroke-[2]" />
+                  </Link>
+                )}
+              </button>
+
+              {/* Dropdown */}
+              {isUserMenuOpen && userEmail && (
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-xl z-[200] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+                  {/* User info */}
+                  <div className="px-4 py-3 border-b border-gray-100 bg-slate-50">
+                    <p className="text-xs font-bold text-gray-900 truncate">{userEmail}</p>
+                    {isAdmin && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-pink-600 bg-pink-50 px-1.5 py-0.5 rounded mt-1">
+                        <ShieldCheck className="w-3 h-3" /> Admin
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="py-1">
+                    <Link
+                      href="/conta"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-pink-50 hover:text-primary transition-colors"
+                    >
+                      <Heart className="w-4 h-4" /> Minha Conta
+                    </Link>
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-pink-50 hover:text-primary transition-colors"
+                      >
+                        <ShieldCheck className="w-4 h-4" /> Painel Admin
+                      </Link>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" /> Sair da Conta
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <Link href="/conta" className="relative hidden md:block">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-900 hover:bg-pink-50 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer"
+                aria-label="Ver favoritos"
+              >
+                <Heart className="w-5.5 h-5.5 stroke-[2]" />
+                {favoritesCount > 0 && (
+                  <span className="absolute top-0.5 right-0.5 bg-primary text-white text-[9px] font-extrabold rounded-full w-4.5 h-4.5 flex items-center justify-center shadow-sm">
+                    {favoritesCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
             
             <Link href="/carrinho" className="relative">
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-gray-900 hover:bg-white/30 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer"
+                className="text-gray-900 hover:bg-pink-50 rounded-full h-10 w-10 flex items-center justify-center cursor-pointer"
                 aria-label="Ver carrinho"
               >
                 <ShoppingBag className="w-5.5 h-5.5 stroke-[2]" />
-                <span className="absolute top-0.5 right-0.5 bg-gray-900 text-white text-[9px] font-extrabold rounded-full w-4.5 h-4.5 flex items-center justify-center shadow-sm">
+                <span className="absolute top-0.5 right-0.5 bg-[#ff9edb] text-white text-[9px] font-extrabold rounded-full w-4.5 h-4.5 flex items-center justify-center shadow-sm">
                   {cartCount}
                 </span>
               </Button>
@@ -289,6 +432,27 @@ export function Header() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Início
+              </Link>
+
+              <Link
+                href="/conta"
+                className="flex items-center rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Minha Conta
+              </Link>
+
+              <Link
+                href="/conta"
+                className="flex items-center justify-between rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span>Meus Favoritos</span>
+                {favoritesCount > 0 && (
+                  <span className="bg-[#ff9edb] text-white text-[10px] font-extrabold rounded-full px-2 py-0.5">
+                    {favoritesCount}
+                  </span>
+                )}
               </Link>
 
               {/* Roupas accordion */}

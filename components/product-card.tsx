@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Heart, ShoppingBag } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import type { Product } from '@/lib/mock-data'
 
@@ -33,6 +33,42 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
   const [isFavorited, setIsFavorited] = useState(false)
   const discount = product.discount || 0
   const hasDiscount = !!(product.originalPrice && product.originalPrice > product.price)
+
+  // Load favorite status on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const favs = localStorage.getItem('maribella_favorites')
+      if (favs) {
+        const parsed = JSON.parse(favs)
+        setIsFavorited(parsed.includes(product.id))
+      }
+    }
+  }, [product.id])
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    try {
+      const favs = localStorage.getItem('maribella_favorites')
+      let items = favs ? JSON.parse(favs) : []
+      let newFavStatus = false
+
+      if (items.includes(product.id)) {
+        items = items.filter((id: string) => id !== product.id)
+        toast.info(`${product.name} removido dos favoritos.`)
+      } else {
+        items.push(product.id)
+        newFavStatus = true
+        toast.success(`${product.name} adicionado aos favoritos!`)
+      }
+
+      localStorage.setItem('maribella_favorites', JSON.stringify(items))
+      setIsFavorited(newFavStatus)
+      window.dispatchEvent(new Event('favorites-updated'))
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   const handleQuickAdd = () => {
     try {
@@ -92,14 +128,11 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
 
           {/* Wishlist Button */}
           <button
-            onClick={(e) => {
-              e.preventDefault()
-              setIsFavorited(!isFavorited)
-            }}
-            className="absolute top-2.5 left-2.5 z-10 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-gray-500 hover:text-[#ff9edb] flex items-center justify-center shadow transition duration-200 cursor-pointer"
+            onClick={toggleFavorite}
+            className="absolute top-2.5 left-2.5 z-10 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-gray-500 hover:text-primary flex items-center justify-center shadow transition duration-200 cursor-pointer"
             aria-label="Adicionar aos favoritos"
           >
-            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-[#ff9edb] text-[#ff9edb]' : ''}`} />
+            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : ''}`} />
           </button>
 
           {/* Floating Quick Add shopping bag */}
@@ -109,7 +142,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
               e.stopPropagation()
               handleQuickAdd()
             }}
-            className="absolute bottom-2.5 right-2.5 z-10 w-9.5 h-9.5 rounded-full bg-[#ff9edb] hover:bg-[#ff80cb] text-white flex items-center justify-center shadow-lg transition duration-200 active:scale-90 cursor-pointer"
+            className="absolute bottom-2.5 right-2.5 z-10 w-9.5 h-9.5 rounded-full bg-[#c0397c] hover:bg-[#a02f68] text-white flex items-center justify-center shadow-lg transition duration-200 active:scale-90 cursor-pointer"
             aria-label="Adicionar rápido ao carrinho"
           >
             <ShoppingBag className="w-4.5 h-4.5 stroke-[2]" />
@@ -117,7 +150,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
 
           {/* Discount badge */}
           {hasDiscount && (
-            <div className="absolute top-12 left-2.5 z-10 bg-[#ff9edb] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow">
+            <div className="absolute top-12 left-2.5 z-10 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow">
               -{discount}%
             </div>
           )}

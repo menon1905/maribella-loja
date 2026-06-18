@@ -7,9 +7,12 @@ import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { ProductCarousel } from '@/components/product-carousel'
 import { Button } from '@/components/ui/button'
-import { Heart, Share2, Truck, Shield, RotateCcw } from 'lucide-react'
+import { Heart, Share2, Truck, Shield } from 'lucide-react'
 import { useProducts } from '@/components/products-context'
 import { Product } from '@/lib/mock-data'
+
+import { toast } from 'sonner'
+import { Toaster } from 'sonner'
 
 interface ProductPageProps {
   params: Promise<{
@@ -21,6 +24,14 @@ export default function ProductPage({ params }: ProductPageProps) {
   const { id } = React.use(params)
   const { products } = useProducts()
   const product = products.find(p => p.id === id)
+  
+  const [activeImg, setActiveImg] = React.useState<string>('')
+
+  React.useEffect(() => {
+    if (product) {
+      setActiveImg(product.image)
+    }
+  }, [product])
 
   if (!product) {
     return (
@@ -30,7 +41,7 @@ export default function ProductPage({ params }: ProductPageProps) {
           <h1 className="text-3xl font-bold mb-4">Produto não encontrado</h1>
           <p className="text-muted-foreground mb-8">O produto que você está procurando não existe ou foi removido.</p>
           <Link href="/produtos">
-            <Button className="bg-primary hover:bg-primary/90">Ver todos os produtos</Button>
+            <Button className="bg-[#b83070] hover:bg-[#9e2860] text-white font-bold">Ver todos os produtos</Button>
           </Link>
         </div>
         <Footer />
@@ -42,9 +53,14 @@ export default function ProductPage({ params }: ProductPageProps) {
     p => p.category === product.category && p.id !== product.id
   ).slice(0, 8)
 
+  const productImages = product.images && product.images.length > 0
+    ? (product.images.includes(product.image) ? product.images : [product.image, ...product.images])
+    : [product.image]
+
   return (
     <main className="min-h-screen flex flex-col bg-background">
       <Header />
+      <Toaster position="top-right" richColors />
 
       {/* Breadcrumb */}
       <div className="bg-muted/50 border-b">
@@ -64,12 +80,12 @@ export default function ProductPage({ params }: ProductPageProps) {
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Product Image */}
           <div className="relative">
-            <div className="relative bg-muted rounded-lg overflow-hidden aspect-square">
+            <div className="relative bg-muted rounded-lg overflow-hidden aspect-square border border-gray-100">
               <Image
-                src={product.image}
+                src={activeImg || product.image}
                 alt={product.name}
                 fill
-                className="object-cover"
+                className="object-cover transition-all duration-300"
                 priority
               />
               {product.isNew && (
@@ -83,25 +99,35 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </div>
               )}
             </div>
-            <div className="grid grid-cols-4 gap-2 mt-4">
-              {[1, 2, 3, 4].map((idx) => (
-                <div key={idx} className="relative bg-muted rounded aspect-square cursor-pointer hover:ring-2 hover:ring-primary">
-                  <Image
-                    src={product.image}
-                    alt={`View ${idx}`}
-                    fill
-                    className="object-cover rounded"
-                  />
-                </div>
-              ))}
-            </div>
+            {productImages.length > 1 && (
+              <div className="grid grid-cols-4 gap-2 mt-4">
+                {productImages.map((imgUrl, idx) => (
+                  <div 
+                    key={idx} 
+                    onClick={() => setActiveImg(imgUrl)}
+                    className={`relative bg-muted rounded aspect-square cursor-pointer transition-all ${
+                      (activeImg === imgUrl || (!activeImg && idx === 0))
+                        ? 'ring-2 ring-[#ff9edb] scale-[1.02]' 
+                        : 'hover:opacity-80 border border-transparent'
+                    }`}
+                  >
+                    <Image
+                      src={imgUrl}
+                      alt={`View ${idx}`}
+                      fill
+                      className="object-cover rounded"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
           <ProductInfo product={product} />
         </div>
 
-        {/* Product Details Tabs */}
+        {/* Product Details */}
         <div className="grid md:grid-cols-2 gap-12 py-12 border-t">
           <div>
             <h3 className="text-2xl font-bold mb-4">Descrição do Produto</h3>
@@ -139,37 +165,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   <p className="text-sm text-muted-foreground">Certificado SSL e proteção ao comprador</p>
                 </div>
               </div>
-              <div className="flex gap-4">
-                <RotateCcw className="w-6 h-6 text-primary flex-shrink-0" />
-                <div>
-                  <p className="font-semibold">Devolução Fácil</p>
-                  <p className="text-sm text-muted-foreground">30 dias de garantia de satisfação</p>
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Reviews Section */}
-        <div className="py-12 border-t">
-          <h3 className="text-2xl font-bold mb-6">Avaliações</h3>
-          <div className="space-y-6">
-            {[1, 2, 3].map((idx) => (
-              <div key={idx} className="border-b pb-6">
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <p className="font-semibold">Cliente {idx}</p>
-                    <div className="flex text-yellow-400 text-sm">
-                      {'★'.repeat(5)}
-                    </div>
-                  </div>
-                  <span className="text-xs text-muted-foreground">há 2 semanas</span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Produto excelente, superou minhas expectativas! Muito bom mesmo, recomendo.
-                </p>
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -192,6 +188,40 @@ function ProductInfo({ product }: { product: Product }) {
   const [isFavorited, setIsFavorited] = useState(false)
   const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || '')
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || '')
+
+  // Load favorite status on mount
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const favs = localStorage.getItem('maribella_favorites')
+      if (favs) {
+        const parsed = JSON.parse(favs)
+        setIsFavorited(parsed.includes(product.id))
+      }
+    }
+  }, [product.id])
+
+  const toggleFavorite = () => {
+    try {
+      const favs = localStorage.getItem('maribella_favorites')
+      let items = favs ? JSON.parse(favs) : []
+      let newFavStatus = false
+
+      if (items.includes(product.id)) {
+        items = items.filter((id: string) => id !== product.id)
+        toast.info(`${product.name} removido dos favoritos.`)
+      } else {
+        items.push(product.id)
+        newFavStatus = true
+        toast.success(`${product.name} adicionado aos favoritos!`)
+      }
+
+      localStorage.setItem('maribella_favorites', JSON.stringify(items))
+      setIsFavorited(newFavStatus)
+      window.dispatchEvent(new Event('favorites-updated'))
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   const handleAddToCart = () => {
     try {
@@ -219,26 +249,39 @@ function ProductInfo({ product }: { product: Product }) {
       }
       
       localStorage.setItem('cart', JSON.stringify(items))
+      localStorage.setItem('maribella_cart', JSON.stringify(items))
       window.dispatchEvent(new Event('cart-updated'))
       
-      alert('Produto adicionado ao carrinho!')
+      toast.success('Produto adicionado ao carrinho!')
     } catch (e) {
       console.error(e)
     }
   }
 
+  const handleShare = async () => {
+    const shareData = {
+      title: product.name,
+      text: `Olha esse produto lindo na Maribella: ${product.name}`,
+      url: window.location.href,
+    }
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData)
+        toast.success('Compartilhado com sucesso!')
+      } else {
+        await navigator.clipboard.writeText(window.location.href)
+        toast.success('Link copiado para a área de transferência!')
+      }
+    } catch (err) {
+      // user cancelled share — don't show error
+    }
+  }
+
   return (
     <div className="space-y-6">
-      {/* Title and Rating */}
+      {/* Title */}
       <div>
         <h1 className="text-3xl md:text-4xl font-bold mb-3">{product.name}</h1>
-        <div className="flex items-center gap-4">
-          <div className="flex text-yellow-400">
-            {'★'.repeat(Math.floor(product.rating))}
-            {'☆'.repeat(5 - Math.floor(product.rating))}
-          </div>
-          <span className="text-muted-foreground">({product.reviews} avaliações)</span>
-        </div>
       </div>
 
       {/* Price */}
@@ -279,7 +322,7 @@ function ProductInfo({ product }: { product: Product }) {
                   onClick={() => setSelectedSize(size)}
                   className={`border rounded py-2 px-3 text-sm font-medium transition ${
                     selectedSize === size
-                      ? 'border-[#ff9edb] bg-[#ff9edb]/10 text-[#ff9edb] font-bold shadow-xs'
+                      ? 'border-primary bg-primary/10 text-primary font-bold shadow-xs'
                       : 'hover:border-gray-400'
                   }`}
                 >
@@ -300,7 +343,7 @@ function ProductInfo({ product }: { product: Product }) {
                   onClick={() => setSelectedColor(color)}
                   className={`border rounded py-2 px-4 text-sm font-medium transition ${
                     selectedColor === color
-                      ? 'border-[#ff9edb] bg-[#ff9edb]/10 text-[#ff9edb] font-bold shadow-xs'
+                      ? 'border-primary bg-primary/10 text-primary font-bold shadow-xs'
                       : 'hover:border-gray-400'
                   }`}
                 >
@@ -336,7 +379,7 @@ function ProductInfo({ product }: { product: Product }) {
       <div className="flex gap-3 pt-4">
         <Button
           size="lg"
-          className="flex-1 bg-primary hover:bg-primary/90 text-lg"
+          className="flex-1 bg-[#b83070] hover:bg-[#9e2860] text-white font-bold text-lg transition-colors"
           onClick={handleAddToCart}
           disabled={!product.inStock}
         >
@@ -345,14 +388,19 @@ function ProductInfo({ product }: { product: Product }) {
         <Button
           size="lg"
           variant="outline"
-          onClick={() => setIsFavorited(!isFavorited)}
+          onClick={toggleFavorite}
+          className="border-gray-300 hover:bg-gray-100 transition-colors"
+          aria-label="Favoritar produto"
         >
-          <Heart className={`w-5 h-5 ${isFavorited ? 'fill-current text-red-500' : ''}`} />
+          <Heart className={`w-5 h-5 ${isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
         </Button>
       </div>
 
       {/* Share */}
-      <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition cursor-pointer">
+      <button 
+        onClick={handleShare}
+        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition cursor-pointer"
+      >
         <Share2 className="w-4 h-4" />
         Compartilhar Produto
       </button>

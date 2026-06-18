@@ -63,7 +63,7 @@ export default function JoiasCategoryPage() {
                 Descubra a nossa <span className="text-[#ff80cb] bg-gradient-to-r from-[#ff80cb] to-[#ffb5e4] bg-clip-text text-transparent">Maleta de Jóias</span>
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed font-normal">
-                Trabalhamos com as semijoias exclusivas da **Veridiana Joias**! Peças selecionadas que unem sofisticação, brilho impecável e alta durabilidade para completar o seu visual em qualquer ocasião especial.
+                Trabalhamos com as semijoias exclusivas da <strong>Veridiana Joias</strong>! Peças selecionadas que unem sofisticação, brilho impecável e alta durabilidade para completar o seu visual em qualquer ocasião especial.
               </p>
             </div>
 

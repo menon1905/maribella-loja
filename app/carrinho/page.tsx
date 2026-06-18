@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Trash2, Plus, Minus } from 'lucide-react'
 
+import { useProducts } from '@/components/products-context'
+
 interface CartItem {
   id: string
   name: string
@@ -22,6 +24,7 @@ interface CartItem {
 }
 
 export default function CartPage() {
+  const { products } = useProducts()
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
   const [coupon, setCoupon] = useState('')
@@ -72,7 +75,7 @@ export default function CartPage() {
     if (coupon.trim().toUpperCase() === 'BEMVINDAS') {
       setAppliedCoupon('BEMVINDAS')
       localStorage.setItem('applied_coupon', 'BEMVINDAS')
-      toast.success('Cupom BEMVINDAS aplicado! 5% de desconto.')
+      toast.success('Cupom BEMVINDAS applied! 5% de desconto.')
     } else {
       toast.error('Cupom inválido. Tente BEMVINDAS.')
     }
@@ -85,10 +88,22 @@ export default function CartPage() {
     toast.info('Cupom removido.')
   }
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  // Obter itens de carrinho sincronizados com os dados atualizados do banco
+  const syncCartItems = cartItems.map(item => {
+    const freshProduct = products.find(p => p.id === String(item.id))
+    return {
+      ...item,
+      name: freshProduct ? freshProduct.name : item.name,
+      price: freshProduct ? freshProduct.price : item.price,
+      image: freshProduct ? freshProduct.image : item.image
+    }
+  })
+
+  const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
   const shipping = subtotal > 0 && (subtotal - discount) > 200 ? 0 : (subtotal === 0 ? 0 : 15)
   const total = subtotal - discount + shipping
+
 
   return (
     <>
@@ -109,12 +124,12 @@ export default function CartPage() {
           <div className="text-center py-16">
             <p className="text-muted-foreground animate-pulse">Carregando seu carrinho...</p>
           </div>
-        ) : cartItems.length === 0 ? (
+        ) : syncCartItems.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-2xl font-semibold mb-4">Seu carrinho está vazio</p>
             <p className="text-muted-foreground mb-8">Comece a comprar e preencha seu carrinho com seus produtos favoritos!</p>
             <Link href="/produtos">
-              <Button size="lg" className="bg-primary hover:bg-primary/90">
+              <Button size="lg" className="bg-[#b83070] hover:bg-[#9e2860] text-white font-bold transition-colors">
                 Continuar Comprando
               </Button>
             </Link>
@@ -123,7 +138,7 @@ export default function CartPage() {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Items */}
             <div className="lg:col-span-2 space-y-4">
-              {cartItems.map((item) => (
+              {syncCartItems.map((item) => (
                 <div key={item.id} className="border rounded-lg p-4 flex gap-4">
                   <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-muted">
                     <Image
@@ -246,7 +261,7 @@ export default function CartPage() {
 
                 {/* CTA */}
                 <Link href="/checkout" className="w-full">
-                  <Button size="lg" className="w-full bg-primary hover:bg-primary/90 cursor-pointer">
+                  <Button size="lg" className="w-full bg-[#b83070] hover:bg-[#9e2860] text-white font-bold transition-colors cursor-pointer">
                     Ir para Checkout
                   </Button>
                 </Link>
@@ -261,7 +276,6 @@ export default function CartPage() {
                 <div className="text-xs text-muted-foreground space-y-2">
                   <p>✓ Frete grátis acima de R$ 200</p>
                   <p>✓ Compra segura com SSL</p>
-                  <p>✓ 30 dias para devolver</p>
                 </div>
               </div>
             </div>
