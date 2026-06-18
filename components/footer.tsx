@@ -22,7 +22,7 @@ export function Footer() {
                 placeholder="Seu e-mail"
                 className="bg-white text-foreground placeholder:text-muted-foreground"
               />
-              <Button variant="outline" className="bg-white text-primary hover:bg-white/90 rounded-none uppercase text-xs tracking-widest font-semibold">
+              <Button variant="outline" className="bg-white text-primary hover:bg-white/90 hover:text-primary rounded-none uppercase text-xs tracking-widest font-semibold">
                 Inscrever
               </Button>
             </div>
