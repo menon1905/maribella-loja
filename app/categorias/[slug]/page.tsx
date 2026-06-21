@@ -4,6 +4,7 @@ import { Breadcrumb } from '@/components/breadcrumb'
 import { CATEGORIES } from '@/lib/mock-data'
 import { notFound } from 'next/navigation'
 import { CategoryContent } from '@/components/category-content'
+import { Suspense } from 'react'
 
 interface CategoryPageProps {
   params: Promise<{
@@ -56,7 +57,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
 
         {/* Category products dynamically rendered */}
-        <CategoryContent slug={slug} category={category} />
+        <Suspense fallback={<div className="text-center py-12">Carregando produtos...</div>}>
+          <CategoryContent slug={slug} category={category} />
+        </Suspense>
 
         <Footer />
       </main>

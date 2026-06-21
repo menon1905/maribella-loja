@@ -36,10 +36,16 @@ export default function CartPage() {
       if (cart) {
         setCartItems(JSON.parse(cart))
       }
-      const storedCoupon = localStorage.getItem('applied_coupon')
-      if (storedCoupon) {
-        setAppliedCoupon(storedCoupon)
-        setCoupon(storedCoupon)
+      
+      const hasOrdered = localStorage.getItem('has_ordered') === 'true'
+      if (hasOrdered) {
+        localStorage.removeItem('applied_coupon')
+      } else {
+        const storedCoupon = localStorage.getItem('applied_coupon')
+        if (storedCoupon) {
+          setAppliedCoupon(storedCoupon)
+          setCoupon(storedCoupon)
+        }
       }
     } catch (e) {
       console.error(e)
@@ -72,10 +78,14 @@ export default function CartPage() {
   }
 
   const handleApplyCoupon = () => {
+    if (localStorage.getItem('has_ordered') === 'true') {
+      toast.error('O cupom BEMVINDAS só pode ser utilizado na primeira compra.')
+      return
+    }
     if (coupon.trim().toUpperCase() === 'BEMVINDAS') {
       setAppliedCoupon('BEMVINDAS')
       localStorage.setItem('applied_coupon', 'BEMVINDAS')
-      toast.success('Cupom BEMVINDAS applied! 5% de desconto.')
+      toast.success('Cupom BEMVINDAS aplicado! 5% de desconto.')
     } else {
       toast.error('Cupom inválido. Tente BEMVINDAS.')
     }

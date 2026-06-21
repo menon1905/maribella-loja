@@ -4,9 +4,10 @@ import { useState } from 'react'
 import { SlidersHorizontal, X, ChevronDown } from 'lucide-react'
 import { ProductCard } from '@/components/product-card'
 import { useProducts } from '@/components/products-context'
-import { Category } from '@/lib/mock-data'
+import { Category, Product } from '@/lib/mock-data'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { useSearchParams } from 'next/navigation'
 
 interface CategoryContentProps {
   slug: string
@@ -25,10 +26,88 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const [sortValue, setSortValue] = useState('relevance')
+  const [selectedColors, setSelectedColors] = useState<string[]>([])
 
-  const categoryProducts = products.filter(p => p.category === slug)
+  const searchParams = useSearchParams()
+  const sub = searchParams.get('sub')
+  const filter = searchParams.get('filter')
 
-  const sorted = [...categoryProducts].sort((a, b) => {
+  const handleColorToggle = (colorName: string) => {
+    setSelectedColors(prev =>
+      prev.includes(colorName)
+        ? prev.filter(c => c !== colorName)
+        : [...prev, colorName]
+    )
+  }
+
+  const matchSubcategory = (product: Product, subParam: string): boolean => {
+    const name = product.name.toLowerCase()
+    const desc = product.description?.toLowerCase() || ''
+    const s = subParam.toLowerCase()
+
+    if (s === 'todas') return true
+    if (s === 'blusas e jaquetas') {
+      return name.includes('blusa') || name.includes('jaqueta') || name.includes('blazer') || name.includes('casaco') || desc.includes('blusa') || desc.includes('jaqueta')
+    }
+    if (s === 'camisas e croppeds') {
+      return name.includes('camisa') || name.includes('cropped') || name.includes('camiseta') || name.includes('t-shirt')
+    }
+    if (s === 'bodys') {
+      return name.includes('body')
+    }
+    if (s === 'calças') {
+      return name.includes('calça') || name.includes('pants')
+    }
+    if (s === 'shorts') {
+      return name.includes('short')
+    }
+    if (s === 'saias') {
+      return name.includes('saia')
+    }
+    if (s === 'conjuntos') {
+      return name.includes('conjunto')
+    }
+    if (s === 'macacões') {
+      return name.includes('macacão') || name.includes('macacao') || name.includes('jumpsuit')
+    }
+    if (s === 'vestidos') {
+      return name.includes('vestido')
+    }
+    if (s === 'biquínis') {
+      return name.includes('biquíni') || name.includes('biquini') || name.includes('biquinis') || name.includes('biquínis')
+    }
+    return name.includes(s) || desc.includes(s)
+  }
+
+  // Filter category products
+  let filteredProducts = products.filter(p => p.category === slug)
+
+  // Filter by subcategory
+  if (sub && sub !== 'todas') {
+    filteredProducts = filteredProducts.filter(p => matchSubcategory(p, sub))
+  }
+
+  // Filter by quick filter
+  if (filter) {
+    if (filter === 'novidades') {
+      filteredProducts = filteredProducts.filter(p => p.isNew)
+    } else if (filter === 'mais vendidos') {
+      filteredProducts = filteredProducts.filter(p => p.rating >= 4.7)
+    } else if (filter === 'promoções') {
+      filteredProducts = filteredProducts.filter(p => p.originalPrice && p.originalPrice > p.price)
+    } else if (filter === 'exclusivos') {
+      filteredProducts = filteredProducts.filter(p => p.isFeatured)
+    }
+  }
+
+  // Filter by selected colors
+  if (selectedColors.length > 0) {
+    filteredProducts = filteredProducts.filter(p =>
+      p.colors?.some(c => selectedColors.some(sc => c.toLowerCase() === sc.toLowerCase()))
+    )
+  }
+
+  const sorted = [...filteredProducts].sort((a, b) => {
     if (sortValue === 'price-asc') return a.price - b.price
     if (sortValue === 'price-desc') return b.price - a.price
     if (sortValue === 'new') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0)
@@ -46,7 +125,7 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
         </h3>
         <div className="flex flex-col gap-3 text-xs font-medium text-gray-500 uppercase tracking-widest">
           {category.slug === 'roupas' ? (
-            ['blusa', 'body', 'camisa e kimono', 'calça', 'conjunto', 'cropped', 'jaqueta, casaco e blazer', 'macacão'].map((sub) => (
+            ['todas', 'blusas e jaquetas', 'camisas e croppeds', 'bodys', 'calças', 'shorts', 'saias', 'conjuntos', 'macacões', 'vestidos', 'biquínis'].map((sub) => (
               <Link
                 key={sub}
                 href={`/categorias/roupas?sub=${sub}`}
@@ -69,9 +148,6 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
             ))
           )}
         </div>
-        <button className="border border-gray-300 text-[10px] font-bold tracking-widest text-gray-700 uppercase px-4 py-1.5 rounded-full hover:bg-gray-50 transition cursor-pointer mt-5">
-          Ver Mais
-        </button>
       </div>
 
       {/* Filtrar por */}
@@ -94,7 +170,12 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
               { name: 'Vinho', count: 2, colorClass: 'bg-[#58111a]' },
             ].map((item) => (
               <label key={item.name} className="flex items-center gap-2 cursor-pointer group">
-                <input type="checkbox" className="rounded border-gray-300 text-[#ff9edb] focus:ring-[#ff9edb] cursor-pointer" />
+                <input
+                  type="checkbox"
+                  checked={selectedColors.includes(item.name)}
+                  onChange={() => handleColorToggle(item.name)}
+                  className="rounded border-gray-300 text-[#ff9edb] focus:ring-[#ff9edb] cursor-pointer"
+                />
                 <span className="group-hover:text-gray-900 transition-colors">
                   {item.name} <span className="text-gray-400 text-[10px] font-normal">({item.count})</span>
                 </span>
@@ -103,9 +184,19 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
             ))}
           </div>
 
-          <button className="border border-gray-300 text-[10px] font-bold tracking-widest text-gray-700 uppercase px-4 py-1.5 rounded-full hover:bg-gray-50 transition cursor-pointer mt-5">
-            Ver Todos
-          </button>
+          <div className="flex gap-2 mt-5">
+            <button className="border border-gray-300 text-[10px] font-bold tracking-widest text-gray-700 uppercase px-4 py-1.5 rounded-full hover:bg-gray-50 transition cursor-pointer">
+              Ver Todos
+            </button>
+            {selectedColors.length > 0 && (
+              <button
+                onClick={() => setSelectedColors([])}
+                className="border border-red-200 text-red-500 hover:bg-red-50 text-[10px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full transition cursor-pointer"
+              >
+                Limpar
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

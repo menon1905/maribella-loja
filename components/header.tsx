@@ -10,16 +10,15 @@ import { supabase, getUserRole } from '@/lib/supabase'
 
 const ROUPA_SUBCATS = [
   { label: 'Todas', href: '/categorias/roupas' },
-  { label: 'Blusa', href: '/categorias/roupas?sub=blusa' },
-  { label: 'Body', href: '/categorias/roupas?sub=body' },
-  { label: 'Camisa e Kimono', href: '/categorias/roupas?sub=camisa e kimono' },
-  { label: 'Calça', href: '/categorias/roupas?sub=calça' },
-  { label: 'Conjunto', href: '/categorias/roupas?sub=conjunto' },
-  { label: 'Cropped', href: '/categorias/roupas?sub=cropped' },
-  { label: 'Jaqueta, Casaco e Blazer', href: '/categorias/roupas?sub=jaqueta, casaco e blazer' },
-  { label: 'Macacão', href: '/categorias/roupas?sub=macacão' },
-  { label: 'Saia', href: '/categorias/roupas?sub=saia' },
-  { label: 'Vestido', href: '/categorias/roupas?sub=vestido' },
+  { label: 'Blusas e Jaquetas', href: '/categorias/roupas?sub=blusas e jaquetas' },
+  { label: 'Camisas e Croppeds', href: '/categorias/roupas?sub=camisas e croppeds' },
+  { label: 'Bodys', href: '/categorias/roupas?sub=bodys' },
+  { label: 'Calças', href: '/categorias/roupas?sub=calças' },
+  { label: 'Shorts', href: '/categorias/roupas?sub=shorts' },
+  { label: 'Saias', href: '/categorias/roupas?sub=saias' },
+  { label: 'Conjuntos', href: '/categorias/roupas?sub=conjuntos' },
+  { label: 'Macacões', href: '/categorias/roupas?sub=macacões' },
+  { label: 'Vestidos', href: '/categorias/roupas?sub=vestidos' },
   { label: 'Biquínis', href: '/categorias/roupas?sub=biquínis' },
 ]
 

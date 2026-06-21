@@ -7,62 +7,58 @@ const ROUPAS_SUBCATS = [
   {
     label: 'Todas',
     href: '/categorias/roupas?sub=todas',
-    image: '/cat_roupas.png',
+    image: '/subcats/todas.jpeg',
   },
   {
-    label: 'Blusa',
-    href: '/categorias/roupas?sub=blusa',
-    image: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=300&h=300&fit=crop',
+    label: 'Blusas e Jaquetas',
+    href: '/categorias/roupas?sub=blusas e jaquetas',
+    image: '/subcats/blusas e jaquetas.jfif',
   },
   {
-    label: 'Body',
-    href: '/categorias/roupas?sub=body',
-    image: 'https://images.unsplash.com/photo-1612336307429-8a898d10e223?w=300&h=300&fit=crop',
+    label: 'Camisas e Croppeds',
+    href: '/categorias/roupas?sub=camisas e croppeds',
+    image: '/subcats/camisas e croppeds.jfif',
   },
   {
-    label: 'Camisa e Kimono',
-    href: '/categorias/roupas?sub=camisa e kimono',
-    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=300&h=300&fit=crop',
+    label: 'Bodys',
+    href: '/categorias/roupas?sub=bodys',
+    image: '/subcats/bodys.jfif',
   },
   {
-    label: 'Calça',
-    href: '/categorias/roupas?sub=calça',
-    image: 'https://images.unsplash.com/photo-1604176354204-9268737828e4?w=300&h=300&fit=crop',
+    label: 'Calças',
+    href: '/categorias/roupas?sub=calças',
+    image: '/subcats/calça.jfif',
   },
   {
-    label: 'Conjunto',
-    href: '/categorias/roupas?sub=conjunto',
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300&h=300&fit=crop',
+    label: 'Shorts',
+    href: '/categorias/roupas?sub=shorts',
+    image: '/subcats/shorts.jfif',
   },
   {
-    label: 'Cropped',
-    href: '/categorias/roupas?sub=cropped',
-    image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=300&h=300&fit=crop',
+    label: 'Saias',
+    href: '/categorias/roupas?sub=saias',
+    image: '/subcats/saias.jfif',
   },
   {
-    label: 'Jaqueta e Blazer',
-    href: '/categorias/roupas?sub=jaqueta, casaco e blazer',
-    image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=300&h=300&fit=crop',
+    label: 'Conjuntos',
+    href: '/categorias/roupas?sub=conjuntos',
+    image: '/subcats/conjuntos.jfif',
+    objectPosition: 'center 42%',
   },
   {
-    label: 'Macacão',
-    href: '/categorias/roupas?sub=macacão',
-    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&h=300&fit=crop',
+    label: 'Macacões',
+    href: '/categorias/roupas?sub=macacões',
+    image: '/subcats/macacoes.jfif',
   },
   {
-    label: 'Saia',
-    href: '/categorias/roupas?sub=saia',
-    image: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=300&h=300&fit=crop',
-  },
-  {
-    label: 'Vestido',
-    href: '/categorias/roupas?sub=vestido',
-    image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=300&fit=crop',
+    label: 'Vestidos',
+    href: '/categorias/roupas?sub=vestidos',
+    image: '/subcats/vestidos.jfif',
   },
   {
     label: 'Biquínis',
     href: '/categorias/roupas?sub=biquínis',
-    image: 'https://images.unsplash.com/photo-1570976447640-ac859083963f?w=300&h=300&fit=crop',
+    image: '/subcats/biquinis.jfif',
   },
 ]
 
@@ -78,7 +74,7 @@ export function RoupasSubcategoryGrid() {
             Encontre exatamente o que você procura
           </p>
         </div>
-
+ 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6 md:gap-8 justify-items-center">
           {ROUPAS_SUBCATS.map((sub) => (
             <Link
@@ -93,6 +89,7 @@ export function RoupasSubcategoryGrid() {
                   alt={sub.label}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                  style={{ objectPosition: sub.objectPosition || 'center' }}
                   unoptimized
                 />
                 {/* Pink overlay on hover */}

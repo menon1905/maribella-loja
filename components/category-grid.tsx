@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import type { Category } from '@/lib/mock-data'
 
@@ -28,11 +27,15 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
             >
               {/* Circle */}
               <div className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] md:w-[140px] md:h-[140px] rounded-full overflow-hidden border-4 border-transparent group-hover:border-[#ff9edb] transition-all duration-300 shadow-md group-hover:shadow-xl group-hover:shadow-pink-200/60">
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                {/* Background-image approach: allows both X and Y control */}
+                <div
+                  className="absolute inset-0 group-hover:scale-110 transition-transform duration-500 ease-out"
+                  style={{
+                    backgroundImage: `url(${category.image})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                  }}
                 />
                 {/* Subtle overlay on hover */}
                 <div className="absolute inset-0 bg-[#ff9edb]/0 group-hover:bg-[#ff9edb]/10 transition-colors duration-300 rounded-full" />

@@ -4,6 +4,7 @@ import { Breadcrumb } from '@/components/breadcrumb'
 import { RoupasSubcategoryGrid } from '@/components/roupas-subcategory-grid'
 import { CategoryContent } from '@/components/category-content'
 import { CATEGORIES } from '@/lib/mock-data'
+import { Suspense } from 'react'
 
 export const metadata = {
   title: 'Roupas | Maribella',
@@ -74,7 +75,9 @@ export default async function RoupasPage({ searchParams }: RoupasPageProps) {
         </div>
       </div>
 
-      <CategoryContent slug="roupas" category={category} />
+      <Suspense fallback={<div className="text-center py-12">Carregando produtos...</div>}>
+        <CategoryContent slug="roupas" category={category} />
+      </Suspense>
 
       <Footer />
     </main>

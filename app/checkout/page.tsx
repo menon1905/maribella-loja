@@ -40,9 +40,14 @@ export default function CheckoutPage() {
       if (cart) {
         setCartItems(JSON.parse(cart))
       }
-      const storedCoupon = localStorage.getItem('applied_coupon')
-      if (storedCoupon) {
-        setAppliedCoupon(storedCoupon)
+      const hasOrdered = localStorage.getItem('has_ordered') === 'true'
+      if (hasOrdered) {
+        localStorage.removeItem('applied_coupon')
+      } else {
+        const storedCoupon = localStorage.getItem('applied_coupon')
+        if (storedCoupon) {
+          setAppliedCoupon(storedCoupon)
+        }
       }
       // Generate a random order number
       const rand = Math.floor(100000 + Math.random() * 900000)
@@ -112,7 +117,8 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
     
     window.open(whatsappUrl, '_blank')
 
-    // Clear cart, coupon and notify components
+    // Mark as ordered, clear cart/coupon and notify components
+    localStorage.setItem('has_ordered', 'true')
     localStorage.removeItem('cart')
     localStorage.removeItem('maribella_cart')
     localStorage.removeItem('applied_coupon')

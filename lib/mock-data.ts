@@ -25,6 +25,7 @@ export interface Category {
   name: string
   slug: string
   image: string
+  imagePosition?: string
   description?: string
 }
 
@@ -33,28 +34,28 @@ export const CATEGORIES: Category[] = [
     id: '1',
     name: 'Bolsas',
     slug: 'bolsas',
-    image: '/icon_bolsas.png',
+    image: '/home_bolsas.jpeg',
     description: 'Bolsas e acessórios para todos os estilos'
   },
   {
     id: '2',
     name: 'Roupas',
     slug: 'roupas',
-    image: '/icon_roupas.png',
+    image: '/home_roupas.jpeg',
     description: 'Looks incríveis para qualquer ocasião'
   },
   {
     id: '3',
     name: 'Calçados',
     slug: 'calcados',
-    image: '/icon_calcados.png',
+    image: '/home_calcados.jpeg',
     description: 'Sapatos e tênis de primeira qualidade'
   },
   {
     id: '4',
     name: 'Jóias',
     slug: 'joias',
-    image: '/icon_joias.png',
+    image: '/home_joias.jpeg',
     description: 'Joias e bijuterias elegantes'
   },
 ]
