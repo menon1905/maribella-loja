@@ -172,7 +172,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
               e.stopPropagation()
               handleQuickAdd()
             }}
-            className="absolute bottom-2.5 right-2.5 z-10 w-9.5 h-9.5 rounded-full bg-[#c0397c] hover:bg-[#a02f68] text-white flex items-center justify-center shadow-lg transition duration-200 active:scale-90 cursor-pointer"
+            className="absolute bottom-2.5 right-2.5 z-10 w-9.5 h-9.5 rounded-full bg-[#ff9edb] hover:bg-[#ffb5e8] text-white flex items-center justify-center shadow-lg transition duration-200 active:scale-90 cursor-pointer"
             aria-label="Adicionar rápido ao carrinho"
           >
             <ShoppingBag className="w-4.5 h-4.5 stroke-[2]" />
@@ -180,7 +180,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
 
           {/* Discount badge */}
           {hasDiscount && (
-            <div className="absolute top-12 left-2.5 z-10 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow">
+            <div className="absolute top-12 left-2.5 z-10 bg-[#ff9edb] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow">
               -{discount}%
             </div>
           )}

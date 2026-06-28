@@ -2,67 +2,59 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
 
-const ROUPAS_SUBCATS = [
-  {
-    label: 'Todas',
-    href: '/categorias/roupas?sub=todas',
-    image: '/subcats/todas.jpeg',
-  },
-  {
-    label: 'Blusas e Jaquetas',
-    href: '/categorias/roupas?sub=blusas e jaquetas',
-    image: '/subcats/blusas e jaquetas.jfif',
-  },
-  {
-    label: 'Camisas e Croppeds',
-    href: '/categorias/roupas?sub=camisas e croppeds',
-    image: '/subcats/camisas e croppeds.jfif',
-  },
-  {
-    label: 'Bodys',
-    href: '/categorias/roupas?sub=bodys',
-    image: '/subcats/bodys.jfif',
-  },
-  {
-    label: 'Calças',
-    href: '/categorias/roupas?sub=calças',
-    image: '/subcats/calça.jfif',
-  },
-  {
-    label: 'Shorts',
-    href: '/categorias/roupas?sub=shorts',
-    image: '/subcats/shorts.jfif',
-  },
-  {
-    label: 'Saias',
-    href: '/categorias/roupas?sub=saias',
-    image: '/subcats/saias.jfif',
-  },
-  {
-    label: 'Conjuntos',
-    href: '/categorias/roupas?sub=conjuntos',
-    image: '/subcats/conjuntos.jfif',
-    objectPosition: 'center 42%',
-  },
-  {
-    label: 'Macacões',
-    href: '/categorias/roupas?sub=macacões',
-    image: '/subcats/macacoes.jfif',
-  },
-  {
-    label: 'Vestidos',
-    href: '/categorias/roupas?sub=vestidos',
-    image: '/subcats/vestidos.jfif',
-  },
-  {
-    label: 'Biquínis',
-    href: '/categorias/roupas?sub=biquínis',
-    image: '/subcats/biquinis.jfif',
-  },
+const FALLBACK_SUBCATS = [
+  { label: 'Todas', href: '/categorias/roupas?sub=todas', image: '/subcats/todas.jpeg', objectPosition: 'center' },
+  { label: 'Blusas e Jaquetas', href: '/categorias/roupas?sub=blusas e jaquetas', image: '/subcats/blusas e jaquetas.jfif', objectPosition: 'center' },
+  { label: 'Camisas e Croppeds', href: '/categorias/roupas?sub=camisas e croppeds', image: '/subcats/camisas e croppeds.jfif', objectPosition: 'center' },
+  { label: 'Bodys', href: '/categorias/roupas?sub=bodys', image: '/subcats/bodys.jfif', objectPosition: 'center' },
+  { label: 'Calças', href: '/categorias/roupas?sub=calças', image: '/subcats/calça.jfif', objectPosition: 'center' },
+  { label: 'Shorts', href: '/categorias/roupas?sub=shorts', image: '/subcats/shorts.jfif', objectPosition: 'center' },
+  { label: 'Saias', href: '/categorias/roupas?sub=saias', image: '/subcats/saias.jfif', objectPosition: 'center' },
+  { label: 'Conjuntos', href: '/categorias/roupas?sub=conjuntos', image: '/subcats/conjuntos.jfif', objectPosition: 'center 42%' },
+  { label: 'Macacões', href: '/categorias/roupas?sub=macacões', image: '/subcats/macacoes.jfif', objectPosition: 'center' },
+  { label: 'Vestidos', href: '/categorias/roupas?sub=vestidos', image: '/subcats/vestidos.jfif', objectPosition: 'center' },
+  { label: 'Biquínis', href: '/categorias/roupas?sub=biquínis', image: '/subcats/biquinis.jfif', objectPosition: 'center' },
 ]
 
+interface SubcatItem {
+  label: string
+  href: string
+  image: string
+  objectPosition?: string
+}
+
 export function RoupasSubcategoryGrid() {
+  const [subcats, setSubcats] = useState<SubcatItem[]>(FALLBACK_SUBCATS)
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('categories')
+          .select('*')
+          .eq('parent_slug', 'roupas')
+          .order('display_order', { ascending: true })
+
+        if (error || !data || data.length === 0) return
+
+        setSubcats(
+          data.map((row: any) => ({
+            label: row.name,
+            href: `/categorias/roupas?sub=${encodeURIComponent(row.name.toLowerCase())}`,
+            image: row.image,
+            objectPosition: row.image_position || 'center',
+          }))
+        )
+      } catch {
+        // silently fall back
+      }
+    }
+    load()
+  }, [])
+
   return (
     <section className="py-12 md:py-16 bg-white flex-1">
       <div className="max-w-[1200px] mx-auto px-4 md:px-8">
@@ -74,9 +66,9 @@ export function RoupasSubcategoryGrid() {
             Encontre exatamente o que você procura
           </p>
         </div>
- 
+
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6 md:gap-8 justify-items-center">
-          {ROUPAS_SUBCATS.map((sub) => (
+          {subcats.map((sub) => (
             <Link
               key={sub.label}
               href={sub.href}

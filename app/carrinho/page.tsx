@@ -117,8 +117,7 @@ export default function CartPage() {
 
   return (
     <>
-      <PromoTicker />
-      <section className="min-h-screen flex flex-col bg-background">
+      <main className="min-h-screen flex flex-col bg-slate-50/50">
         <Header />
 
       {/* Page Title */}
@@ -270,17 +269,19 @@ export default function CartPage() {
                 )}
 
                 {/* CTA */}
-                <Link href="/checkout" className="w-full">
-                  <Button size="lg" className="w-full bg-[#b83070] hover:bg-[#9e2860] text-white font-bold transition-colors cursor-pointer">
-                    Ir para Checkout
-                  </Button>
-                </Link>
+                <div className="flex flex-col gap-3 w-full">
+                  <Link href="/checkout" className="w-full">
+                    <Button size="lg" className="w-full bg-[#b83070] hover:bg-[#9e2860] text-white font-bold transition-colors cursor-pointer">
+                      Ir para Checkout
+                    </Button>
+                  </Link>
 
-                <Link href="/produtos" className="w-full">
-                  <Button size="lg" variant="outline" className="w-full">
-                    Continuar Comprando
-                  </Button>
-                </Link>
+                  <Link href="/produtos" className="w-full">
+                    <Button size="lg" variant="outline" className="w-full">
+                      Continuar Comprando
+                    </Button>
+                  </Link>
+                </div>
 
                 {/* Info */}
                 <div className="text-xs text-muted-foreground space-y-2">
@@ -294,7 +295,7 @@ export default function CartPage() {
       </div>
 
         <Footer />
-      </section>
+      </main>
     </>
   )
 }

@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button'
 
 export function Footer() {
   return (
-    <footer className="bg-secondary text-secondary-foreground">
+    <footer className="bg-white border-t border-gray-100 text-gray-600">
       {/* Newsletter Section */}
-      <div className="bg-primary text-primary-foreground py-12">
+      <div className="bg-[#ff9edb] text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
@@ -35,20 +35,20 @@ export function Footer() {
         <div className="grid md:grid-cols-5 gap-8 mb-8">
           {/* Sobre */}
           <div>
-            <h4 className="text-xs font-semibold mb-5 text-white uppercase tracking-[0.2em]">Sobre Maribella</h4>
-            <ul className="space-y-2 text-sm opacity-75">
+            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Sobre Maribella</h4>
+            <ul className="space-y-2 text-sm text-gray-500">
               <li>
-                <Link href="/sobre#quem-somos" className="hover:opacity-100 transition">
+                <Link href="/sobre#quem-somos" className="hover:text-primary transition">
                   Quem Somos
                 </Link>
               </li>
               <li>
-                <Link href="/sobre#nossa-historia" className="hover:opacity-100 transition">
+                <Link href="/sobre#nossa-historia" className="hover:text-primary transition">
                   Nossa História
                 </Link>
               </li>
               <li>
-                <Link href="/sobre#sustentabilidade" className="hover:opacity-100 transition">
+                <Link href="/sobre#sustentabilidade" className="hover:text-primary transition">
                   Sustentabilidade
                 </Link>
               </li>
@@ -57,25 +57,25 @@ export function Footer() {
 
           {/* Categorias */}
           <div>
-            <h4 className="text-xs font-semibold mb-5 text-white uppercase tracking-[0.2em]">Categorias</h4>
-            <ul className="space-y-2 text-sm opacity-75">
+            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Categorias</h4>
+            <ul className="space-y-2 text-sm text-gray-500">
               <li>
-                <Link href="/categorias/bolsas" className="hover:opacity-100 transition">
+                <Link href="/categorias/bolsas" className="hover:text-primary transition">
                   Bolsas
                 </Link>
               </li>
               <li>
-                <Link href="/categorias/roupas" className="hover:opacity-100 transition">
+                <Link href="/categorias/roupas" className="hover:text-primary transition">
                   Roupas
                 </Link>
               </li>
               <li>
-                <Link href="/categorias/calcados" className="hover:opacity-100 transition">
+                <Link href="/categorias/calcados" className="hover:text-primary transition">
                   Calçados
                 </Link>
               </li>
               <li>
-                <Link href="/categorias/joias" className="hover:opacity-100 transition">
+                <Link href="/categorias/joias" className="hover:text-primary transition">
                   Jóias
                 </Link>
               </li>
@@ -84,30 +84,30 @@ export function Footer() {
 
           {/* Atendimento */}
           <div>
-            <h4 className="text-xs font-semibold mb-5 text-white uppercase tracking-[0.2em]">Atendimento</h4>
-            <ul className="space-y-2 text-sm opacity-75">
+            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Atendimento</h4>
+            <ul className="space-y-2 text-sm text-gray-500">
               <li>
                 <a
                   href="https://wa.me/5519992394672"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:opacity-100 transition"
+                  className="hover:text-primary transition"
                 >
                   Fale Conosco
                 </a>
               </li>
               <li>
-                <Link href="/duvidas-frequentes" className="hover:opacity-100 transition">
+                <Link href="/duvidas-frequentes" className="hover:text-primary transition">
                   Dúvidas Frequentes
                 </Link>
               </li>
               <li>
-                <Link href="/politica-de-privacidade" className="hover:opacity-100 transition">
+                <Link href="/politica-de-privacidade" className="hover:text-primary transition">
                   Política de Privacidade
                 </Link>
               </li>
               <li>
-                <Link href="/trocas-e-devolucoes" className="hover:opacity-100 transition">
+                <Link href="/trocas-e-devolucoes" className="hover:text-primary transition">
                   Termos e Condições
                 </Link>
               </li>
@@ -116,25 +116,25 @@ export function Footer() {
 
           {/* Compras */}
           <div>
-            <h4 className="text-xs font-semibold mb-5 text-white uppercase tracking-[0.2em]">Compras</h4>
-            <ul className="space-y-2 text-sm opacity-75">
+            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Compras</h4>
+            <ul className="space-y-2 text-sm text-gray-500">
               <li>
-                <Link href="/duvidas-frequentes" className="hover:opacity-100 transition">
+                <Link href="/duvidas-frequentes" className="hover:text-primary transition">
                   Como Comprar
                 </Link>
               </li>
               <li>
-                <Link href="/prazos-e-entregas" className="hover:opacity-100 transition">
+                <Link href="/prazos-e-entregas" className="hover:text-primary transition">
                   Frete e Entrega
                 </Link>
               </li>
               <li>
-                <Link href="/duvidas-frequentes" className="hover:opacity-100 transition">
+                <Link href="/duvidas-frequentes" className="hover:text-primary transition">
                   Formas de Pagamento
                 </Link>
               </li>
               <li>
-                <Link href="/trocas-e-devolucoes" className="hover:opacity-100 transition">
+                <Link href="/trocas-e-devolucoes" className="hover:text-primary transition">
                   Devoluções
                 </Link>
               </li>
@@ -143,8 +143,8 @@ export function Footer() {
 
           {/* Redes Sociais */}
           <div>
-            <h4 className="text-xs font-semibold mb-5 text-white uppercase tracking-[0.2em]">Siga a Gente</h4>
-            <div className="flex gap-4">
+            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Siga a Gente</h4>
+            <div className="flex gap-4 text-gray-700">
               <Link href="https://instagram.com" target="_blank" className="hover:text-primary transition">
                 <Instagram className="w-5 h-5" />
               </Link>
@@ -158,7 +158,7 @@ export function Footer() {
                 <Mail className="w-5 h-5" />
               </Link>
             </div>
-            <p className="text-xs opacity-75 mt-4">
+            <p className="text-xs text-gray-500 mt-4 leading-relaxed">
               Email: contato@maribellaloja.com.br<br />
               WhatsApp: (19) 99239-4672
             </p>
@@ -166,10 +166,10 @@ export function Footer() {
         </div>
 
         {/* Bottom Footer */}
-        <div className="border-t border-border/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm opacity-75">
+        <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
           <p>&copy; {new Date().getFullYear()} Maribella. Todos os direitos reservados.</p>
           <div className="flex gap-4">
-            <span>Métodos de Pagamento</span>
+            <span className="text-gray-400">Métodos de Pagamento</span>
             <div className="flex gap-2">
               <span>💳</span>
               <span>🏦</span>

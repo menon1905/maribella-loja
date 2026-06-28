@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SlidersHorizontal, X, ChevronDown } from 'lucide-react'
 import { ProductCard } from '@/components/product-card'
 import { useProducts } from '@/components/products-context'
@@ -8,6 +8,7 @@ import { Category, Product } from '@/lib/mock-data'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { useSearchParams } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 
 interface CategoryContentProps {
   slug: string
@@ -27,10 +28,28 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
   const [isSortOpen, setIsSortOpen] = useState(false)
   const [sortValue, setSortValue] = useState('relevance')
   const [selectedColors, setSelectedColors] = useState<string[]>([])
+  const [dbCategories, setDbCategories] = useState<any[]>([])
 
   const searchParams = useSearchParams()
   const sub = searchParams.get('sub')
   const filter = searchParams.get('filter')
+
+  useEffect(() => {
+    async function fetchCats() {
+      try {
+        const { data } = await supabase
+          .from('categories')
+          .select('*')
+          .order('display_order', { ascending: true })
+        if (data && data.length > 0) {
+          setDbCategories(data)
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar categorias dinâmicas no CategoryContent:', err)
+      }
+    }
+    fetchCats()
+  }, [])
 
   const handleColorToggle = (colorName: string) => {
     setSelectedColors(prev =>
@@ -46,6 +65,13 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
     const s = subParam.toLowerCase()
 
     if (s === 'todas') return true
+
+    // Check if the product matches the subcategory slug directly
+    const foundSub = dbCategories.find(c => c.slug === subParam || c.name.toLowerCase() === s)
+    if (foundSub && product.category === foundSub.slug) {
+      return true
+    }
+
     if (s === 'blusas e jaquetas') {
       return name.includes('blusa') || name.includes('jaqueta') || name.includes('blazer') || name.includes('casaco') || desc.includes('blusa') || desc.includes('jaqueta')
     }
@@ -79,8 +105,15 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
     return name.includes(s) || desc.includes(s)
   }
 
-  // Filter category products
-  let filteredProducts = products.filter(p => p.category === slug)
+  // Filter category products dynamically including subcategories of this parent slug
+  const allowedCategories = [slug]
+  dbCategories.forEach(c => {
+    if (c.parent_slug === slug) {
+      allowedCategories.push(c.slug)
+    }
+  })
+
+  let filteredProducts = products.filter(p => allowedCategories.includes(p.category))
 
   // Filter by subcategory
   if (sub && sub !== 'todas') {
@@ -124,15 +157,15 @@ export function CategoryContent({ slug, category }: CategoryContentProps) {
           {category.name}
         </h3>
         <div className="flex flex-col gap-3 text-xs font-medium text-gray-500 uppercase tracking-widest">
-          {category.slug === 'roupas' ? (
-            ['todas', 'blusas e jaquetas', 'camisas e croppeds', 'bodys', 'calças', 'shorts', 'saias', 'conjuntos', 'macacões', 'vestidos', 'biquínis'].map((sub) => (
+          {dbCategories.some(c => c.parent_slug === category.slug) ? (
+            [{ name: 'Todas', slug: 'todas' }, ...dbCategories.filter(c => c.parent_slug === category.slug)].map((subItem) => (
               <Link
-                key={sub}
-                href={`/categorias/roupas?sub=${sub}`}
+                key={subItem.slug}
+                href={`/categorias/${category.slug}?sub=${subItem.slug}`}
                 className="hover:text-[#ff9edb] transition-colors leading-none"
                 onClick={() => onClose && onClose()}
               >
-                {sub}
+                {subItem.name}
               </Link>
             ))
           ) : (

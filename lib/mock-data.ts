@@ -27,6 +27,8 @@ export interface Category {
   image: string
   imagePosition?: string
   description?: string
+  imageMobile?: string
+  display_order?: number
 }
 
 export const CATEGORIES: Category[] = [

@@ -1,13 +1,43 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import type { Category } from '@/lib/mock-data'
+import { CATEGORIES as FALLBACK_CATS } from '@/lib/mock-data'
+import { supabase } from '@/lib/supabase'
 
-interface CategoryGridProps {
-  categories: Category[]
-}
+export function CategoryGrid() {
+  const [categories, setCategories] = useState<Category[]>(FALLBACK_CATS)
 
-export function CategoryGrid({ categories }: CategoryGridProps) {
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const { data, error } = await supabase
+          .from('categories')
+          .select('*')
+          .is('parent_slug', null)
+          .order('display_order', { ascending: true })
+
+        if (!error && data && data.length > 0) {
+          setCategories(
+            data.map((c: any) => ({
+              id: String(c.id),
+              name: c.name,
+              slug: c.slug,
+              image: c.image || '/home_roupas.jpeg',
+              imagePosition: c.image_position || 'center',
+              description: c.description || '',
+              display_order: c.display_order ?? 0,
+            }))
+          )
+        }
+      } catch {
+        // fallback already set
+      }
+    }
+    fetchCategories()
+  }, [])
+
   return (
     <section className="py-10 bg-white">
       <div className="max-w-[1400px] mx-auto px-4 md:px-6">
@@ -33,7 +63,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
                   style={{
                     backgroundImage: `url(${category.image})`,
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                    backgroundPosition: category.imagePosition || 'center',
                     backgroundRepeat: 'no-repeat',
                   }}
                 />

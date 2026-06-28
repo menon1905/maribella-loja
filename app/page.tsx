@@ -9,7 +9,7 @@ import { ProductCarousel } from '@/components/product-carousel'
 import { CategoryGrid } from '@/components/category-grid'
 import { PromoSection } from '@/components/promo-section'
 import { NewsletterSection } from '@/components/newsletter-section'
-import { CATEGORIES, PROMO_ITEMS } from '@/lib/mock-data'
+import { PROMO_ITEMS } from '@/lib/mock-data'
 import { useProducts } from '@/components/products-context'
 
 export default function Page() {
@@ -29,7 +29,7 @@ export default function Page() {
         <BenefitsBar />
 
         {/* Categories Circular List */}
-        <CategoryGrid categories={CATEGORIES} />
+        <CategoryGrid />
 
         {/* Featured Products */}
         <ProductCarousel 

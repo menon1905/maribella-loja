@@ -51,6 +51,8 @@ export function Header() {
   }, [])
 
   // Auth state
+  const [dbCategories, setDbCategories] = useState<any[]>([])
+
   useEffect(() => {
     const loadSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
@@ -72,6 +74,22 @@ export function Header() {
         setIsAdmin(false)
       }
     })
+
+    // Fetch dynamic categories
+    const fetchCats = async () => {
+      try {
+        const { data } = await supabase
+          .from('categories')
+          .select('*')
+          .order('display_order', { ascending: true })
+        if (data && data.length > 0) {
+          setDbCategories(data)
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar categorias dinâmicas no Header:', err)
+      }
+    }
+    fetchCats()
 
     return () => subscription.unsubscribe()
   }, [])
@@ -289,72 +307,75 @@ export function Header() {
 
         </div>
 
-        {/* Desktop Categories Bar */}
+         {/* Desktop Categories Bar */}
         <div className="hidden md:flex border-t border-gray-900/10 w-full">
           <nav className="max-w-5xl mx-auto w-full flex items-center justify-center gap-8 lg:gap-12 py-3.5">
             <Link href="/" className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest">
               Início
             </Link>
 
-            {/* Roupas with dropdown */}
-            <div
-              ref={roupasRef}
-              className="relative"
-              onMouseEnter={() => setIsRoupasOpen(true)}
-              onMouseLeave={() => setIsRoupasOpen(false)}
-            >
-              <button
-                className="flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest cursor-pointer"
-                onClick={() => setIsRoupasOpen(v => !v)}
+            {/* Special Roupas Dropdown if exists */}
+            {dbCategories.some(c => c.slug === 'roupas') && (
+              <div
+                ref={roupasRef}
+                className="relative"
+                onMouseEnter={() => setIsRoupasOpen(true)}
+                onMouseLeave={() => setIsRoupasOpen(false)}
               >
-                Roupas
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isRoupasOpen ? 'rotate-180' : ''}`} />
-              </button>
+                <button
+                  className="flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest cursor-pointer"
+                  onClick={() => setIsRoupasOpen(v => !v)}
+                >
+                  Roupas
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isRoupasOpen ? 'rotate-180' : ''}`} />
+                </button>
 
-              {isRoupasOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-[200] w-72">
-                  {/* Invisible bridge — fills the gap so mouse doesn't trigger onMouseLeave */}
-                  <div className="absolute top-0 left-0 right-0 h-3" />
-                  <div className="bg-white border border-pink-100 rounded-2xl shadow-[0_20px_60px_-10px_rgba(255,158,219,0.35)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-
-                  {/* Pink header */}
-                  <Link
-                    href="/categorias/roupas"
-                    onClick={() => setIsRoupasOpen(false)}
-                    className="flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-[#ff9edb] to-[#ffb5e4] text-white group"
-                  >
-                    <span className="text-xs font-extrabold uppercase tracking-[0.15em]">Ver Todas as Roupas</span>
-                    <span className="text-white/80 group-hover:translate-x-0.5 transition-transform text-sm">→</span>
-                  </Link>
-
-                  {/* 2-column subcategory grid */}
-                  <div className="grid grid-cols-2 gap-px bg-pink-50/50 p-3">
-                    {ROUPA_SUBCATS.filter(s => s.label !== 'Todas').map((sub) => (
+                {isRoupasOpen && (
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-[200] w-72">
+                    <div className="absolute top-0 left-0 right-0 h-3" />
+                    <div className="bg-white border border-pink-100 rounded-2xl shadow-[0_20px_60px_-10px_rgba(255,158,219,0.35)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                       <Link
-                        key={sub.label}
-                        href={sub.href}
+                        href="/categorias/roupas"
                         onClick={() => setIsRoupasOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[11px] font-semibold text-gray-600 uppercase tracking-wider hover:bg-pink-50 hover:text-[#ff9edb] transition-all duration-150 group"
+                        className="flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-[#ff9edb] to-[#ffb5e4] text-white group"
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-pink-200 group-hover:bg-[#ff9edb] transition-colors flex-shrink-0" />
-                        {sub.label}
+                        <span className="text-xs font-extrabold uppercase tracking-[0.15em]">Ver Todas as Roupas</span>
+                        <span className="text-white/80 group-hover:translate-x-0.5 transition-transform text-sm">→</span>
                       </Link>
-                    ))}
-                  </div>
-                  </div>{/* end white card */}
-                </div>
-              )}
-            </div>
 
-            <Link href="/categorias/bolsas" className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest">
-              Bolsas
-            </Link>
-            <Link href="/categorias/calcados" className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest">
-              Calçados
-            </Link>
-            <Link href="/categorias/joias" className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest">
-              Jóias
-            </Link>
+                      <div className="grid grid-cols-2 gap-px bg-pink-50/50 p-3">
+                        {dbCategories
+                          .filter((c) => c.parent_slug === 'roupas')
+                          .map((sub) => (
+                            <Link
+                              key={sub.slug}
+                              href={`/categorias/roupas?sub=${encodeURIComponent(sub.name.toLowerCase())}`}
+                              onClick={() => setIsRoupasOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[11px] font-semibold text-gray-600 uppercase tracking-wider hover:bg-pink-50 hover:text-[#ff9edb] transition-all duration-150 group"
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-pink-200 group-hover:bg-[#ff9edb] transition-colors flex-shrink-0" />
+                              {sub.name}
+                            </Link>
+                          ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Other Main Categories from DB */}
+            {dbCategories
+              .filter((c) => !c.parent_slug && c.slug !== 'roupas')
+              .map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={`/categorias/${cat.slug}`}
+                  className="text-sm font-bold text-gray-900 hover:text-gray-600 transition-colors uppercase tracking-widest"
+                >
+                  {cat.name}
+                </Link>
+              ))}
           </nav>
         </div>
 
@@ -454,49 +475,55 @@ export function Header() {
                 )}
               </Link>
 
-              {/* Roupas accordion */}
-              <div>
-                <button
-                  onClick={() => setIsMobileRoupasOpen(v => !v)}
-                  className="w-full flex items-center justify-between rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors cursor-pointer"
-                >
-                  Roupas
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileRoupasOpen ? 'rotate-180 text-[#ff9edb]' : ''}`} />
-                </button>
-                {isMobileRoupasOpen && (
-                  <div className="ml-4 border-l-2 border-pink-100 pl-3 pb-1 flex flex-col gap-0.5">
-                    {ROUPA_SUBCATS.map((sub) => (
+              {/* Roupas accordion (mobile) */}
+              {dbCategories.some(c => c.slug === 'roupas') && (
+                <div>
+                  <button
+                    onClick={() => setIsMobileRoupasOpen(v => !v)}
+                    className="w-full flex items-center justify-between rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors cursor-pointer"
+                  >
+                    Roupas
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileRoupasOpen ? 'rotate-180 text-[#ff9edb]' : ''}`} />
+                  </button>
+                  {isMobileRoupasOpen && (
+                    <div className="ml-4 border-l-2 border-pink-100 pl-3 pb-1 flex flex-col gap-0.5">
                       <Link
-                        key={sub.label}
-                        href={sub.href}
+                        href="/categorias/roupas"
                         onClick={() => setIsMenuOpen(false)}
-                        className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                          sub.label === 'Todas'
-                            ? 'text-[#ff9edb] font-bold'
-                            : 'text-gray-500 hover:text-[#ff9edb] hover:bg-pink-50'
-                        }`}
+                        className="block rounded-md px-3 py-2 text-sm font-bold text-[#ff9edb]"
                       >
-                        {sub.label}
+                        Todas as Roupas
                       </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+                      {dbCategories
+                        .filter(c => c.parent_slug === 'roupas')
+                        .map((sub) => (
+                          <Link
+                            key={sub.slug}
+                            href={`/categorias/roupas?sub=${encodeURIComponent(sub.name.toLowerCase())}`}
+                            onClick={() => setIsMenuOpen(false)}
+                            className="block rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-[#ff9edb] hover:bg-pink-50"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
-              {[
-                { name: 'Bolsas', href: '/categorias/bolsas' },
-                { name: 'Calçados', href: '/categorias/calcados' },
-                { name: 'Jóias', href: '/categorias/joias' },
-              ].map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="flex items-center rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {/* Other categories (mobile) */}
+              {dbCategories
+                .filter(c => !c.parent_slug && c.slug !== 'roupas')
+                .map((cat) => (
+                  <Link
+                    key={cat.slug}
+                    href={`/categorias/${cat.slug}`}
+                    className="flex items-center rounded-lg px-4 py-3 text-base font-semibold text-gray-700 hover:bg-[#ff9edb]/10 hover:text-[#ff9edb] transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {cat.name}
+                  </Link>
+                ))}
             </nav>
             
             <div className="px-5 border-t border-gray-100 pt-4 text-xs text-gray-400 text-center">

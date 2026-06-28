@@ -43,8 +43,8 @@ export default function JoiasCategoryPage() {
               {/* Golden/pink frame glow effect */}
               <div className="absolute inset-0 bg-gradient-to-tr from-pink-300/20 via-yellow-200/10 to-pink-400/20 mix-blend-overlay z-10" />
               <Image
-                src="/cat_joias.png"
-                alt="Maleta de Jóias Veridiana"
+                src="/veridiana-quirino.jpg"
+                alt="Veridiana Quirino - Revenda Autorizada"
                 fill
                 className="object-cover"
                 priority
