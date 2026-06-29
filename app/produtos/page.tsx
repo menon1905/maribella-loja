@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { SlidersHorizontal, X, ArrowUpDown, SearchX } from 'lucide-react'
 import { toast } from 'sonner'
@@ -19,7 +19,7 @@ function normalize(text: string) {
     .replace(/[\u0300-\u036f]/g, '')
 }
 
-export default function ProductsPage() {
+function ProductsContent() {
   const { products } = useProducts()
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
   const searchParams = useSearchParams()
@@ -289,5 +289,17 @@ export default function ProductsPage() {
         <Footer />
       </main>
     </>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#ff9edb]" />
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   )
 }
