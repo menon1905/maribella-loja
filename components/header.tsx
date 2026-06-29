@@ -7,6 +7,7 @@ import { Search, ShoppingBag, Menu, X, User, ChevronDown, LogOut, ShieldCheck, H
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { supabase, getUserRole } from '@/lib/supabase'
+import { useProducts } from '@/components/products-context'
 
 const ROUPA_SUBCATS = [
   { label: 'Todas', href: '/categorias/roupas' },
@@ -23,6 +24,7 @@ const ROUPA_SUBCATS = [
 ]
 
 export function Header() {
+  const { products } = useProducts()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isRoupasOpen, setIsRoupasOpen] = useState(false)
   const [isMobileRoupasOpen, setIsMobileRoupasOpen] = useState(false)
@@ -94,11 +96,16 @@ export function Header() {
     return () => subscription.unsubscribe()
   }, [])
 
-  // Close user dropdown on outside click
+  // Close user dropdown and search suggestions on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
         setIsUserMenuOpen(false)
+      }
+      
+      const target = e.target as HTMLElement
+      if (!target.closest('.search-container')) {
+        setSearchQuery('')
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -381,21 +388,108 @@ export function Header() {
 
         {/* Expandable Search Input Bar */}
         {isSearchOpen && (
-          <div className="absolute top-full left-0 w-full bg-white border-b border-gray-100 px-4 py-3 shadow-md animate-in slide-in-from-top duration-200">
-            <form action="/produtos" method="GET" className="max-w-3xl mx-auto flex gap-2">
-              <Input
-                name="q"
-                type="text"
-                placeholder="O que você está procurando hoje?"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 rounded-full border-gray-200 focus-visible:ring-[#ff9edb]"
-                autoFocus
-              />
-              <Button type="submit" className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white rounded-full px-6">
-                Buscar
-              </Button>
-            </form>
+          <div className="absolute top-full left-0 w-full bg-white border-b border-gray-100 px-4 py-3 shadow-md animate-in slide-in-from-top duration-200 z-[250]">
+            <div className="max-w-3xl mx-auto relative search-container">
+              <form action="/produtos" method="GET" className="flex gap-2">
+                <Input
+                  name="q"
+                  type="text"
+                  placeholder="O que você está procurando hoje?"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 rounded-full border-gray-200 focus-visible:ring-[#ff9edb]"
+                  autoFocus
+                  autoComplete="off"
+                />
+                <Button type="submit" className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white rounded-full px-6">
+                  Buscar
+                </Button>
+              </form>
+
+              {/* Suggestions Dropdown */}
+              {searchQuery.trim().length > 0 && (
+                <div className="absolute top-full left-0 w-full bg-white border border-gray-100 mt-2 rounded-2xl shadow-xl z-[300] overflow-hidden max-h-96 overflow-y-auto animate-in fade-in-50 duration-150">
+                  <div className="p-3 bg-pink-50/30 border-b border-pink-100/50 flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Sugestões de Produtos</span>
+                    <span className="text-[10px] font-semibold text-[#ff9edb]">
+                      {(() => {
+                        const q = searchQuery.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                        const filtered = products.filter(p => 
+                          p.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q) ||
+                          p.category.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q)
+                        );
+                        return `${filtered.length} encontrados`;
+                      })()}
+                    </span>
+                  </div>
+                  <div className="divide-y divide-gray-50">
+                    {(() => {
+                      const q = searchQuery.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                      const filtered = products.filter(p => 
+                        p.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q) ||
+                        p.category.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q)
+                      ).slice(0, 5); // Limit to 5 results for clarity
+
+                      if (filtered.length === 0) {
+                        return (
+                          <div className="p-6 text-center text-sm text-gray-400">
+                            Nenhum produto encontrado para &ldquo;{searchQuery}&rdquo;
+                          </div>
+                        );
+                      }
+
+                      return filtered.map((product) => (
+                        <Link
+                          key={product.id}
+                          href={`/produto/${product.id}`}
+                          onClick={() => {
+                            setIsSearchOpen(false);
+                            setSearchQuery('');
+                          }}
+                          className="flex items-center gap-3 p-3 hover:bg-pink-50/30 transition-colors group"
+                        >
+                          <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-gray-100 flex-shrink-0">
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-bold text-gray-900 truncate group-hover:text-[#ff9edb] transition-colors">
+                              {product.name}
+                            </h4>
+                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                              {product.category}
+                            </p>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <span className="text-sm font-black text-gray-900">
+                              R$ {product.price.toFixed(2)}
+                            </span>
+                            {product.originalPrice && (
+                              <p className="text-[10px] text-gray-400 line-through">
+                                R$ {product.originalPrice.toFixed(2)}
+                              </p>
+                            )}
+                          </div>
+                        </Link>
+                      ));
+                    })()}
+                  </div>
+                  <div className="p-2.5 bg-slate-50 border-t border-gray-100 text-center">
+                    <Link
+                      href={`/produtos?q=${encodeURIComponent(searchQuery)}`}
+                      onClick={() => setIsSearchOpen(false)}
+                      className="text-[11px] font-bold text-[#ff9edb] hover:text-[#ff80cb] uppercase tracking-wider transition-colors inline-block w-full"
+                    >
+                      Ver todos os resultados
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </header>
