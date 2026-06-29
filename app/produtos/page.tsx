@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { SlidersHorizontal, X, ArrowUpDown } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { SlidersHorizontal, X, ArrowUpDown, SearchX } from 'lucide-react'
 import { toast } from 'sonner'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
@@ -10,9 +11,35 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useProducts } from '@/components/products-context'
 
+// Normalize text: lowercase + remove accents
+function normalize(text: string) {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+}
+
 export default function ProductsPage() {
   const { products } = useProducts()
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
+  const searchParams = useSearchParams()
+  const searchQuery = searchParams.get('q') || ''
+
+  // Filter products based on search query
+  const filteredProducts = useMemo(() => {
+    if (!searchQuery.trim()) return products
+
+    const normalizedQuery = normalize(searchQuery.trim())
+    const queryWords = normalizedQuery.split(/\s+/)
+
+    return products.filter((product) => {
+      const searchableText = normalize(
+        `${product.name} ${product.description} ${product.category} ${(product.colors || []).join(' ')} ${(product.sizes || []).join(' ')}`
+      )
+      // All words must match somewhere in the searchable text
+      return queryWords.every((word) => searchableText.includes(word))
+    })
+  }, [products, searchQuery])
 
   const renderFilters = (onClose?: () => void) => (
     <div className="space-y-8">
@@ -83,8 +110,21 @@ export default function ProductsPage() {
       {/* Page Header */}
       <div className="bg-pink-50/40 py-12 border-b border-pink-100/50 hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <h1 className="text-3xl font-medium text-gray-900 uppercase tracking-[0.1em]">Todos os Produtos</h1>
-          <p className="text-gray-500 mt-1 text-sm tracking-wide">{"Navegue por nossa coleção completa de itens"}</p>
+          {searchQuery ? (
+            <>
+              <h1 className="text-3xl font-medium text-gray-900 uppercase tracking-[0.1em]">
+                Resultados para &ldquo;{searchQuery}&rdquo;
+              </h1>
+              <p className="text-gray-500 mt-1 text-sm tracking-wide">
+                {filteredProducts.length} {filteredProducts.length === 1 ? 'produto encontrado' : 'produtos encontrados'}
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-3xl font-medium text-gray-900 uppercase tracking-[0.1em]">Todos os Produtos</h1>
+              <p className="text-gray-500 mt-1 text-sm tracking-wide">{"Navegue por nossa coleção completa de itens"}</p>
+            </>
+          )}
         </div>
       </div>
 
@@ -93,11 +133,31 @@ export default function ProductsPage() {
         {/* Mobile Title + Product Count Header */}
         <div className="flex justify-between items-end w-full mb-4 px-1 lg:hidden">
           <div className="flex flex-col">
-            <span className="text-[9px] text-gray-400 font-bold tracking-widest uppercase">Início &gt; Todos os Produtos</span>
-            <h1 className="text-2xl font-black text-gray-900 tracking-tight mt-0.5">Todos os Produtos</h1>
+            <span className="text-[9px] text-gray-400 font-bold tracking-widest uppercase">
+              Início &gt; {searchQuery ? `Busca: "${searchQuery}"` : 'Todos os Produtos'}
+            </span>
+            <h1 className="text-2xl font-black text-gray-900 tracking-tight mt-0.5">
+              {searchQuery ? `"${searchQuery}"` : 'Todos os Produtos'}
+            </h1>
           </div>
-          <span className="text-xs text-gray-500 font-bold tracking-wider whitespace-nowrap">{products.length} produtos</span>
+          <span className="text-xs text-gray-500 font-bold tracking-wider whitespace-nowrap">{filteredProducts.length} produtos</span>
         </div>
+
+        {/* Search active banner */}
+        {searchQuery && (
+          <div className="flex items-center gap-3 bg-pink-50/60 border border-pink-100 rounded-2xl px-5 py-3 mb-6">
+            <span className="text-sm text-gray-600">
+              Buscando por: <strong className="text-gray-900">&ldquo;{searchQuery}&rdquo;</strong>
+            </span>
+            <Link
+              href="/produtos"
+              className="ml-auto text-xs font-bold text-[#ff9edb] hover:text-[#ff80cb] uppercase tracking-wider transition-colors flex items-center gap-1"
+            >
+              <X className="w-3.5 h-3.5" />
+              Limpar busca
+            </Link>
+          </div>
+        )}
 
         {/* Mobile Filter & Order Bar */}
         <div className="grid grid-cols-2 border border-gray-200 lg:hidden mb-8 text-sm bg-white divide-x divide-gray-200 rounded-sm">
@@ -174,7 +234,7 @@ export default function ProductsPage() {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-6">
               <p className="text-sm text-muted-foreground hidden lg:block">
-                Mostrando {products.length} produtos
+                Mostrando {filteredProducts.length} produtos
               </p>
               <select className="text-sm border rounded px-3 py-2 hidden lg:block">
                 <option>Mais Relevantes</option>
@@ -185,24 +245,43 @@ export default function ProductsPage() {
               </select>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-6 sm:gap-6">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-6 sm:gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <SearchX className="w-16 h-16 text-gray-200 mb-4" />
+                <h3 className="text-lg font-bold text-gray-700 mb-2">
+                  Nenhum produto encontrado
+                </h3>
+                <p className="text-sm text-gray-400 max-w-md mb-6">
+                  Não encontramos resultados para &ldquo;{searchQuery}&rdquo;. Tente buscar com outras palavras ou navegue por nossas categorias.
+                </p>
+                <Link href="/produtos">
+                  <Button className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white rounded-full px-8">
+                    Ver todos os produtos
+                  </Button>
+                </Link>
+              </div>
+            )}
 
-            {/* Pagination */}
-            <div className="mt-12 flex items-center justify-center gap-2">
-              <Button variant="outline" disabled>
-                Anterior
-              </Button>
-              <Button variant="outline" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                1
-              </Button>
-              <Button variant="outline">2</Button>
-              <Button variant="outline">3</Button>
-              <Button variant="outline">Próxima</Button>
-            </div>
+            {/* Pagination - only show when not searching and has results */}
+            {!searchQuery && filteredProducts.length > 0 && (
+              <div className="mt-12 flex items-center justify-center gap-2">
+                <Button variant="outline" disabled>
+                  Anterior
+                </Button>
+                <Button variant="outline" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  1
+                </Button>
+                <Button variant="outline">2</Button>
+                <Button variant="outline">3</Button>
+                <Button variant="outline">Próxima</Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
