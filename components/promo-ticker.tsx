@@ -33,10 +33,10 @@ export function PromoTicker() {
       
       <div className="ticker-wrapper">
         <span className="ticker-text">
-          5% OFF EM SUA PRIMEIRA COMPRA • USE O CUPOM: BEMVINDAS • FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 200
+          5% OFF EM SUA PRIMEIRA COMPRA • USE O CUPOM: BEMVINDAS • FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 400
         </span>
         <span className="ticker-text">
-          5% OFF EM SUA PRIMEIRA COMPRA • USE O CUPOM: BEMVINDAS • FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 200
+          5% OFF EM SUA PRIMEIRA COMPRA • USE O CUPOM: BEMVINDAS • FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 400
         </span>
       </div>
     </div>

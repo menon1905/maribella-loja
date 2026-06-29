@@ -111,7 +111,7 @@ export default function CartPage() {
 
   const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
-  const shipping = subtotal > 0 && (subtotal - discount) > 200 ? 0 : (subtotal === 0 ? 0 : 15)
+  const shipping = subtotal > 0 && (subtotal - discount) > 400 ? 0 : (subtotal === 0 ? 0 : 15)
   const total = subtotal - discount + shipping
 
 
@@ -264,7 +264,7 @@ export default function CartPage() {
                 {/* Info */}
                 {shipping > 0 && (
                   <div className="bg-primary/10 text-sm text-primary p-3 rounded">
-                    Frete grátis em compras acima de R$ 200. Adicione R$ {(200 - (subtotal - discount)).toFixed(2)} para conseguir!
+                    Frete grátis em compras acima de R$ 400. Adicione R$ {(400 - (subtotal - discount)).toFixed(2)} para conseguir!
                   </div>
                 )}
 
@@ -285,7 +285,7 @@ export default function CartPage() {
 
                 {/* Info */}
                 <div className="text-xs text-muted-foreground space-y-2">
-                  <p>✓ Frete grátis acima de R$ 200</p>
+                  <p>✓ Frete grátis acima de R$ 400</p>
                   <p>✓ Compra segura com SSL</p>
                 </div>
               </div>

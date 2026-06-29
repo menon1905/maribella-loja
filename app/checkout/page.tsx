@@ -87,7 +87,7 @@ export default function CheckoutPage() {
 
     const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
     const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
-    const shipping = subtotal > 0 && (subtotal - discount) > 200 ? 0 : 15
+    const shipping = subtotal > 0 && (subtotal - discount) > 400 ? 0 : 15
     const total = subtotal - discount + shipping
 
     const message = `Olá, Maribella! Gostaria de finalizar meu pedido.
@@ -131,7 +131,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
 
   const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
-  const shipping = subtotal > 0 && (subtotal - discount) > 200 ? 0 : (subtotal === 0 ? 0 : 15)
+  const shipping = subtotal > 0 && (subtotal - discount) > 400 ? 0 : (subtotal === 0 ? 0 : 15)
   const total = subtotal - discount + shipping
 
 

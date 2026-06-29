@@ -36,7 +36,7 @@ export default function PrazosEntregasPage() {
           <div className="bg-pink-50 border border-pink-100 rounded-2xl p-5 text-center">
             <div className="text-3xl mb-2">🎁</div>
             <h3 className="font-bold text-gray-900 text-sm mb-1">Frete Grátis</h3>
-            <p className="text-xs text-gray-500">Compras acima de R$ 200,00</p>
+            <p className="text-xs text-gray-500">Compras acima de R$ 400,00</p>
           </div>
           <div className="bg-pink-50 border border-pink-100 rounded-2xl p-5 text-center">
             <div className="text-3xl mb-2">📦</div>
@@ -108,7 +108,8 @@ export default function PrazosEntregasPage() {
             <ul className="list-disc pl-6 space-y-2">
               <li><strong>PAC</strong> — Econômico, prazo maior</li>
               <li><strong>SEDEX</strong> — Expresso, entrega mais rápida</li>
-              <li><strong>Frete Grátis</strong> — Em compras acima de R$ 200,00 (PAC)</li>
+              <li><strong>Frete Grátis</strong> — Em compras acima de R$ 400,00 (PAC)</li>
+              <li><strong>Frete Grátis Campinas</strong> — Para Campinas e região, o frete é grátis em qualquer valor de compra</li>
             </ul>
           </section>
 

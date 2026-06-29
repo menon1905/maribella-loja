@@ -62,7 +62,7 @@ export function FloatingActions() {
               <div className="flex items-center justify-between bg-pink-50/50 p-2.5 rounded-xl border border-pink-100/50">
                 <div>
                   <span className="font-extrabold text-gray-800 text-xs tracking-wider block">FRETE200</span>
-                  <span className="text-[10px] text-gray-500 font-medium">Frete Grátis acima de R$ 200</span>
+                  <span className="text-[10px] text-gray-500 font-medium">Frete Grátis acima de R$ 400</span>
                 </div>
                 <button
                   onClick={() => handleCopy('FRETE200')}

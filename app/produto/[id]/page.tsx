@@ -155,7 +155,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 <Truck className="w-6 h-6 text-primary flex-shrink-0" />
                 <div>
                   <p className="font-semibold">Frete Grátis</p>
-                  <p className="text-sm text-muted-foreground">Em compras acima de R$ 200</p>
+                  <p className="text-sm text-muted-foreground">Em compras acima de R$ 400</p>
                 </div>
               </div>
               <div className="flex gap-4">
