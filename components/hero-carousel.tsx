@@ -13,7 +13,17 @@ const DEFAULT_BANNERS = [
 ]
 
 export function HeroCarousel() {
-  const [banners, setBanners] = useState<any[]>(DEFAULT_BANNERS)
+  const [banners, setBanners] = useState<any[]>(() => {
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem('maribella_banners')
+      if (cached) {
+        try {
+          return JSON.parse(cached)
+        } catch (e) {}
+      }
+    }
+    return []
+  })
   const [current, setCurrent] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
 
@@ -37,15 +47,22 @@ export function HeroCarousel() {
               alt: b.alt || 'Maribella Banner',
             }))
             setBanners(mapped)
+            localStorage.setItem('maribella_banners', JSON.stringify(mapped))
           } else {
             setBanners(DEFAULT_BANNERS)
+            localStorage.setItem('maribella_banners', JSON.stringify(DEFAULT_BANNERS))
           }
         } else {
           setBanners(DEFAULT_BANNERS)
+          localStorage.setItem('maribella_banners', JSON.stringify(DEFAULT_BANNERS))
         }
       } catch (err) {
         console.warn('Erro ao carregar banners do Supabase, usando padrão.', err)
-        setBanners(DEFAULT_BANNERS)
+        // If not cached, fallback to defaults
+        const cached = localStorage.getItem('maribella_banners')
+        if (!cached) {
+          setBanners(DEFAULT_BANNERS)
+        }
       }
     }
     loadBanners()
@@ -77,7 +94,18 @@ export function HeroCarousel() {
     return () => clearInterval(interval)
   }, [banners.length])
 
-  if (banners.length === 0) return null
+  if (banners.length === 0) {
+    return (
+      <div className="w-full bg-pink-50 animate-pulse relative flex items-center justify-center">
+        {/* Mobile placeholder */}
+        <div className="w-full aspect-square sm:hidden flex items-center justify-center min-h-[350px]">
+          <div className="w-7 h-7 border-2 border-pink-400 border-t-transparent rounded-full animate-spin" />
+        </div>
+        {/* Desktop placeholder */}
+        <div className="w-full hidden sm:block min-h-[400px]" style={{ aspectRatio: '1580/700' }} />
+      </div>
+    )
+  }
 
   return (
     <section className="relative w-full overflow-hidden bg-[#f9a8cf] group">
