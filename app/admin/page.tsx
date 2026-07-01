@@ -686,6 +686,7 @@ function AdminDashboard() {
   const [collectionFormData, setCollectionFormData] = useState({
     title: '',
     description: '',
+    button_text: '',
     image: '',
     href: '',
     display_order: 0,
@@ -696,6 +697,7 @@ function AdminDashboard() {
     setCollectionFormData({
       title: '',
       description: '',
+      button_text: 'Comprar Agora',
       image: '',
       href: '',
       display_order: collections.length,
@@ -708,10 +710,14 @@ function AdminDashboard() {
   const handleOpenEditCollection = (coll: any) => {
     setEditingCollection(coll)
     const cleanAlt = coll.alt.replace('[COLECAO]', '').trim()
-    const [title, ...descParts] = cleanAlt.split('|')
+    const parts = cleanAlt.split('|').map((p: string) => p.trim())
+    const title = parts[0] || ''
+    const description = parts[1] || ''
+    const buttonText = parts[2] || 'Comprar Agora'
     setCollectionFormData({
-      title: title.trim(),
-      description: descParts.join('|').trim(),
+      title,
+      description,
+      button_text: buttonText,
       image: coll.image_desktop || '',
       href: coll.href || '',
       display_order: coll.display_order || 0,
@@ -731,7 +737,8 @@ function AdminDashboard() {
       return
     }
 
-    const combinedAlt = `[COLECAO] ${collectionFormData.title} | ${collectionFormData.description}`
+    const btnText = collectionFormData.button_text.trim() || 'Comprar Agora'
+    const combinedAlt = `[COLECAO] ${collectionFormData.title} | ${collectionFormData.description} | ${btnText}`
 
     const payload = {
       image_desktop: collectionFormData.image,
@@ -1230,8 +1237,10 @@ function AdminDashboard() {
                 <div className="grid md:grid-cols-2 gap-6">
                   {collections.map((coll) => {
                     const cleanAlt = coll.alt.replace('[COLECAO]', '').trim()
-                    const [title, ...descParts] = cleanAlt.split('|')
-                    const description = descParts.join('|').trim()
+                    const parts = cleanAlt.split('|').map((p: string) => p.trim())
+                    const title = parts[0] || ''
+                    const description = parts[1] || ''
+                    const buttonText = parts[2] || 'Comprar Agora'
 
                     return (
                       <div key={coll.id} className="border border-gray-150 rounded-2xl overflow-hidden bg-white shadow-xs relative group flex flex-col justify-between">
@@ -1254,6 +1263,7 @@ function AdminDashboard() {
                           <div className="p-5">
                             <h3 className="font-bold text-lg text-gray-800">{title}</h3>
                             <p className="text-xs text-pink-600 font-bold uppercase tracking-wider mt-1">{description || 'Sem descrição/cupom'}</p>
+                            <p className="text-xs text-gray-400 font-semibold mt-1">Texto do Botão: <span className="text-gray-700 font-extrabold">{buttonText}</span></p>
                             {coll.href && (
                               <p className="text-[11px] text-gray-400 font-medium mt-3 bg-slate-50 p-2 rounded truncate">
                                 Link: <span className="font-bold text-slate-600">{coll.href}</span>
@@ -1676,6 +1686,11 @@ function AdminDashboard() {
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Descrição / Desconto</label>
                 <Input value={collectionFormData.description} onChange={e => setCollectionFormData(p => ({ ...p, description: e.target.value }))} placeholder="Ex: Até 50% de desconto" />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Texto do Botão</label>
+                <Input value={collectionFormData.button_text} onChange={e => setCollectionFormData(p => ({ ...p, button_text: e.target.value }))} placeholder="Ex: Comprar Agora" />
               </div>
 
               <div className="space-y-1.5">

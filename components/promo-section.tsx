@@ -11,6 +11,7 @@ interface PromoItem {
   description: string
   image: string
   href: string
+  buttonText?: string
 }
 
 interface PromoSectionProps {
@@ -35,12 +36,17 @@ export function PromoSection({ items: defaultItems }: PromoSectionProps) {
           const activeBanners = data.filter((b: any) => b.is_active === true)
           const mapped = activeBanners.map((b: any) => {
             const cleanAlt = b.alt.replace('[COLECAO]', '').trim()
-            const [title, ...descParts] = cleanAlt.split('|')
+            const parts = cleanAlt.split('|').map((p: string) => p.trim())
+            const title = parts[0] || ''
+            const description = parts[1] || ''
+            const buttonText = parts[2] || 'Comprar Agora'
+            
             return {
-              title: title.trim(),
-              description: descParts.join('|').trim(),
+              title,
+              description,
               image: b.image_desktop,
-              href: b.href || '#'
+              href: b.href || '#',
+              buttonText
             }
           })
           setItems(mapped)
@@ -74,7 +80,7 @@ export function PromoSection({ items: defaultItems }: PromoSectionProps) {
                   <h3 className="text-2xl md:text-3xl font-light tracking-[0.1em] uppercase mb-2">{item.title}</h3>
                   <p className="text-xs md:text-sm font-medium tracking-widest uppercase opacity-90 mb-6">{item.description}</p>
                   <Button variant="outline" className="rounded-none border-white text-white bg-transparent hover:bg-white hover:text-black transition-colors uppercase text-xs tracking-widest font-bold">
-                    Comprar Agora
+                    {item.buttonText || 'Comprar Agora'}
                   </Button>
                 </div>
               </div>
