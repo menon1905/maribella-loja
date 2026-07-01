@@ -25,6 +25,10 @@ function ProductsContent() {
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('q') || ''
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1)
+  const ITEMS_PER_PAGE = 12
+
   // Filter products based on search query
   const filteredProducts = useMemo(() => {
     if (!searchQuery.trim()) return products
@@ -40,6 +44,20 @@ function ProductsContent() {
       return queryWords.every((word) => searchableText.includes(word))
     })
   }, [products, searchQuery])
+
+  // Reset page when search query or filtered list length changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, filteredProducts.length])
+
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE)
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages))
+
+  // Paginated list
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE
+    return filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  }, [filteredProducts, safeCurrentPage])
 
   const renderFilters = (onClose?: () => void) => (
     <div className="space-y-8">
@@ -245,9 +263,9 @@ function ProductsContent() {
               </select>
             </div>
 
-            {filteredProducts.length > 0 ? (
+            {paginatedProducts.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-6 sm:gap-6">
-                {filteredProducts.map((product) => (
+                {paginatedProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
@@ -268,18 +286,50 @@ function ProductsContent() {
               </div>
             )}
 
-            {/* Pagination - only show when not searching and has results */}
-            {!searchQuery && filteredProducts.length > 0 && (
+            {/* Pagination - only show when there is more than 1 page and has results */}
+            {!searchQuery && totalPages > 1 && (
               <div className="mt-12 flex items-center justify-center gap-2">
-                <Button variant="outline" disabled>
+                <Button 
+                  variant="outline" 
+                  disabled={safeCurrentPage === 1}
+                  onClick={() => {
+                    setCurrentPage(prev => Math.max(1, prev - 1))
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                  className="cursor-pointer"
+                >
                   Anterior
                 </Button>
-                <Button variant="outline" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  1
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                  <Button
+                    key={pageNum}
+                    variant="outline"
+                    onClick={() => {
+                      setCurrentPage(pageNum)
+                      window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }}
+                    className={`cursor-pointer ${
+                      safeCurrentPage === pageNum 
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                        : ''
+                    }`}
+                  >
+                    {pageNum}
+                  </Button>
+                ))}
+
+                <Button 
+                  variant="outline"
+                  disabled={safeCurrentPage === totalPages}
+                  onClick={() => {
+                    setCurrentPage(prev => Math.min(totalPages, prev + 1))
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                  className="cursor-pointer"
+                >
+                  Próxima
                 </Button>
-                <Button variant="outline">2</Button>
-                <Button variant="outline">3</Button>
-                <Button variant="outline">Próxima</Button>
               </div>
             )}
           </div>
