@@ -26,14 +26,14 @@ export function PromoSection({ items: defaultItems }: PromoSectionProps) {
         const { data, error } = await supabase
           .from('banners')
           .select('*')
-          .eq('is_active', true)
           .like('alt', '[COLECAO]%')
           .order('display_order', { ascending: true })
 
         if (error) throw error
 
         if (data && data.length > 0) {
-          const mapped = data.map((b: any) => {
+          const activeBanners = data.filter((b: any) => b.is_active === true)
+          const mapped = activeBanners.map((b: any) => {
             const cleanAlt = b.alt.replace('[COLECAO]', '').trim()
             const [title, ...descParts] = cleanAlt.split('|')
             return {
@@ -44,9 +44,12 @@ export function PromoSection({ items: defaultItems }: PromoSectionProps) {
             }
           })
           setItems(mapped)
+        } else {
+          setItems(defaultItems)
         }
       } catch (err) {
         console.warn('Erro ao carregar coleções do Supabase, usando padrão.', err)
+        setItems(defaultItems)
       }
     }
     loadCollections()

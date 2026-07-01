@@ -23,22 +23,29 @@ export function HeroCarousel() {
         const { data, error } = await supabase
           .from('banners')
           .select('*')
-          .eq('is_active', true)
           .order('display_order', { ascending: true })
 
         if (error) throw error
 
         if (data && data.length > 0) {
-          const filtered = data.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
-          const mapped = filtered.map((b: any) => ({
-            src: b.image_desktop,
-            srcMobile: b.image_mobile || b.image_desktop,
-            alt: b.alt || 'Maribella Banner',
-          }))
-          setBanners(mapped)
+          const customBanners = data.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
+          if (customBanners.length > 0) {
+            const activeBanners = customBanners.filter((b: any) => b.is_active === true)
+            const mapped = activeBanners.map((b: any) => ({
+              src: b.image_desktop,
+              srcMobile: b.image_mobile || b.image_desktop,
+              alt: b.alt || 'Maribella Banner',
+            }))
+            setBanners(mapped)
+          } else {
+            setBanners(DEFAULT_BANNERS)
+          }
+        } else {
+          setBanners(DEFAULT_BANNERS)
         }
       } catch (err) {
         console.warn('Erro ao carregar banners do Supabase, usando padrão.', err)
+        setBanners(DEFAULT_BANNERS)
       }
     }
     loadBanners()
