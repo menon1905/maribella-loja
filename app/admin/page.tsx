@@ -90,7 +90,7 @@ function AdminDashboard() {
   const { products, addProduct, updateProduct, deleteProduct, isLoading: isProductsLoading } = useProducts()
 
   // Tabs
-  const [activeTab, setActiveTab] = useState<'produtos' | 'categorias' | 'banners'>('produtos')
+  const [activeTab, setActiveTab] = useState<'produtos' | 'categorias' | 'banners' | 'colecoes'>('produtos')
 
   // Loaded state for Categories and Banners
   const [categories, setCategories] = useState<any[]>([])
@@ -98,8 +98,10 @@ function AdminDashboard() {
     defaultCategories.map((c, i) => ({ id: c.id || `local-${c.slug}`, name: c.name, slug: c.slug, image: c.image, parent_slug: null, display_order: i }))
   )
   const [banners, setBanners] = useState<any[]>([])
+  const [collections, setCollections] = useState<any[]>([])
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true)
   const [isBannersLoading, setIsBannersLoading] = useState(true)
+  const [isCollectionsLoading, setIsCollectionsLoading] = useState(true)
 
   // Flags to prevent concurrent seeding in React Strict Mode double-effect
   const seedingCategories = React.useRef(false)
@@ -223,6 +225,7 @@ function AdminDashboard() {
   const loadBanners = async () => {
     try {
       setIsBannersLoading(true)
+      setIsCollectionsLoading(true)
       const { data, error } = await supabase
         .from('banners')
         .select('*')
@@ -231,18 +234,43 @@ function AdminDashboard() {
       if (error) throw error
 
       if (data && data.length > 0) {
-        setBanners(data)
+        let normalBanners = data.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
+        let collectionItems = data.filter((b: any) => b.alt?.startsWith('[COLECAO]'))
+
+        if (collectionItems.length === 0) {
+          // seed default collections
+          const defaultCollectionsSeed = [
+            { image_desktop: '/cat_roupas.png', image_mobile: '/cat_roupas.png', alt: '[COLECAO] Coleção Verão | Até 50% de desconto', href: '/categorias/roupas', display_order: 0, is_active: true },
+            { image_desktop: '/cat_bolsas.png', image_mobile: '/cat_bolsas.png', alt: '[COLECAO] Bolsas em Promoção | A partir de R$ 89,90', href: '/categorias/bolsas', display_order: 1, is_active: true }
+          ]
+          await supabase.from('banners').insert(defaultCollectionsSeed)
+
+          const { data: refetched } = await supabase
+            .from('banners')
+            .select('*')
+            .order('display_order', { ascending: true })
+
+          if (refetched) {
+            normalBanners = refetched.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
+            collectionItems = refetched.filter((b: any) => b.alt?.startsWith('[COLECAO]'))
+          }
+        }
+
+        setBanners(normalBanners)
+        setCollections(collectionItems)
       } else {
         // Prevent duplicate seed runs
         if (seedingBanners.current) return
         seedingBanners.current = true
 
-        // Table exists but is empty: seed default banners
+        // Table exists but is empty: seed default banners & collections
         console.log('Semeando tabela de banners com os padrões...')
         const defaultBannersSeed = [
           { image_desktop: '/banner1.png', image_mobile: '/banner1.png', alt: 'Maribella - Coleção Especial', display_order: 0, is_active: true },
           { image_desktop: '/banner2.png', image_mobile: '/banner2.png', alt: 'Maribella - Novidades da Temporada', display_order: 1, is_active: true },
           { image_desktop: '/banner3.png', image_mobile: '/banner3.png', alt: 'Maribella - Estilos Exclusivos', display_order: 2, is_active: true },
+          { image_desktop: '/cat_roupas.png', image_mobile: '/cat_roupas.png', alt: '[COLECAO] Coleção Verão | Até 50% de desconto', href: '/categorias/roupas', display_order: 3, is_active: true },
+          { image_desktop: '/cat_bolsas.png', image_mobile: '/cat_bolsas.png', alt: '[COLECAO] Bolsas em Promoção | A partir de R$ 89,90', href: '/categorias/bolsas', display_order: 4, is_active: true }
         ]
         const { error: seedError } = await supabase.from('banners').insert(defaultBannersSeed)
         if (!seedError) {
@@ -251,17 +279,23 @@ function AdminDashboard() {
             .select('*')
             .order('display_order', { ascending: true })
           if (newData && newData.length > 0) {
-            setBanners(newData)
+            const normalBanners = newData.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
+            const collectionItems = newData.filter((b: any) => b.alt?.startsWith('[COLECAO]'))
+            setBanners(normalBanners)
+            setCollections(collectionItems)
             return
           }
         }
         setBanners([])
+        setCollections([])
       }
     } catch (err) {
       console.warn('Erro ao carregar banners do Supabase.', err)
       setBanners([])
+      setCollections([])
     } finally {
       setIsBannersLoading(false)
+      setIsCollectionsLoading(false)
       seedingBanners.current = false
     }
   }
@@ -390,6 +424,16 @@ function AdminDashboard() {
     setSubImagesInput(p.images || [])
     setNewSubImageUrl('')
     setIsProductModalOpen(true)
+  }
+
+  const handleDeleteProduct = async (p: Product) => {
+    if (!confirm(`Tem certeza que deseja excluir "${p.name}"? Esta ação não pode ser desfeita.`)) return
+    try {
+      await deleteProduct(p.id)
+      toast.success(`Produto "${p.name}" excluído com sucesso.`)
+    } catch (err: any) {
+      toast.error(`Erro ao excluir produto: ${err?.message || 'Erro desconhecido'}`)
+    }
   }
 
   const handleProductSubmit = async (e: React.FormEvent) => {
@@ -534,7 +578,9 @@ function AdminDashboard() {
     imageMobile: '',
     alt: '',
     display_order: 0,
-    is_active: true
+    is_active: true,
+    href: '',
+    mobileRatio: '1080x1080'
   })
 
   const handleOpenAddBanner = () => {
@@ -543,7 +589,9 @@ function AdminDashboard() {
       imageMobile: '',
       alt: '',
       display_order: banners.length,
-      is_active: true
+      is_active: true,
+      href: '',
+      mobileRatio: '1080x1080'
     })
     setEditingBanner(null)
     setIsBannerModalOpen(true)
@@ -551,12 +599,25 @@ function AdminDashboard() {
 
   const handleOpenEditBanner = (ban: any) => {
     setEditingBanner(ban)
+
+    let ratio = '1080x1080'
+    const imgMob = ban.image_mobile || ''
+    if (imgMob.includes('#1080x1350')) {
+      ratio = '1080x1350'
+    } else if (imgMob.includes('#16:9')) {
+      ratio = '16:9'
+    } else if (imgMob.includes('#1080x1080')) {
+      ratio = '1080x1080'
+    }
+
     setBannerFormData({
       imageDesktop: ban.image_desktop || '',
-      imageMobile: ban.image_mobile || '',
+      imageMobile: imgMob.split('#')[0] || '',
       alt: ban.alt || '',
       display_order: ban.display_order || 0,
-      is_active: ban.is_active ?? true
+      is_active: ban.is_active ?? true,
+      href: ban.href || '',
+      mobileRatio: ratio
     })
     setIsBannerModalOpen(true)
   }
@@ -568,12 +629,18 @@ function AdminDashboard() {
       return
     }
 
+    let mobileUrl = bannerFormData.imageMobile || null
+    if (mobileUrl && bannerFormData.mobileRatio) {
+      mobileUrl = mobileUrl.split('#')[0] + '#' + bannerFormData.mobileRatio
+    }
+
     const payload = {
       image_desktop: bannerFormData.imageDesktop,
-      image_mobile: bannerFormData.imageMobile || null,
+      image_mobile: mobileUrl,
       alt: bannerFormData.alt,
       display_order: Number(bannerFormData.display_order),
-      is_active: bannerFormData.is_active
+      is_active: bannerFormData.is_active,
+      href: bannerFormData.href || null
     }
 
     try {
@@ -606,6 +673,105 @@ function AdminDashboard() {
         const { error } = await supabase.from('banners').delete().eq('id', id)
         if (error) throw error
         toast.success('Banner excluído.')
+        loadBanners()
+      } catch (err: any) {
+        toast.error(`Erro ao excluir: ${err.message}`)
+      }
+    }
+  }
+
+  // ----------------------- COLLECTIONS TAB STATES & LOGIC -----------------------
+  const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false)
+  const [editingCollection, setEditingCollection] = useState<any | null>(null)
+  const [collectionFormData, setCollectionFormData] = useState({
+    title: '',
+    description: '',
+    image: '',
+    href: '',
+    display_order: 0,
+    is_active: true
+  })
+
+  const handleOpenAddCollection = () => {
+    setCollectionFormData({
+      title: '',
+      description: '',
+      image: '',
+      href: '',
+      display_order: collections.length,
+      is_active: true
+    })
+    setEditingCollection(null)
+    setIsCollectionModalOpen(true)
+  }
+
+  const handleOpenEditCollection = (coll: any) => {
+    setEditingCollection(coll)
+    const cleanAlt = coll.alt.replace('[COLECAO]', '').trim()
+    const [title, ...descParts] = cleanAlt.split('|')
+    setCollectionFormData({
+      title: title.trim(),
+      description: descParts.join('|').trim(),
+      image: coll.image_desktop || '',
+      href: coll.href || '',
+      display_order: coll.display_order || 0,
+      is_active: coll.is_active ?? true
+    })
+    setIsCollectionModalOpen(true)
+  }
+
+  const handleCollectionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!collectionFormData.title) {
+      toast.error('O Título é obrigatório.')
+      return
+    }
+    if (!collectionFormData.image) {
+      toast.error('A Imagem é obrigatória.')
+      return
+    }
+
+    const combinedAlt = `[COLECAO] ${collectionFormData.title} | ${collectionFormData.description}`
+
+    const payload = {
+      image_desktop: collectionFormData.image,
+      image_mobile: collectionFormData.image,
+      alt: combinedAlt,
+      display_order: Number(collectionFormData.display_order),
+      is_active: collectionFormData.is_active,
+      href: collectionFormData.href || null
+    }
+
+    try {
+      if (editingCollection) {
+        const { error } = await supabase
+          .from('banners')
+          .update(payload)
+          .eq('id', editingCollection.id)
+
+        if (error) throw error
+        toast.success('Coleção atualizada com sucesso!')
+      } else {
+        const { error } = await supabase
+          .from('banners')
+          .insert([payload])
+
+        if (error) throw error
+        toast.success('Coleção criada com sucesso!')
+      }
+      setIsCollectionModalOpen(false)
+      loadBanners()
+    } catch (err: any) {
+      toast.error(`Erro ao salvar coleção: ${err.message || 'Erro desconhecido'}`)
+    }
+  }
+
+  const handleDeleteCollection = async (id: string) => {
+    if (confirm('Deseja realmente excluir esta coleção?')) {
+      try {
+        const { error } = await supabase.from('banners').delete().eq('id', id)
+        if (error) throw error
+        toast.success('Coleção excluída.')
         loadBanners()
       } catch (err: any) {
         toast.error(`Erro ao excluir: ${err.message}`)
@@ -685,6 +851,15 @@ function AdminDashboard() {
                 <Plus className="w-4 h-4" /> Novo Banner
               </Button>
             )}
+
+            {activeTab === 'colecoes' && (
+              <Button
+                onClick={handleOpenAddCollection}
+                className="bg-primary hover:bg-[#ffbfe7] hover:text-[#db459b] text-white font-bold tracking-wide uppercase text-xs px-6 py-6 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]"
+              >
+                <Plus className="w-4 h-4" /> Nova Coleção
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -719,6 +894,14 @@ function AdminDashboard() {
               <ImageIcon className="w-4 h-4" />
               <span>Banners Slides</span>
               <span className="ml-1 md:ml-auto text-[10px] bg-slate-100 text-gray-550 py-0.5 px-2 rounded-full font-bold">{banners.length}</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('colecoes')}
+              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === 'colecoes' ? 'bg-pink-100 text-pink-700 font-bold' : 'text-gray-600 hover:bg-slate-50'}`}
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Coleções</span>
+              <span className="ml-1 md:ml-auto text-[10px] bg-slate-100 text-gray-550 py-0.5 px-2 rounded-full font-bold">{collections.length}</span>
             </button>
           </div>
         </aside>
@@ -842,7 +1025,7 @@ function AdminDashboard() {
                               <Button variant="ghost" size="icon" onClick={() => handleOpenEditProduct(p)} className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full h-8 w-8" title="Editar">
                                 <Edit3 className="w-4 h-4" />
                               </Button>
-                              <Button variant="ghost" size="icon" onClick={() => deleteProduct(p.id)} className="text-rose-500 hover:text-rose-700 hover:bg-rose-50/50 rounded-full h-8 w-8" title="Excluir">
+                              <Button variant="ghost" size="icon" onClick={() => handleDeleteProduct(p)} className="text-rose-500 hover:text-rose-700 hover:bg-rose-50/50 rounded-full h-8 w-8" title="Excluir">
                                 <Trash2 className="w-4 h-4" />
                               </Button>
                             </div>
@@ -952,7 +1135,7 @@ function AdminDashboard() {
             <div className="bg-white border border-gray-100 rounded-2xl shadow-xs p-6">
               <div className="mb-6">
                 <h2 className="text-lg font-bold text-gray-900">Banners do Slide Principal (Hero)</h2>
-                <p className="text-gray-500 text-xs mt-0.5">Gerencie os slides de imagem que mudam automaticamente na Home. Recomenda-se imagens na proporção de 1580x700 para Desktop e 16:9 para Mobile.</p>
+                <p className="text-gray-500 text-xs mt-0.5">Gerencie os slides de imagem que mudam automaticamente na Home. Recomenda-se imagens na proporção de 1580x700 para Desktop e 1080x1080 (Quadrado) para Mobile.</p>
               </div>
 
               {isBannersLoading ? (
@@ -968,14 +1151,20 @@ function AdminDashboard() {
                   {banners.map((ban, index) => (
                     <div key={ban.id} className="border border-gray-150 rounded-2xl p-4 bg-white shadow-xs flex flex-col md:flex-row gap-6 items-center justify-between">
                       <div className="flex flex-col sm:flex-row gap-4 items-center flex-grow w-full md:w-auto">
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center">
                           <div className="relative w-28 aspect-[16/7] rounded-lg overflow-hidden border border-gray-100 bg-gray-55/30" title="Banner Desktop">
                             <Image src={ban.image_desktop} alt="Desktop Preview" fill className="object-cover" />
                             <span className="absolute bottom-1 right-1 bg-black/60 text-white font-black text-[7px] uppercase px-1 rounded">Desk</span>
                           </div>
-                          <div className="relative w-16 aspect-video rounded-lg overflow-hidden border border-gray-100 bg-gray-55/30" title="Banner Mobile">
+                          <div className={`relative rounded-lg overflow-hidden border border-gray-100 bg-gray-55/30 ${
+                            ban.image_mobile?.includes('#1080x1350')
+                              ? 'w-12 h-15 aspect-[4/5]'
+                              : ban.image_mobile?.includes('#16:9')
+                              ? 'w-16 h-9 aspect-video'
+                              : 'w-14 h-14 aspect-square'
+                          }`} title="Banner Mobile">
                             {ban.image_mobile ? (
-                              <Image src={ban.image_mobile} alt="Mobile Preview" fill className="object-cover" />
+                              <Image src={ban.image_mobile.split('#')[0]} alt="Mobile Preview" fill className="object-cover" />
                             ) : (
                               <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-[8px] font-bold text-center">Desk Fallback</div>
                             )}
@@ -985,11 +1174,21 @@ function AdminDashboard() {
 
                         <div className="flex-grow text-center sm:text-left">
                           <p className="text-sm font-bold text-gray-800 line-clamp-1">{ban.alt || 'Slide sem texto alternativo'}</p>
+                          {ban.href && <p className="text-xs text-gray-450 font-semibold mt-1">Link: {ban.href}</p>}
                           <div className="flex gap-2 items-center justify-center sm:justify-start mt-2">
                             <span className={`inline-block text-[9px] font-bold px-2 py-0.5 rounded-full ${ban.is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
                               {ban.is_active ? 'Ativo' : 'Inativo'}
                             </span>
                             <span className="text-[10px] text-gray-400 font-bold">Ordem: {ban.display_order ?? 0}</span>
+                            <span className="text-[10px] text-pink-500 font-bold">
+                              Proporção Mob: {
+                                ban.image_mobile?.includes('#1080x1350')
+                                  ? '1080x1350'
+                                  : ban.image_mobile?.includes('#16:9')
+                                  ? '16:9'
+                                  : '1080x1080 (Quadrado)'
+                              }
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -1004,6 +1203,80 @@ function AdminDashboard() {
                       </div>
                     </div>
                   ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 4. COLLECTIONS TAB */}
+          {activeTab === 'colecoes' && (
+            <div className="bg-white border border-gray-100 rounded-2xl shadow-xs p-6">
+              <div className="mb-6 flex justify-between items-center">
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">Coleções e Promoções da Home</h2>
+                  <p className="text-gray-500 text-xs mt-0.5">Gerencie os dois blocos promocionais que aparecem logo abaixo dos produtos em destaque na Home.</p>
+                </div>
+              </div>
+
+              {isCollectionsLoading ? (
+                <div className="py-12 flex justify-center items-center">
+                  <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : collections.length === 0 ? (
+                <div className="text-center py-12 text-gray-400 italic">
+                  Nenhuma coleção cadastrada.
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {collections.map((coll) => {
+                    const cleanAlt = coll.alt.replace('[COLECAO]', '').trim()
+                    const [title, ...descParts] = cleanAlt.split('|')
+                    const description = descParts.join('|').trim()
+
+                    return (
+                      <div key={coll.id} className="border border-gray-150 rounded-2xl overflow-hidden bg-white shadow-xs relative group flex flex-col justify-between">
+                        <div>
+                          <div className="relative aspect-video bg-slate-50 w-full overflow-hidden border-b border-gray-100">
+                            <Image
+                              src={coll.image_desktop}
+                              alt={title}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                            <div className="absolute top-2 left-2 bg-black/60 text-white font-bold text-[9px] uppercase px-2 py-0.5 rounded-full tracking-wider">
+                              Coleção
+                            </div>
+                            <div className="absolute top-2 right-2 bg-pink-500 text-white font-bold text-[9px] uppercase px-2 py-0.5 rounded-full tracking-wider">
+                              Ordem: {coll.display_order ?? 0}
+                            </div>
+                          </div>
+                          <div className="p-5">
+                            <h3 className="font-bold text-lg text-gray-800">{title}</h3>
+                            <p className="text-xs text-pink-600 font-bold uppercase tracking-wider mt-1">{description || 'Sem descrição/cupom'}</p>
+                            {coll.href && (
+                              <p className="text-[11px] text-gray-400 font-medium mt-3 bg-slate-50 p-2 rounded truncate">
+                                Link: <span className="font-bold text-slate-600">{coll.href}</span>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="p-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+                          <span className={`inline-block text-[9px] font-bold px-2 py-0.5 rounded-full ${coll.is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-105 text-gray-500'}`}>
+                            {coll.is_active ? 'Ativo na Home' : 'Inativo'}
+                          </span>
+                          <div className="flex gap-1">
+                            <Button variant="ghost" size="icon" onClick={() => handleOpenEditCollection(coll)} className="h-8 w-8 text-gray-650 hover:text-black rounded-full" title="Editar">
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={() => handleDeleteCollection(coll.id)} className="h-8 w-8 text-rose-500 hover:text-rose-700 hover:bg-rose-50/50 rounded-full" title="Excluir">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </div>
@@ -1314,6 +1587,11 @@ function AdminDashboard() {
                 <Input value={bannerFormData.alt} onChange={e => setBannerFormData(p => ({ ...p, alt: e.target.value }))} placeholder="Ex: Nova Coleção de Inverno" />
               </div>
 
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Link de Redirecionamento (Opcional)</label>
+                <Input value={bannerFormData.href} onChange={e => setBannerFormData(p => ({ ...p, href: e.target.value }))} placeholder="Ex: /produtos ou /categorias/roupas" />
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Ordem Visual</label>
@@ -1330,6 +1608,20 @@ function AdminDashboard() {
                 </div>
               </div>
 
+              {/* Mobile Ratio Selection */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block">Proporção Mobile (Caso possua imagem mobile)</label>
+                <select
+                  value={bannerFormData.mobileRatio}
+                  onChange={e => setBannerFormData(p => ({ ...p, mobileRatio: e.target.value }))}
+                  className="w-full h-10 px-3 border border-gray-200 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#ff9edb]"
+                >
+                  <option value="1080x1080">1080x1080 (Quadrado) - Padrão</option>
+                  <option value="1080x1350">1080x1350 (Retrato / 4:5)</option>
+                  <option value="16:9">16:9 (Paisagem / Tradicional)</option>
+                </select>
+              </div>
+
               {/* Desktop Banner Image */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block font-semibold">Imagem Desktop (1580x700 recomendada)</label>
@@ -1344,7 +1636,7 @@ function AdminDashboard() {
 
               {/* Mobile Banner Image */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block font-semibold">Imagem Mobile (Proporção 16:9 - Opcional)</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block font-semibold">Imagem Mobile (Opcional - Usará Desk se vazio)</label>
                 <div className="flex gap-2 items-center">
                   <div className="flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl p-3 bg-gray-50 hover:bg-gray-100 relative cursor-pointer flex-1 text-center">
                     <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, (url) => setBannerFormData(prev => ({ ...prev, imageMobile: url })))} disabled={isUploading} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
@@ -1357,6 +1649,71 @@ function AdminDashboard() {
               <div className="border-t border-gray-100 pt-4 flex justify-end gap-3 mt-4">
                 <Button type="button" variant="outline" onClick={() => setIsBannerModalOpen(false)}>Cancelar</Button>
                 <Button type="submit" className="bg-[#b83070] text-white font-bold">Salvar Banner</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ──────────────── COLLECTION MODAL ──────────────── */}
+      {isCollectionModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={() => setIsCollectionModalOpen(false)} />
+          <div className="relative bg-white rounded-3xl shadow-xl w-full max-w-lg my-8 overflow-hidden z-10 animate-in zoom-in-95 duration-200">
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wider">
+                {editingCollection ? 'Editar Coleção' : 'Nova Coleção'}
+              </h3>
+              <button onClick={() => setIsCollectionModalOpen(false)} className="text-gray-400 hover:text-gray-655 p-1.5"><X className="w-5 h-5" /></button>
+            </div>
+
+            <form onSubmit={handleCollectionSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Título da Coleção</label>
+                <Input value={collectionFormData.title} onChange={e => setCollectionFormData(p => ({ ...p, title: e.target.value }))} placeholder="Ex: Coleção Verão" required />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Descrição / Desconto</label>
+                <Input value={collectionFormData.description} onChange={e => setCollectionFormData(p => ({ ...p, description: e.target.value }))} placeholder="Ex: Até 50% de desconto" />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Link de Redirecionamento</label>
+                <Input value={collectionFormData.href} onChange={e => setCollectionFormData(p => ({ ...p, href: e.target.value }))} placeholder="Ex: /categorias/roupas" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Ordem Visual</label>
+                  <Input type="number" value={collectionFormData.display_order} onChange={e => setCollectionFormData(p => ({ ...p, display_order: Number(e.target.value) }))} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Status</label>
+                  <div className="flex h-10 items-center">
+                    <label className="flex items-center gap-2 cursor-pointer text-sm font-semibold text-gray-700">
+                      <input type="checkbox" checked={collectionFormData.is_active} onChange={e => setCollectionFormData(p => ({ ...p, is_active: e.target.checked }))} className="rounded w-4 h-4 border-gray-300" />
+                      Ativo na Home
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cover Image */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 block font-semibold">Imagem de Capa (Proporção Retangular)</label>
+                <div className="flex gap-2 items-center">
+                  <div className="flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl p-3 bg-gray-50 hover:bg-gray-100 relative cursor-pointer flex-1 text-center">
+                    <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, (url) => setCollectionFormData(prev => ({ ...prev, image: url })))} disabled={isUploading} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                    <span className="text-xs text-gray-500">Upload Imagem</span>
+                  </div>
+                  <Input value={collectionFormData.image} onChange={e => setCollectionFormData(p => ({ ...p, image: e.target.value }))} placeholder="Link da imagem..." className="flex-[2]" required />
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100 pt-4 flex justify-end gap-3 mt-4">
+                <Button type="button" variant="outline" onClick={() => setIsCollectionModalOpen(false)}>Cancelar</Button>
+                <Button type="submit" className="bg-[#b83070] text-white font-bold">Salvar Coleção</Button>
               </div>
             </form>
           </div>

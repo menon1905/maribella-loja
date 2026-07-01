@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 const DEFAULT_BANNERS = [
-  { src: '/banner1.png', srcMobile: '/banner1.png', alt: 'Maribella - Coleção Especial' },
+  { src: '/banner1.png', srcMobile: '/1080x1350.jfif', alt: 'Maribella - Coleção Especial' },
   { src: '/banner2.png', srcMobile: '/banner2.png', alt: 'Maribella - Novidades da Temporada' },
   { src: '/banner3.png', srcMobile: '/banner3.png', alt: 'Maribella - Estilos Exclusivos' },
 ]
@@ -29,7 +29,8 @@ export function HeroCarousel() {
         if (error) throw error
 
         if (data && data.length > 0) {
-          const mapped = data.map((b: any) => ({
+          const filtered = data.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
+          const mapped = filtered.map((b: any) => ({
             src: b.image_desktop,
             srcMobile: b.image_mobile || b.image_desktop,
             alt: b.alt || 'Maribella Banner',
@@ -84,9 +85,15 @@ export function HeroCarousel() {
             className="relative w-full flex-shrink-0"
           >
             {/* Mobile — mesma proporcao do banner real */}
-            <div className="relative w-full aspect-[16/9] sm:hidden">
+            <div className={`relative w-full sm:hidden ${
+              banner.srcMobile && (banner.srcMobile.includes('1080x1350') || banner.srcMobile.includes('#1080x1350'))
+                ? 'aspect-[4/5]'
+                : banner.srcMobile && (banner.srcMobile.includes('16:9') || banner.srcMobile.includes('#16:9'))
+                ? 'aspect-[16/9]'
+                : 'aspect-square'
+            }`}>
               <Image
-                src={banner.srcMobile}
+                src={banner.srcMobile ? banner.srcMobile.split('#')[0] : ''}
                 alt={banner.alt}
                 fill
                 priority={i === 0}

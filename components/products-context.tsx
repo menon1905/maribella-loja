@@ -60,74 +60,74 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  async function loadProducts() {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: true })
+
+      if (error) throw error
+
+      if (data && data.length > 0) {
+        const mapped = data.map(mapFromDB)
+        setProducts(mapped)
+        localStorage.setItem('maribella_products', JSON.stringify(mapped))
+      } else {
+        // Table is empty, seed it with mock-data
+        console.log('Supabase table is empty. Seeding initial products...')
+        const seedData = initialProducts.map((p) => {
+          const discount = p.originalPrice && p.originalPrice > p.price
+            ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)
+            : null
+          return {
+            id: p.id,
+            name: p.name,
+            description: p.description,
+            price: p.price,
+            original_price: p.originalPrice || null,
+            image: p.image,
+            images: p.images || [p.image], // Initialize with at least main image
+            category: p.category,
+            rating: p.rating,
+            reviews: p.reviews,
+            in_stock: p.inStock,
+            sizes: p.sizes || [],
+            colors: p.colors || [],
+            is_new: p.isNew || false,
+            is_featured: p.isFeatured || false,
+            discount
+          }
+        })
+
+        const { error: seedError } = await supabase.from('products').insert(seedData)
+        if (seedError) {
+          console.error('Failed to seed Supabase table:', seedError)
+        }
+
+        setProducts(initialProducts)
+        localStorage.setItem('maribella_products', JSON.stringify(initialProducts))
+      }
+    } catch (err) {
+      console.warn('Could not load from Supabase, falling back to localStorage.', err)
+      const stored = localStorage.getItem('maribella_products')
+      if (stored) {
+        try {
+          setProducts(JSON.parse(stored))
+        } catch (e) {
+          setProducts(initialProducts)
+        }
+      } else {
+        setProducts(initialProducts)
+        localStorage.setItem('maribella_products', JSON.stringify(initialProducts))
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   // Fetch products from Supabase and listen to changes in real-time
   useEffect(() => {
-    async function loadProducts() {
-      try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .order('created_at', { ascending: true })
-
-        if (error) throw error
-
-        if (data && data.length > 0) {
-          const mapped = data.map(mapFromDB)
-          setProducts(mapped)
-          localStorage.setItem('maribella_products', JSON.stringify(mapped))
-        } else {
-          // Table is empty, seed it with mock-data
-          console.log('Supabase table is empty. Seeding initial products...')
-          const seedData = initialProducts.map((p) => {
-            const discount = p.originalPrice && p.originalPrice > p.price
-              ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)
-              : null
-            return {
-              id: p.id,
-              name: p.name,
-              description: p.description,
-              price: p.price,
-              original_price: p.originalPrice || null,
-              image: p.image,
-              images: p.images || [p.image], // Initialize with at least main image
-              category: p.category,
-              rating: p.rating,
-              reviews: p.reviews,
-              in_stock: p.inStock,
-              sizes: p.sizes || [],
-              colors: p.colors || [],
-              is_new: p.isNew || false,
-              is_featured: p.isFeatured || false,
-              discount
-            }
-          })
-
-          const { error: seedError } = await supabase.from('products').insert(seedData)
-          if (seedError) {
-            console.error('Failed to seed Supabase table:', seedError)
-          }
-
-          setProducts(initialProducts)
-          localStorage.setItem('maribella_products', JSON.stringify(initialProducts))
-        }
-      } catch (err) {
-        console.warn('Could not load from Supabase, falling back to localStorage.', err)
-        const stored = localStorage.getItem('maribella_products')
-        if (stored) {
-          try {
-            setProducts(JSON.parse(stored))
-          } catch (e) {
-            setProducts(initialProducts)
-          }
-        } else {
-          setProducts(initialProducts)
-          localStorage.setItem('maribella_products', JSON.stringify(initialProducts))
-        }
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
     loadProducts()
 
     // Realtime channel setup
@@ -192,6 +192,8 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error
     } catch (err) {
       console.error('Error adding product to Supabase:', err)
+      await loadProducts() // revert optimistic update
+      throw err
     }
   }
 
@@ -207,6 +209,8 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error
     } catch (err) {
       console.error('Error deleting product from Supabase:', err)
+      await loadProducts() // revert optimistic update
+      throw err
     }
   }
 
@@ -232,6 +236,8 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error
     } catch (err) {
       console.error('Error updating product in Supabase:', err)
+      await loadProducts() // revert optimistic update
+      throw err
     }
   }
 

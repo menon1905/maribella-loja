@@ -2,7 +2,9 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
+import { supabase } from '@/lib/supabase'
 
 interface PromoItem {
   title: string
@@ -15,7 +17,41 @@ interface PromoSectionProps {
   items: PromoItem[]
 }
 
-export function PromoSection({ items }: PromoSectionProps) {
+export function PromoSection({ items: defaultItems }: PromoSectionProps) {
+  const [items, setItems] = useState<PromoItem[]>(defaultItems)
+
+  useEffect(() => {
+    async function loadCollections() {
+      try {
+        const { data, error } = await supabase
+          .from('banners')
+          .select('*')
+          .eq('is_active', true)
+          .like('alt', '[COLECAO]%')
+          .order('display_order', { ascending: true })
+
+        if (error) throw error
+
+        if (data && data.length > 0) {
+          const mapped = data.map((b: any) => {
+            const cleanAlt = b.alt.replace('[COLECAO]', '').trim()
+            const [title, ...descParts] = cleanAlt.split('|')
+            return {
+              title: title.trim(),
+              description: descParts.join('|').trim(),
+              image: b.image_desktop,
+              href: b.href || '#'
+            }
+          })
+          setItems(mapped)
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar coleções do Supabase, usando padrão.', err)
+      }
+    }
+    loadCollections()
+  }, [defaultItems])
+
   return (
     <section className="py-12">
       <div className="max-w-7xl mx-auto px-4">
