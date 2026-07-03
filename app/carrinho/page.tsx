@@ -29,6 +29,10 @@ export default function CartPage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [coupon, setCoupon] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
+  const [cep, setCep] = useState('')
+  const [freteCalculado, setFreteCalculado] = useState<number | null>(null)
+  const [cepError, setCepError] = useState('')
+  const [distanciaKm, setDistanciaKm] = useState<number | null>(null)
 
   useEffect(() => {
     try {
@@ -111,8 +115,28 @@ export default function CartPage() {
 
   const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
-  const shipping = subtotal > 0 && (subtotal - discount) > 400 ? 0 : (subtotal === 0 ? 0 : 15)
-  const total = subtotal - discount + shipping
+
+  // Se subtotal após desconto > 400, frete grátis. Caso contrário usa o valor calculado por CEP (ou null se não calculado)
+  const shipping = subtotal > 0 && (subtotal - discount) >= 400 ? 0 : freteCalculado
+  const total = subtotal - discount + (shipping ?? 0)
+
+  const calcularFrete = () => {
+    const cepLimpo = cep.replace(/\D/g, '')
+    if (cepLimpo.length !== 8) {
+      setCepError('CEP inválido. Digite 8 dígitos.')
+      setFreteCalculado(null)
+      setDistanciaKm(null)
+      return
+    }
+    const storeCep = 13056272
+    // Estimativa de distância: 1 km por 1.000 unidades de diferença de CEP
+    const diff = Math.abs(parseInt(cepLimpo) - storeCep)
+    const km = diff / 1000
+    const custo = km <= 5 ? 5 : 5 + (km - 5) * 1
+    setDistanciaKm(km)
+    setFreteCalculado(parseFloat(custo.toFixed(2)))
+    setCepError('')
+  }
 
 
   return (
@@ -235,6 +259,31 @@ export default function CartPage() {
                   )}
                 </div>
 
+                {/* CEP Frete */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Calcular Frete</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Digite seu CEP"
+                      value={cep}
+                      onChange={(e) => setCep(e.target.value.replace(/\D/g, '').slice(0, 8))}
+                      onKeyDown={(e) => e.key === 'Enter' && calcularFrete()}
+                      className="flex-1 border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      maxLength={8}
+                    />
+                    <Button variant="outline" className="px-4 cursor-pointer" onClick={calcularFrete}>
+                      Calcular
+                    </Button>
+                  </div>
+                  {cepError && <p className="text-xs text-red-500">{cepError}</p>}
+                  {freteCalculado !== null && distanciaKm !== null && shipping !== 0 && (
+                    <p className="text-xs text-green-700 font-medium">
+                      📍 Distância estimada: {distanciaKm.toFixed(1)} km — Frete: R$ {freteCalculado.toFixed(2)}
+                    </p>
+                  )}
+                </div>
+
                 {/* Totals */}
                 <div className="space-y-3 border-t pt-4">
                   <div className="flex justify-between text-sm">
@@ -249,22 +298,28 @@ export default function CartPage() {
                   )}
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">
-                      Frete {shipping === 0 && subtotal > 0 && '(Grátis)'}
+                      Frete {shipping === 0 && subtotal > 0 ? '(Grátis)' : ''}
                     </span>
-                    <span className={shipping === 0 && subtotal > 0 ? 'text-green-600 font-medium' : ''}>
-                      {shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2)}`}
+                    <span className={shipping === 0 && subtotal > 0 ? 'text-green-600 font-medium' : 'text-muted-foreground'}>
+                      {shipping === null
+                        ? 'A calcular'
+                        : shipping === 0
+                        ? 'Grátis'
+                        : `R$ ${shipping.toFixed(2)}`}
                     </span>
                   </div>
                   <div className="flex justify-between text-lg font-bold border-t pt-3">
                     <span>Total</span>
-                    <span className="text-primary">R$ {total.toFixed(2)}</span>
+                    <span className="text-primary">
+                      {shipping === null ? `R$ ${(subtotal - discount).toFixed(2)} + frete` : `R$ ${total.toFixed(2)}`}
+                    </span>
                   </div>
                 </div>
 
-                {/* Info */}
-                {shipping > 0 && (
+                {/* Info frete grátis */}
+                {subtotal > 0 && (subtotal - discount) < 400 && (
                   <div className="bg-primary/10 text-sm text-primary p-3 rounded">
-                    Frete grátis em compras acima de R$ 400. Adicione R$ {(400 - (subtotal - discount)).toFixed(2)} para conseguir!
+                    Frete grátis em compras acima de R$ 400. Adicione R$ {Math.max(0, 400 - (subtotal - discount)).toFixed(2)} para conseguir!
                   </div>
                 )}
 
@@ -286,6 +341,7 @@ export default function CartPage() {
                 {/* Info */}
                 <div className="text-xs text-muted-foreground space-y-2">
                   <p>✓ Frete grátis acima de R$ 400</p>
+                  <p>✓ Frete calculado por distância com base no seu CEP</p>
                   <p>✓ Compra segura com SSL</p>
                 </div>
               </div>

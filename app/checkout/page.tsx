@@ -87,7 +87,17 @@ export default function CheckoutPage() {
 
     const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
     const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
-    const shipping = subtotal > 0 && (subtotal - discount) > 400 ? 0 : 15
+    const cepLimpo = formData.zipCode.replace(/\D/g, '')
+    let shipping = 15 // Fallback padrão caso cep não preenchido ou inválido
+    if (subtotal > 0 && (subtotal - discount) >= 400) {
+      shipping = 0
+    } else if (cepLimpo.length === 8) {
+      const storeCep = 13056272
+      const diff = Math.abs(parseInt(cepLimpo) - storeCep)
+      const km = diff / 1000
+      const custo = km <= 5 ? 5 : 5 + (km - 5) * 1
+      shipping = parseFloat(custo.toFixed(2))
+    }
     const total = subtotal - discount + shipping
 
     const message = `Olá, Maribella! Gostaria de finalizar meu pedido.
@@ -131,8 +141,21 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
 
   const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
-  const shipping = subtotal > 0 && (subtotal - discount) > 400 ? 0 : (subtotal === 0 ? 0 : 15)
-  const total = subtotal - discount + shipping
+
+  const getShippingCost = () => {
+    if (subtotal === 0) return 0
+    if (subtotal - discount >= 400) return 0
+    const cepLimpo = formData.zipCode.replace(/\D/g, '')
+    if (cepLimpo.length !== 8) return null
+    const storeCep = 13056272
+    const diff = Math.abs(parseInt(cepLimpo) - storeCep)
+    const km = diff / 1000
+    const custo = km <= 5 ? 5 : 5 + (km - 5) * 1
+    return parseFloat(custo.toFixed(2))
+  }
+
+  const shipping = getShippingCost()
+  const total = subtotal - discount + (shipping ?? 0)
 
 
   return (
@@ -414,13 +437,19 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                 )}
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Frete</span>
-                  <span className="text-green-600 font-bold uppercase tracking-wider text-xs">
-                    {shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2)}`}
+                  <span className={shipping === 0 && subtotal > 0 ? 'text-green-600 font-bold uppercase tracking-wider text-xs' : 'text-gray-700 font-medium'}>
+                    {shipping === null
+                      ? 'A calcular'
+                      : shipping === 0
+                      ? 'Grátis'
+                      : `R$ ${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 <div className="flex justify-between font-bold text-lg border-t pt-3 mt-2">
                   <span className="text-gray-900">Total</span>
-                  <span className="text-gray-900">R$ {total.toFixed(2)}</span>
+                  <span className="text-gray-900">
+                    {shipping === null ? `R$ ${(subtotal - discount).toFixed(2)} + frete` : `R$ ${total.toFixed(2)}`}
+                  </span>
                 </div>
               </div>
 
