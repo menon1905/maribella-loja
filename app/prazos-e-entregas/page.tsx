@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import Link from 'next/link'
@@ -9,6 +12,16 @@ export const metadata: Metadata = {
 }
 
 export default function PrazosEntregasPage() {
+  const [freteResult, setFreteResult] = useState<string>('');
+  const calculateFrete = () => {
+    const cepInput = (document.getElementById('cep-input') as HTMLInputElement).value;
+    const storeCep = '13056272';
+    const distance = Math.abs(parseInt(cepInput) - parseInt(storeCep)) / 1000;
+    const cost = 5 + Math.max(0, distance - 5) * 1;
+    const formatted = `R$ ${cost.toFixed(2)}`;
+    setFreteResult(`Frete: ${formatted} (≈ ${distance.toFixed(1)} km)`);
+  };
+
   return (
     <main className="min-h-screen flex flex-col bg-background">
       <Header />
@@ -109,7 +122,7 @@ export default function PrazosEntregasPage() {
               <li><strong>PAC</strong> — Econômico, prazo maior</li>
               <li><strong>SEDEX</strong> — Expresso, entrega mais rápida</li>
               <li><strong>Frete Grátis</strong> — Em compras acima de R$ 400,00 (PAC)</li>
-              <li><strong>Frete Grátis Campinas</strong> — Para Campinas e região, o frete é grátis em qualquer valor de compra</li>
+  
             </ul>
           </section>
 
