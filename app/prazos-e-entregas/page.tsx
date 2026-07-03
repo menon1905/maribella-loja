@@ -1,10 +1,8 @@
-'use client'
-
-import { useState } from 'react'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { ShippingCalculator } from '@/components/shipping-calculator'
 
 export const metadata: Metadata = {
   title: 'Prazos e Entregas | Maribella',
@@ -12,15 +10,6 @@ export const metadata: Metadata = {
 }
 
 export default function PrazosEntregasPage() {
-  const [freteResult, setFreteResult] = useState<string>('');
-  const calculateFrete = () => {
-    const cepInput = (document.getElementById('cep-input') as HTMLInputElement).value;
-    const storeCep = '13056272';
-    const distance = Math.abs(parseInt(cepInput) - parseInt(storeCep)) / 1000;
-    const cost = 5 + Math.max(0, distance - 5) * 1;
-    const formatted = `R$ ${cost.toFixed(2)}`;
-    setFreteResult(`Frete: ${formatted} (≈ ${distance.toFixed(1)} km)`);
-  };
 
   return (
     <main className="min-h-screen flex flex-col bg-background">
@@ -125,6 +114,8 @@ export default function PrazosEntregasPage() {
   
             </ul>
           </section>
+
+          <ShippingCalculator />
 
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-4">Dúvidas?</h2>
