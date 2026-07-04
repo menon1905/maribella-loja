@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { supabase, getUserRole } from '@/lib/supabase'
 import { useProducts } from '@/components/products-context'
-import { CATEGORIES } from '@/lib/mock-data'
 
 const ROUPA_SUBCATS = [
   { label: 'Todas', href: '/categorias/roupas' },
@@ -54,16 +53,15 @@ export function Header() {
   }, [])
 
   // Auth state
-  // Inicializa com categorias estáticas para evitar flash — substitui com DB quando chegar
-  const staticCategories = CATEGORIES.map((c: any, i: number) => ({
-    id: c.id || `static-${c.slug}`,
-    name: c.name,
-    slug: c.slug,
-    parent_slug: null,
-    display_order: i,
-    image: c.image,
-  }))
-  const [dbCategories, setDbCategories] = useState<any[]>(staticCategories)
+  // Inicializa com cache do localStorage para evitar flash com categorias erradas
+  const getCachedCategories = () => {
+    if (typeof window === 'undefined') return []
+    try {
+      const cached = localStorage.getItem('maribella_nav_categories')
+      return cached ? JSON.parse(cached) : []
+    } catch { return [] }
+  }
+  const [dbCategories, setDbCategories] = useState<any[]>(getCachedCategories)
 
   useEffect(() => {
     const loadSession = async () => {
@@ -96,6 +94,11 @@ export function Header() {
           .order('display_order', { ascending: true })
         if (data && data.length > 0) {
           setDbCategories(data)
+          localStorage.setItem('maribella_nav_categories', JSON.stringify(data))
+        } else if (data) {
+          // Banco respondeu mas está vazio — limpa o cache e o estado
+          setDbCategories([])
+          localStorage.removeItem('maribella_nav_categories')
         }
       } catch (err) {
         console.warn('Erro ao carregar categorias dinâmicas no Header:', err)
