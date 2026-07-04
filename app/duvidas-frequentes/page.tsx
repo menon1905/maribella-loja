@@ -37,13 +37,9 @@ const faqs = [
   {
     question: 'O frete é grátis?',
     answer:
-      'Sim! Para compras acima de R$ 400,00 o frete é grátis via PAC para todo o Brasil. Para Campinas e região, o frete é grátis em qualquer valor de compra! Para compras menores, o valor do frete é calculado de acordo com o seu CEP.',
+      'Sim! Para compras acima de R$ 400,00 o frete é grátis via PAC para todo o Brasil. Para compras menores, o valor do frete é calculado de acordo com o seu CEP.',
   },
-  {
-    question: 'Quanto tempo leva para meu pedido chegar?',
-    answer:
-      'Após a confirmação e envio (em até 2 dias úteis), o prazo varia por região: São Paulo capital de 2 a 5 dias úteis, Sudeste de 3 a 7 dias, demais regiões de 5 a 15 dias úteis.',
-  },
+
   {
     question: 'Os produtos são originais?',
     answer:

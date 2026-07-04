@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { supabase, getUserRole } from '@/lib/supabase'
 import { useProducts } from '@/components/products-context'
+import { CATEGORIES } from '@/lib/mock-data'
 
 const ROUPA_SUBCATS = [
   { label: 'Todas', href: '/categorias/roupas' },
@@ -53,7 +54,16 @@ export function Header() {
   }, [])
 
   // Auth state
-  const [dbCategories, setDbCategories] = useState<any[]>([])
+  // Inicializa com categorias estáticas para evitar flash — substitui com DB quando chegar
+  const staticCategories = CATEGORIES.map((c: any, i: number) => ({
+    id: c.id || `static-${c.slug}`,
+    name: c.name,
+    slug: c.slug,
+    parent_slug: null,
+    display_order: i,
+    image: c.image,
+  }))
+  const [dbCategories, setDbCategories] = useState<any[]>(staticCategories)
 
   useEffect(() => {
     const loadSession = async () => {
