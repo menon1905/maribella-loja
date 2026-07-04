@@ -95,6 +95,17 @@ export default function ContaPage() {
 
   const favoriteProducts = products.filter(p => favoriteIds.includes(p.id))
 
+  // Sync: remove IDs from localStorage that no longer exist in products
+  useEffect(() => {
+    if (products.length === 0) return // wait for products to load
+    const validIds = favoriteIds.filter(id => products.some(p => p.id === id))
+    if (validIds.length !== favoriteIds.length) {
+      setFavoriteIds(validIds)
+      localStorage.setItem('maribella_favorites', JSON.stringify(validIds))
+      window.dispatchEvent(new Event('favorites-updated'))
+    }
+  }, [products, favoriteIds])
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-pink-50/30">

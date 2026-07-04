@@ -165,7 +165,18 @@ export function Header() {
       try {
         const favs = localStorage.getItem('maribella_favorites')
         if (favs) {
-          setFavoritesCount(JSON.parse(favs).length)
+          const ids: string[] = JSON.parse(favs)
+          if (products.length > 0) {
+            // Validate IDs against real products and clean stale ones
+            const validIds = ids.filter(id => products.some(p => p.id === id))
+            if (validIds.length !== ids.length) {
+              localStorage.setItem('maribella_favorites', JSON.stringify(validIds))
+            }
+            setFavoritesCount(validIds.length)
+          } else {
+            // Products not loaded yet — don't show badge to avoid phantom count
+            setFavoritesCount(0)
+          }
         } else {
           setFavoritesCount(0)
         }
@@ -182,7 +193,7 @@ export function Header() {
       window.removeEventListener('storage', updateFavoritesCount)
       window.removeEventListener('favorites-updated', updateFavoritesCount)
     }
-  }, [])
+  }, [products])
 
   return (
     <>
