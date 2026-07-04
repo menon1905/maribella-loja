@@ -94,50 +94,16 @@ function AdminDashboard() {
 
   // Loaded state for Categories and Banners
   const [categories, setCategories] = useState<any[]>([])
-  const [mainCategories, setMainCategories] = useState<any[]>(
-    defaultCategories.map((c, i) => ({ id: c.id || `local-${c.slug}`, name: c.name, slug: c.slug, image: c.image, parent_slug: null, display_order: i }))
-  )
+  const [mainCategories, setMainCategories] = useState<any[]>([])
   const [banners, setBanners] = useState<any[]>([])
   const [collections, setCollections] = useState<any[]>([])
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true)
   const [isBannersLoading, setIsBannersLoading] = useState(true)
   const [isCollectionsLoading, setIsCollectionsLoading] = useState(true)
 
-  // Flags to prevent concurrent seeding in React Strict Mode double-effect
-  const seedingCategories = React.useRef(false)
-  const seedingBanners = React.useRef(false)
-
   // Fetch Categories
   const loadCategories = async () => {
     setIsCategoriesLoading(true)
-
-    // Build rich fallback data combining main cats + roupas subcats
-    const fallbackMain = defaultCategories.map((c, i) => ({
-      id: c.id || `local-${c.slug}`,
-      name: c.name,
-      slug: c.slug,
-      description: c.description || '',
-      image: c.image,
-      image_position: c.imagePosition || 'center',
-      display_order: i,
-      parent_slug: null,
-    }))
-    const fallbackSubs = DEFAULT_ROUPAS_SUBCATS.map((s, i) => ({
-      id: `local-sub-${i}`,
-      name: s.label,
-      slug: s.label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-'),
-      description: '',
-      image: s.image,
-      image_position: s.objectPosition || 'center',
-      display_order: i,
-      parent_slug: 'roupas',
-    }))
-    const allFallback = [...fallbackMain, ...fallbackSubs]
-
-    // Always show something immediately
-    setCategories(allFallback)
-    setIsCategoriesLoading(false)
-
     try {
       const { data, error } = await supabase
         .from('categories')
@@ -145,78 +111,23 @@ function AdminDashboard() {
         .order('display_order', { ascending: true })
 
       if (error) {
-        console.warn('Tabela categories indisponível. Usando dados locais.', error.message)
+        console.warn('Erro ao carregar categorias do Supabase.', error.message)
+        setCategories([])
         return
       }
 
-      if (data && data.length > 0) {
-        setCategories(data)
-        // Merge DB main cats with fallback (DB takes priority, fallback fills gaps)
-        const dbMain = data.filter((c: any) => !c.parent_slug)
-        if (dbMain.length > 0) {
-          setMainCategories(dbMain)
-        } else {
-          // DB has data but no main cats with parent_slug=null — keep fallback
-        }
-        return
-      }
-
-      // Prevent duplicate seed runs
-      if (seedingCategories.current) return
-      seedingCategories.current = true
-
-      // Table is empty: try to seed it
-      console.log('Semeando categorias no Supabase...')
-      const mainSeed = defaultCategories.map((c, i) => ({
-        name: c.name,
-        slug: c.slug,
-        description: c.description || '',
-        image: c.image,
-        image_position: c.imagePosition || 'center',
-        display_order: i,
-        parent_slug: null,
-      }))
-      const subcatSeed = DEFAULT_ROUPAS_SUBCATS.map((s, i) => ({
-        name: s.label,
-        slug: s.label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-'),
-        description: '',
-        image: s.image,
-        image_position: s.objectPosition || 'center',
-        display_order: i,
-        parent_slug: 'roupas',
-      }))
-      const { error: seedErr } = await supabase
-        .from('categories')
-        .insert([...mainSeed, ...subcatSeed])
-
-      if (seedErr) {
-        console.warn('Seed falhou (coluna parent_slug pode estar faltando):', seedErr.message)
-        // Try seeding without parent_slug (older schema)
-        const simpleSeed = defaultCategories.map((c, i) => ({
-          name: c.name,
-          slug: c.slug,
-          description: c.description || '',
-          image: c.image,
-          image_position: c.imagePosition || 'center',
-          display_order: i,
-        }))
-        await supabase.from('categories').insert(simpleSeed)
-      }
-
-      // Reload after seed
-      const { data: seeded } = await supabase
-        .from('categories')
-        .select('*')
-        .order('display_order', { ascending: true })
-      if (seeded && seeded.length > 0) {
-        setCategories(seeded)
-        const seededMain = seeded.filter((c: any) => !c.parent_slug)
-        if (seededMain.length > 0) setMainCategories(seededMain)
+      // Sempre respeita o banco — mesmo que vazio
+      const cats = data ?? []
+      setCategories(cats)
+      const dbMain = cats.filter((c: any) => !c.parent_slug)
+      if (dbMain.length > 0) {
+        setMainCategories(dbMain)
       }
     } catch (err) {
       console.warn('Erro inesperado ao carregar categorias.', err)
+      setCategories([])
     } finally {
-      seedingCategories.current = false
+      setIsCategoriesLoading(false)
     }
   }
 
@@ -233,62 +144,12 @@ function AdminDashboard() {
 
       if (error) throw error
 
-      if (data && data.length > 0) {
-        let normalBanners = data.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
-        let collectionItems = data.filter((b: any) => b.alt?.startsWith('[COLECAO]'))
-
-        if (collectionItems.length === 0) {
-          // seed default collections
-          const defaultCollectionsSeed = [
-            { image_desktop: '/cat_roupas.png', image_mobile: '/cat_roupas.png', alt: '[COLECAO] Coleção Verão | Até 50% de desconto', href: '/categorias/roupas', display_order: 0, is_active: true },
-            { image_desktop: '/cat_bolsas.png', image_mobile: '/cat_bolsas.png', alt: '[COLECAO] Bolsas em Promoção | A partir de R$ 89,90', href: '/categorias/bolsas', display_order: 1, is_active: true }
-          ]
-          await supabase.from('banners').insert(defaultCollectionsSeed)
-
-          const { data: refetched } = await supabase
-            .from('banners')
-            .select('*')
-            .order('display_order', { ascending: true })
-
-          if (refetched) {
-            normalBanners = refetched.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
-            collectionItems = refetched.filter((b: any) => b.alt?.startsWith('[COLECAO]'))
-          }
-        }
-
-        setBanners(normalBanners)
-        setCollections(collectionItems)
-      } else {
-        // Prevent duplicate seed runs
-        if (seedingBanners.current) return
-        seedingBanners.current = true
-
-        // Table exists but is empty: seed default banners & collections
-        console.log('Semeando tabela de banners com os padrões...')
-        const defaultBannersSeed = [
-          { image_desktop: '/banner1.png', image_mobile: '/banner1.png', alt: 'Maribella - Coleção Especial', display_order: 0, is_active: true },
-          { image_desktop: '/banner2.png', image_mobile: '/banner2.png', alt: 'Maribella - Novidades da Temporada', display_order: 1, is_active: true },
-          { image_desktop: '/banner3.png', image_mobile: '/banner3.png', alt: 'Maribella - Estilos Exclusivos', display_order: 2, is_active: true },
-          { image_desktop: '/cat_roupas.png', image_mobile: '/cat_roupas.png', alt: '[COLECAO] Coleção Verão | Até 50% de desconto', href: '/categorias/roupas', display_order: 3, is_active: true },
-          { image_desktop: '/cat_bolsas.png', image_mobile: '/cat_bolsas.png', alt: '[COLECAO] Bolsas em Promoção | A partir de R$ 89,90', href: '/categorias/bolsas', display_order: 4, is_active: true }
-        ]
-        const { error: seedError } = await supabase.from('banners').insert(defaultBannersSeed)
-        if (!seedError) {
-          const { data: newData } = await supabase
-            .from('banners')
-            .select('*')
-            .order('display_order', { ascending: true })
-          if (newData && newData.length > 0) {
-            const normalBanners = newData.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
-            const collectionItems = newData.filter((b: any) => b.alt?.startsWith('[COLECAO]'))
-            setBanners(normalBanners)
-            setCollections(collectionItems)
-            return
-          }
-        }
-        setBanners([])
-        setCollections([])
-      }
+      // Sempre respeita o banco — mesmo que vazio
+      const allBanners = data ?? []
+      const normalBanners = allBanners.filter((b: any) => !b.alt?.startsWith('[COLECAO]'))
+      const collectionItems = allBanners.filter((b: any) => b.alt?.startsWith('[COLECAO]'))
+      setBanners(normalBanners)
+      setCollections(collectionItems)
     } catch (err) {
       console.warn('Erro ao carregar banners do Supabase.', err)
       setBanners([])
@@ -296,7 +157,6 @@ function AdminDashboard() {
     } finally {
       setIsBannersLoading(false)
       setIsCollectionsLoading(false)
-      seedingBanners.current = false
     }
   }
 

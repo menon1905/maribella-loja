@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { Product, PRODUCTS as initialProducts } from '@/lib/mock-data'
+import { Product } from '@/lib/mock-data'
 import { supabase } from '@/lib/supabase'
 
 interface ProductsContextType {
@@ -69,68 +69,32 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 
       if (error) throw error
 
-      if (data && data.length > 0) {
-        const mapped = data.map(mapFromDB)
-        setProducts(mapped)
-        localStorage.setItem('maribella_products', JSON.stringify(mapped))
-      } else {
-        // Table is empty, seed it with mock-data
-        console.log('Supabase table is empty. Seeding initial products...')
-        const seedData = initialProducts.map((p) => {
-          const discount = p.originalPrice && p.originalPrice > p.price
-            ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)
-            : null
-          return {
-            id: p.id,
-            name: p.name,
-            description: p.description,
-            price: p.price,
-            original_price: p.originalPrice || null,
-            image: p.image,
-            images: p.images || [p.image], // Initialize with at least main image
-            category: p.category,
-            rating: p.rating,
-            reviews: p.reviews,
-            in_stock: p.inStock,
-            sizes: p.sizes || [],
-            colors: p.colors || [],
-            is_new: p.isNew || false,
-            is_featured: p.isFeatured || false,
-            discount
-          }
-        })
-
-        const { error: seedError } = await supabase.from('products').insert(seedData)
-        if (seedError) {
-          console.error('Failed to seed Supabase table:', seedError)
-        }
-
-        setProducts(initialProducts)
-        localStorage.setItem('maribella_products', JSON.stringify(initialProducts))
-      }
+      // Sempre respeita o que está no banco — mesmo que seja 0 produtos
+      const mapped = (data ?? []).map(mapFromDB)
+      setProducts(mapped)
+      localStorage.setItem('maribella_products', JSON.stringify(mapped))
     } catch (err) {
-      console.warn('Could not load from Supabase, falling back to localStorage.', err)
+      console.warn('Could not load from Supabase, falling back to localStorage cache.', err)
       const stored = localStorage.getItem('maribella_products')
       if (stored) {
         try {
           setProducts(JSON.parse(stored))
-        } catch (e) {
-          setProducts(initialProducts)
+        } catch {
+          setProducts([])
         }
       } else {
-        setProducts(initialProducts)
-        localStorage.setItem('maribella_products', JSON.stringify(initialProducts))
+        setProducts([])
       }
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Fetch products from Supabase and listen to changes in real-time
+  // Busca produtos do Supabase e escuta mudanças em tempo real
   useEffect(() => {
     loadProducts()
 
-    // Realtime channel setup
+    // Realtime channel
     const channel = supabase
       .channel('schema-db-changes')
       .on(
@@ -192,7 +156,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error
     } catch (err) {
       console.error('Error adding product to Supabase:', err)
-      await loadProducts() // revert optimistic update
+      await loadProducts() // reverte optimistic update
       throw err
     }
   }
@@ -209,7 +173,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error
     } catch (err) {
       console.error('Error deleting product from Supabase:', err)
-      await loadProducts() // revert optimistic update
+      await loadProducts() // reverte optimistic update
       throw err
     }
   }
@@ -236,7 +200,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error
     } catch (err) {
       console.error('Error updating product in Supabase:', err)
-      await loadProducts() // revert optimistic update
+      await loadProducts() // reverte optimistic update
       throw err
     }
   }
