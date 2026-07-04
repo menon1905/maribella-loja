@@ -129,12 +129,28 @@ export default function CartPage() {
       return
     }
     const storeCep = 13056272
-    // Estimativa de distância: 1 km por 1.000 unidades de diferença de CEP
+    // Estimativa de distância baseada na diferença de CEP
     const diff = Math.abs(parseInt(cepLimpo) - storeCep)
     const km = diff / 1000
-    const custo = km <= 5 ? 5 : 5 + (km - 5) * 1
+
+    // Frete por faixas de distância (R$20 a R$50)
+    let custo: number
+    if (km <= 15) {
+      custo = 20 // Campinas e arredores imediatos
+    } else if (km <= 30) {
+      custo = 25 // Sumaré, Hortolândia, Valinhos, Vinhedo
+    } else if (km <= 60) {
+      custo = 35 // Americana, Santa Bárbara, Piracicaba, Jundiaí
+    } else if (km <= 100) {
+      custo = 42 // Sorocaba, São Paulo (região), Ribeirão Preto (região)
+    } else if (km <= 150) {
+      custo = 47 // Regiões mais distantes do interior
+    } else {
+      custo = 50 // Qualquer localidade mais distante — máximo R$50
+    }
+
     setDistanciaKm(km)
-    setFreteCalculado(parseFloat(custo.toFixed(2)))
+    setFreteCalculado(custo)
     setCepError('')
   }
 
