@@ -383,17 +383,49 @@ function AdminDashboard() {
       return
     }
 
+    const targetOrder = Number(categoryFormData.display_order)
+    const targetParentSlug = categoryFormData.parent_slug ?? null
+
+    const duplicate = categories.find((c: any) => 
+      Number(c.display_order) === targetOrder && 
+      ((c.parent_slug === null && targetParentSlug === null) || (c.parent_slug === targetParentSlug)) &&
+      (!editingCategory || c.id !== editingCategory.id)
+    )
+
+    const currentOrder = editingCategory 
+      ? Number(editingCategory.display_order) 
+      : (targetParentSlug 
+          ? categories.filter(c => c.parent_slug === targetParentSlug).length 
+          : categories.filter(c => !c.parent_slug).length)
+
     const payload = {
       name: categoryFormData.name,
       slug: categoryFormData.slug.toLowerCase().trim().replace(/\s+/g, '-'),
       description: categoryFormData.description,
       image: categoryFormData.image,
       image_position: categoryFormData.imagePosition,
-      display_order: Number(categoryFormData.display_order),
-      parent_slug: categoryFormData.parent_slug ?? null,
+      display_order: targetOrder,
+      parent_slug: targetParentSlug,
     }
 
     try {
+      if (duplicate) {
+        const confirmSwap = confirm(
+          `Deseja trocar a posição do "${duplicate.name}" ordem ${targetOrder} por "${categoryFormData.name}" ordem ${currentOrder}?`
+        )
+        if (!confirmSwap) {
+          toast.error('A ordem informada já está em uso. Por favor, escolha outro número.')
+          return
+        }
+
+        const { error: dupError } = await supabase
+          .from('categories')
+          .update({ display_order: currentOrder })
+          .eq('id', duplicate.id)
+
+        if (dupError) throw dupError
+      }
+
       if (editingCategory) {
         const { error } = await supabase
           .from('categories')
@@ -494,16 +526,47 @@ function AdminDashboard() {
       mobileUrl = mobileUrl.split('#')[0] + '#' + bannerFormData.mobileRatio
     }
 
+    const targetOrder = Number(bannerFormData.display_order)
+
+    const duplicate = banners.find((b: any) => 
+      Number(b.display_order) === targetOrder &&
+      (!editingBanner || b.id !== editingBanner.id)
+    )
+
+    const currentOrder = editingBanner
+      ? Number(editingBanner.display_order)
+      : banners.length
+
     const payload = {
       image_desktop: bannerFormData.imageDesktop,
       image_mobile: mobileUrl,
       alt: bannerFormData.alt,
-      display_order: Number(bannerFormData.display_order),
+      display_order: targetOrder,
       is_active: bannerFormData.is_active,
       href: bannerFormData.href || null
     }
 
     try {
+      if (duplicate) {
+        const duplicateName = duplicate.alt || `Banner #${duplicate.display_order}`
+        const currentName = bannerFormData.alt || `Novo Banner`
+
+        const confirmSwap = confirm(
+          `Deseja trocar a posição do "${duplicateName}" ordem ${targetOrder} por "${currentName}" ordem ${currentOrder}?`
+        )
+        if (!confirmSwap) {
+          toast.error('A ordem informada já está em uso. Por favor, escolha outro número.')
+          return
+        }
+
+        const { error: dupError } = await supabase
+          .from('banners')
+          .update({ display_order: currentOrder })
+          .eq('id', duplicate.id)
+
+        if (dupError) throw dupError
+      }
+
       if (editingBanner) {
         const { error } = await supabase
           .from('banners')
@@ -511,14 +574,14 @@ function AdminDashboard() {
           .eq('id', editingBanner.id)
 
         if (error) throw error
-        toast.success('Banner atualizado com sucesso!')
+        toast.success('Banner updated with success!')
       } else {
         const { error } = await supabase
           .from('banners')
           .insert([payload])
 
         if (error) throw error
-        toast.success('Banner criado com sucesso!')
+        toast.success('Banner created with success!')
       }
       setIsBannerModalOpen(false)
       loadBanners()
@@ -597,6 +660,17 @@ function AdminDashboard() {
       return
     }
 
+    const targetOrder = Number(collectionFormData.display_order)
+
+    const duplicate = collections.find((c: any) => 
+      Number(c.display_order) === targetOrder &&
+      (!editingCollection || c.id !== editingCollection.id)
+    )
+
+    const currentOrder = editingCollection
+      ? Number(editingCollection.display_order)
+      : collections.length
+
     const btnText = collectionFormData.button_text.trim() || 'Comprar Agora'
     const combinedAlt = `[COLECAO] ${collectionFormData.title} | ${collectionFormData.description} | ${btnText}`
 
@@ -604,12 +678,34 @@ function AdminDashboard() {
       image_desktop: collectionFormData.image,
       image_mobile: collectionFormData.image,
       alt: combinedAlt,
-      display_order: Number(collectionFormData.display_order),
+      display_order: targetOrder,
       is_active: collectionFormData.is_active,
       href: collectionFormData.href || null
     }
 
     try {
+      if (duplicate) {
+        const cleanDupAlt = duplicate.alt.replace('[COLECAO]', '').trim()
+        const dupParts = cleanDupAlt.split('|').map((p: string) => p.trim())
+        const duplicateName = dupParts[0] || `Coleção #${duplicate.display_order}`
+        const currentName = collectionFormData.title || `Nova Coleção`
+
+        const confirmSwap = confirm(
+          `Deseja trocar a posição do "${duplicateName}" ordem ${targetOrder} por "${currentName}" ordem ${currentOrder}?`
+        )
+        if (!confirmSwap) {
+          toast.error('A ordem informada já está em uso. Por favor, escolha outro número.')
+          return
+        }
+
+        const { error: dupError } = await supabase
+          .from('banners')
+          .update({ display_order: currentOrder })
+          .eq('id', duplicate.id)
+
+        if (dupError) throw dupError
+      }
+
       if (editingCollection) {
         const { error } = await supabase
           .from('banners')
