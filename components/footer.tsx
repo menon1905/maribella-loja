@@ -96,12 +96,12 @@ export function Footer() {
               <Link href="https://instagram.com/encanto_maribella" target="_blank" className="hover:text-primary transition">
                 <Instagram className="w-5 h-5" />
               </Link>
-              <Link href="mailto:contato@maribellaloja.com.br" className="hover:text-primary transition">
+              <Link href="mailto:encantomaribella@gmail.com" className="hover:text-primary transition">
                 <Mail className="w-5 h-5" />
               </Link>
             </div>
             <p className="text-xs text-gray-500 mt-4 leading-relaxed">
-              Email: contato@maribellaloja.com.br<br />
+              Email: encantomaribella@gmail.com<br />
               WhatsApp: (19) 99239-4672
             </p>
           </div>

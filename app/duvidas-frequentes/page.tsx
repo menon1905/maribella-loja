@@ -48,7 +48,7 @@ const faqs = [
   {
     question: 'Como entro em contato com a Maribella?',
     answer:
-      'A forma mais rápida é pelo nosso WhatsApp, clicando no botão verde no canto da tela. Você também pode enviar um e-mail para contato@maribellaloja.com.br.',
+      'A forma mais rápida é pelo nosso WhatsApp, clicando no botão verde no canto da tela. Você também pode enviar um e-mail para encantomaribella@gmail.com.',
   },
   {
     question: 'Posso cancelar meu pedido?',

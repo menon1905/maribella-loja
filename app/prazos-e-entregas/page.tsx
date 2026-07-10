@@ -130,8 +130,8 @@ export default function PrazosEntregasPage() {
                 WhatsApp
               </a>{' '}
               ou pelo e-mail{' '}
-              <a href="mailto:contato@maribellaloja.com.br" className="text-[#ff9edb] hover:underline">
-                contato@maribellaloja.com.br
+              <a href="mailto:encantomaribella@gmail.com" className="text-[#ff9edb] hover:underline">
+                encantomaribella@gmail.com
               </a>
               .
             </p>

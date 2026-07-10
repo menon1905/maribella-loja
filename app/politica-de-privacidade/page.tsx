@@ -73,8 +73,8 @@ export default function PoliticaPrivacidadePage() {
           <h2 className="text-xl font-bold text-gray-900 mt-8">6. Contato</h2>
           <p>
             Para dúvidas sobre esta política, entre em contato conosco pelo e-mail{' '}
-            <a href="mailto:contato@maribellaloja.com.br" className="text-[#ff9edb] hover:underline">
-              contato@maribellaloja.com.br
+            <a href="mailto:encantomaribella@gmail.com" className="text-[#ff9edb] hover:underline">
+              encantomaribella@gmail.com
             </a>{' '}
             ou pelo WhatsApp.
           </p>
