@@ -787,8 +787,8 @@ function AdminDashboard() {
       <div className="bg-white border-b border-pink-100/60 py-8 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 md:px-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs text-pink-500 font-bold uppercase tracking-wider mb-2">
-              <Link href="/" className="hover:text-pink-600 flex items-center gap-1">
+            <div className="flex items-center gap-2 text-xs text-[#ff9edb] font-bold uppercase tracking-wider mb-2">
+              <Link href="/" className="hover:text-[#ff80cb] flex items-center gap-1">
                 <ArrowLeft className="w-3.5 h-3.5" /> Voltar à Loja
               </Link>
             </div>
@@ -800,7 +800,7 @@ function AdminDashboard() {
             {activeTab === 'produtos' && (
               <Button
                 onClick={handleOpenAddProduct}
-                className="bg-primary hover:bg-[#ffbfe7] hover:text-[#db459b] text-white font-bold tracking-wide uppercase text-xs px-6 py-6 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]"
+                className="bg-[#ff9edb] hover:bg-[#ff80cb] hover:text-white text-white font-bold tracking-wide uppercase text-xs px-6 py-6 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]"
               >
                 <Plus className="w-4 h-4" /> Adicionar Produto
               </Button>
@@ -809,7 +809,7 @@ function AdminDashboard() {
             {activeTab === 'banners' && (
               <Button
                 onClick={handleOpenAddBanner}
-                className="bg-primary hover:bg-[#ffbfe7] hover:text-[#db459b] text-white font-bold tracking-wide uppercase text-xs px-6 py-6 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]"
+                className="bg-[#ff9edb] hover:bg-[#ff80cb] hover:text-white text-white font-bold tracking-wide uppercase text-xs px-6 py-6 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]"
               >
                 <Plus className="w-4 h-4" /> Novo Banner
               </Button>
@@ -818,7 +818,7 @@ function AdminDashboard() {
             {activeTab === 'colecoes' && (
               <Button
                 onClick={handleOpenAddCollection}
-                className="bg-primary hover:bg-[#ffbfe7] hover:text-[#db459b] text-white font-bold tracking-wide uppercase text-xs px-6 py-6 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]"
+                className="bg-[#ff9edb] hover:bg-[#ff80cb] hover:text-white text-white font-bold tracking-wide uppercase text-xs px-6 py-6 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]"
               >
                 <Plus className="w-4 h-4" /> Nova Coleção
               </Button>
@@ -836,7 +836,7 @@ function AdminDashboard() {
             <p className="hidden md:block text-[10px] font-bold text-gray-400 uppercase tracking-widest px-3 mb-2">Painel de Controle</p>
             <button
               onClick={() => setActiveTab('produtos')}
-              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === 'produtos' ? 'bg-pink-100 text-pink-700 font-bold' : 'text-gray-600 hover:bg-slate-50'}`}
+              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === 'produtos' ? 'bg-pink-100 text-[#ff80cb] font-bold' : 'text-gray-600 hover:bg-slate-50'}`}
             >
               <Package className="w-4 h-4" />
               <span>Produtos</span>
@@ -844,7 +844,7 @@ function AdminDashboard() {
             </button>
             <button
               onClick={() => setActiveTab('categorias')}
-              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === 'categorias' ? 'bg-pink-100 text-pink-700 font-bold' : 'text-gray-600 hover:bg-slate-50'}`}
+              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === 'categorias' ? 'bg-pink-100 text-[#ff80cb] font-bold' : 'text-gray-600 hover:bg-slate-50'}`}
             >
               <Layers className="w-4 h-4" />
               <span>Categorias</span>
@@ -852,7 +852,7 @@ function AdminDashboard() {
             </button>
             <button
               onClick={() => setActiveTab('banners')}
-              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === 'banners' ? 'bg-pink-100 text-pink-700 font-bold' : 'text-gray-600 hover:bg-slate-50'}`}
+              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === 'banners' ? 'bg-pink-100 text-[#ff80cb] font-bold' : 'text-gray-600 hover:bg-slate-50'}`}
             >
               <ImageIcon className="w-4 h-4" />
               <span>Banners Slides</span>
@@ -860,7 +860,7 @@ function AdminDashboard() {
             </button>
             <button
               onClick={() => setActiveTab('colecoes')}
-              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === 'colecoes' ? 'bg-pink-100 text-pink-700 font-bold' : 'text-gray-600 hover:bg-slate-50'}`}
+              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-2.5 md:py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === 'colecoes' ? 'bg-pink-100 text-[#ff80cb] font-bold' : 'text-gray-600 hover:bg-slate-50'}`}
             >
               <Sparkles className="w-4 h-4" />
               <span>Coleções</span>
@@ -939,7 +939,7 @@ function AdminDashboard() {
                         <tr>
                           <td colSpan={6} className="py-16 text-center text-gray-400">
                             <div className="flex flex-col items-center gap-2">
-                              <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
+                              <div className="w-6 h-6 border-2 border-[#ff9edb] border-t-transparent rounded-full animate-spin" />
                               <span>Carregando catálogo...</span>
                             </div>
                           </td>
@@ -976,7 +976,7 @@ function AdminDashboard() {
                           </td>
                           <td className="py-4 px-6 space-y-1">
                             {p.isFeatured && <span className="inline-block mr-1 bg-purple-50 text-purple-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-purple-100">Destaque</span>}
-                            {p.isNew && <span className="inline-block mr-1 bg-pink-50 text-pink-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-pink-100">Novo</span>}
+                            {p.isNew && <span className="inline-block mr-1 bg-pink-50 text-[#ff80cb] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-pink-100">Novo</span>}
                           </td>
                           <td className="py-4 px-6">
                             <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${p.inStock ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
@@ -1052,12 +1052,12 @@ function AdminDashboard() {
                       <p className="text-gray-500 text-xs mt-0.5">Aparecem na home e na navegação principal da loja.</p>
                     </div>
                     <Button onClick={() => handleOpenAddCategory(null)}
-                      className="bg-primary hover:bg-[#ffbfe7] hover:text-[#db459b] text-white font-bold tracking-wide uppercase text-xs px-5 py-2 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]">
+                      className="bg-[#ff9edb] hover:bg-[#ff80cb] hover:text-white text-white font-bold tracking-wide uppercase text-xs px-5 py-2 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]">
                       <Plus className="w-3.5 h-3.5" /> Nova
                     </Button>
                   </div>
                   {isCategoriesLoading ? (
-                    <div className="py-12 flex justify-center"><div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>
+                    <div className="py-12 flex justify-center"><div className="w-6 h-6 border-2 border-[#ff9edb] border-t-transparent rounded-full animate-spin" /></div>
                   ) : mainCats.length === 0 ? (
                     <p className="text-center py-8 text-gray-400 italic">Nenhuma categoria principal cadastrada.</p>
                   ) : (
@@ -1075,12 +1075,12 @@ function AdminDashboard() {
                       <p className="text-gray-500 text-xs mt-0.5">Aparecem na grade circular dentro de /categorias/roupas.</p>
                     </div>
                     <Button onClick={() => handleOpenAddCategory('roupas')}
-                      className="bg-primary hover:bg-[#ffbfe7] hover:text-[#db459b] text-white font-bold tracking-wide uppercase text-xs px-5 py-2 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]">
+                      className="bg-[#ff9edb] hover:bg-[#ff80cb] hover:text-white text-white font-bold tracking-wide uppercase text-xs px-5 py-2 rounded-full flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-[1.02]">
                       <Plus className="w-3.5 h-3.5" /> Nova Sub
                     </Button>
                   </div>
                   {isCategoriesLoading ? (
-                    <div className="py-12 flex justify-center"><div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>
+                    <div className="py-12 flex justify-center"><div className="w-6 h-6 border-2 border-[#ff9edb] border-t-transparent rounded-full animate-spin" /></div>
                   ) : subcats.length === 0 ? (
                     <p className="text-center py-8 text-gray-400 italic">Nenhuma subcategoria cadastrada.</p>
                   ) : (
@@ -1103,7 +1103,7 @@ function AdminDashboard() {
 
               {isBannersLoading ? (
                 <div className="py-12 flex justify-center items-center">
-                  <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-[#ff9edb] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : banners.length === 0 ? (
                 <div className="text-center py-12 text-gray-400 italic">
@@ -1131,7 +1131,7 @@ function AdminDashboard() {
                             ) : (
                               <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-[8px] font-bold text-center">Desk Fallback</div>
                             )}
-                            <span className="absolute bottom-1 right-1 bg-pink-600/75 text-white font-black text-[7px] uppercase px-1 rounded">Mob</span>
+                            <span className="absolute bottom-1 right-1 bg-[#ff80cb]/75 text-white font-black text-[7px] uppercase px-1 rounded">Mob</span>
                           </div>
                         </div>
 
@@ -1143,7 +1143,7 @@ function AdminDashboard() {
                               {ban.is_active ? 'Ativo' : 'Inativo'}
                             </span>
                             <span className="text-[10px] text-gray-400 font-bold">Ordem: {ban.display_order ?? 0}</span>
-                            <span className="text-[10px] text-pink-500 font-bold">
+                            <span className="text-[10px] text-[#ff9edb] font-bold">
                               Proporção Mob: {
                                 ban.image_mobile?.includes('#1080x1350')
                                   ? '1080x1350'
@@ -1183,7 +1183,7 @@ function AdminDashboard() {
 
               {isCollectionsLoading ? (
                 <div className="py-12 flex justify-center items-center">
-                  <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-[#ff9edb] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : collections.length === 0 ? (
                 <div className="text-center py-12 text-gray-400 italic">
@@ -1212,13 +1212,13 @@ function AdminDashboard() {
                             <div className="absolute top-2 left-2 bg-black/60 text-white font-bold text-[9px] uppercase px-2 py-0.5 rounded-full tracking-wider">
                               Coleção
                             </div>
-                            <div className="absolute top-2 right-2 bg-pink-500 text-white font-bold text-[9px] uppercase px-2 py-0.5 rounded-full tracking-wider">
+                            <div className="absolute top-2 right-2 bg-[#ff9edb] text-white font-bold text-[9px] uppercase px-2 py-0.5 rounded-full tracking-wider">
                               Ordem: {coll.display_order ?? 0}
                             </div>
                           </div>
                           <div className="p-5">
                             <h3 className="font-bold text-lg text-gray-800">{title}</h3>
-                            <p className="text-xs text-pink-600 font-bold uppercase tracking-wider mt-1">{description || 'Sem descrição/cupom'}</p>
+                            <p className="text-xs text-[#ff80cb] font-bold uppercase tracking-wider mt-1">{description || 'Sem descrição/cupom'}</p>
                             <p className="text-xs text-gray-400 font-semibold mt-1">Texto do Botão: <span className="text-gray-700 font-extrabold">{buttonText}</span></p>
                             {coll.href && (
                               <p className="text-[11px] text-gray-400 font-medium mt-3 bg-slate-50 p-2 rounded truncate">

@@ -22,7 +22,7 @@ export function Footer() {
                 placeholder="Seu e-mail"
                 className="bg-white text-foreground placeholder:text-muted-foreground"
               />
-              <Button variant="outline" className="bg-white text-primary hover:bg-white/90 hover:text-primary rounded-none uppercase text-xs tracking-widest font-semibold">
+              <Button variant="outline" className="bg-white text-[#ff9edb] hover:bg-white/90 hover:text-[#ff80cb] rounded-none uppercase text-xs tracking-widest font-semibold">
                 Inscrever
               </Button>
             </div>
@@ -34,7 +34,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo & Sobre */}
           <div className="md:col-span-1">
-            <h3 className="text-xl font-bold text-gray-900 mb-4 tracking-wider">MARIBELLA</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-4 tracking-wider">ENCANTO MARIBELLA</h3>
             <p className="text-sm text-gray-500 leading-relaxed mb-4">
               Moda feminina selecionada com amor, unindo elegância, delicadeza e as últimas tendências para o seu dia a dia.
             </p>

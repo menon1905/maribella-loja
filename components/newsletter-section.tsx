@@ -17,7 +17,7 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-r from-primary/5 to-primary/10">
+    <section className="py-16 bg-gradient-to-r from-[#ff9edb]/10 to-[#ff9edb]/20">
       <div className="max-w-2xl mx-auto px-4 text-center space-y-6">
         <div>
           <h2 className="text-3xl md:text-4xl font-bold mb-2">
@@ -37,7 +37,7 @@ export function NewsletterSection() {
             required
             className="flex-1"
           />
-          <Button type="submit" className="bg-primary hover:bg-primary/90 whitespace-nowrap">
+          <Button type="submit" className="bg-[#ff9edb] hover:bg-[#ff80cb] whitespace-nowrap text-white">
             Inscrever
           </Button>
         </form>
