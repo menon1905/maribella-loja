@@ -116,8 +116,15 @@ export default function CartPage() {
   const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
 
-  // Se subtotal após desconto > 400, frete grátis. Caso contrário usa o valor calculado por CEP (ou null se não calculado)
-  const shipping = subtotal > 0 && (subtotal - discount) >= 400 ? 0 : freteCalculado
+  // Se subtotal após desconto >= 400 e CEP for de Campinas, frete grátis. Caso contrário usa o valor calculado por CEP (ou null se não calculado)
+  const isCampinasCep = (c: string) => {
+    const clean = c.replace(/\D/g, '')
+    if (clean.length !== 8) return false
+    const num = parseInt(clean, 10)
+    return num >= 13000000 && num <= 13139999
+  }
+  const isCampinas = isCampinasCep(cep)
+  const shipping = subtotal > 0 && (subtotal - discount) >= 400 && isCampinas ? 0 : freteCalculado
   const total = subtotal - discount + (shipping ?? 0)
 
   const calcularFrete = () => {
@@ -178,7 +185,7 @@ export default function CartPage() {
             <p className="text-2xl font-semibold mb-4">Seu carrinho está vazio</p>
             <p className="text-muted-foreground mb-8">Comece a comprar e preencha seu carrinho com seus produtos favoritos!</p>
             <Link href="/produtos">
-              <Button size="lg" className="bg-[#b83070] hover:bg-[#9e2860] text-white font-bold transition-colors">
+              <Button size="lg" className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold transition-colors">
                 Continuar Comprando
               </Button>
             </Link>
@@ -333,16 +340,16 @@ export default function CartPage() {
                 </div>
 
                 {/* Info frete grátis */}
-                {subtotal > 0 && (subtotal - discount) < 400 && (
+                {subtotal > 0 && (subtotal - discount) < 400 && (cep === '' || isCampinas) && (
                   <div className="bg-primary/10 text-sm text-primary p-3 rounded">
-                    Frete grátis em compras acima de R$ 400. Adicione R$ {Math.max(0, 400 - (subtotal - discount)).toFixed(2)} para conseguir!
+                    Frete grátis (Campinas) em compras acima de R$ 400. Adicione R$ {Math.max(0, 400 - (subtotal - discount)).toFixed(2)} para conseguir!
                   </div>
                 )}
 
                 {/* CTA */}
                 <div className="flex flex-col gap-3 w-full">
                   <Link href="/checkout" className="w-full">
-                    <Button size="lg" className="w-full bg-[#b83070] hover:bg-[#9e2860] text-white font-bold transition-colors cursor-pointer">
+                    <Button size="lg" className="w-full bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold transition-colors cursor-pointer">
                       Ir para Checkout
                     </Button>
                   </Link>
@@ -356,7 +363,7 @@ export default function CartPage() {
 
                 {/* Info */}
                 <div className="text-xs text-muted-foreground space-y-2">
-                  <p>✓ Frete grátis acima de R$ 400</p>
+                  <p>✓ Frete grátis acima de R$ 400 (somente Campinas)</p>
                   <p>✓ Frete calculado por distância com base no seu CEP</p>
                   <p>✓ Compra segura com SSL</p>
                 </div>

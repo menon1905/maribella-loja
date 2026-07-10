@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Facebook, Instagram, Twitter, Mail } from 'lucide-react'
+import { Instagram, Mail } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
@@ -30,71 +30,51 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-5 gap-8 mb-8">
-          {/* Sobre */}
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Logo & Sobre */}
+          <div className="md:col-span-1">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 tracking-wider">MARIBELLA</h3>
+            <p className="text-sm text-gray-500 leading-relaxed mb-4">
+              Moda feminina selecionada com amor, unindo elegância, delicadeza e as últimas tendências para o seu dia a dia.
+            </p>
+          </div>
+
+          {/* Links Rápidos */}
           <div>
-            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Sobre Maribella</h4>
+            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Menu</h4>
             <ul className="space-y-2 text-sm text-gray-500">
               <li>
-                <Link href="/sobre#quem-somos" className="hover:text-primary transition">
-                  Quem Somos
+                <Link href="/produtos" className="hover:text-primary transition">
+                  Todos os Produtos
                 </Link>
               </li>
               <li>
-                <Link href="/sobre#nossa-historia" className="hover:text-primary transition">
-                  Nossa História
+                <Link href="/sobre" className="hover:text-primary transition">
+                  Sobre Nós
                 </Link>
               </li>
               <li>
-                <Link href="/sobre#sustentabilidade" className="hover:text-primary transition">
-                  Sustentabilidade
+                <Link href="/prazos-e-entregas" className="hover:text-primary transition">
+                  Prazos e Entregas
+                </Link>
+              </li>
+              <li>
+                <Link href="/trocas-e-devolucoes" className="hover:text-primary transition">
+                  Trocas e Devoluções
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Categorias */}
+          {/* Dúvidas */}
           <div>
-            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Categorias</h4>
+            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Ajuda</h4>
             <ul className="space-y-2 text-sm text-gray-500">
               <li>
-                <Link href="/categorias/bolsas" className="hover:text-primary transition">
-                  Bolsas
+                <Link href="/duvidas-frequentes" className="hover:text-primary transition">
+                  Como Comprar
                 </Link>
-              </li>
-              <li>
-                <Link href="/categorias/roupas" className="hover:text-primary transition">
-                  Roupas
-                </Link>
-              </li>
-              <li>
-                <Link href="/categorias/calcados" className="hover:text-primary transition">
-                  Calçados
-                </Link>
-              </li>
-              <li>
-                <Link href="/categorias/joias" className="hover:text-primary transition">
-                  Jóias
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Atendimento */}
-          <div>
-            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Atendimento</h4>
-            <ul className="space-y-2 text-sm text-gray-500">
-              <li>
-                <a
-                  href="https://wa.me/5519992394672"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-primary transition"
-                >
-                  Fale Conosco
-                </a>
               </li>
               <li>
                 <Link href="/duvidas-frequentes" className="hover:text-primary transition">
@@ -106,38 +86,6 @@ export function Footer() {
                   Política de Privacidade
                 </Link>
               </li>
-              <li>
-                <Link href="/trocas-e-devolucoes" className="hover:text-primary transition">
-                  Termos e Condições
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Compras */}
-          <div>
-            <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Compras</h4>
-            <ul className="space-y-2 text-sm text-gray-500">
-              <li>
-                <Link href="/duvidas-frequentes" className="hover:text-primary transition">
-                  Como Comprar
-                </Link>
-              </li>
-              <li>
-                <Link href="/prazos-e-entregas" className="hover:text-primary transition">
-                  Frete e Entrega
-                </Link>
-              </li>
-              <li>
-                <Link href="/duvidas-frequentes" className="hover:text-primary transition">
-                  Formas de Pagamento
-                </Link>
-              </li>
-              <li>
-                <Link href="/trocas-e-devolucoes" className="hover:text-primary transition">
-                  Devoluções
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -145,14 +93,8 @@ export function Footer() {
           <div>
             <h4 className="text-xs font-semibold mb-5 text-gray-900 uppercase tracking-[0.2em]">Siga a Gente</h4>
             <div className="flex gap-4 text-gray-700">
-              <Link href="https://instagram.com" target="_blank" className="hover:text-primary transition">
+              <Link href="https://instagram.com/encanto_maribella" target="_blank" className="hover:text-primary transition">
                 <Instagram className="w-5 h-5" />
-              </Link>
-              <Link href="https://facebook.com" target="_blank" className="hover:text-primary transition">
-                <Facebook className="w-5 h-5" />
-              </Link>
-              <Link href="https://twitter.com" target="_blank" className="hover:text-primary transition">
-                <Twitter className="w-5 h-5" />
               </Link>
               <Link href="mailto:contato@maribellaloja.com.br" className="hover:text-primary transition">
                 <Mail className="w-5 h-5" />

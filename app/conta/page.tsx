@@ -202,7 +202,7 @@ export default function ContaPage() {
                       Quando você curtir um produto, ele vai aparecer aqui para você nunca perder de vista!
                     </p>
                     <Link href="/produtos">
-                      <Button className="bg-[#b83070] hover:bg-[#9e2860] text-white font-bold">
+                      <Button className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold">
                         Ver Produtos
                       </Button>
                     </Link>
@@ -233,7 +233,7 @@ export default function ContaPage() {
                           <div className="flex gap-1.5 mt-2.5">
                             <button
                               onClick={() => addFavToCart(product)}
-                              className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-[#b83070] hover:bg-[#9e2860] text-white text-[11px] font-bold transition-colors cursor-pointer"
+                              className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-[#ff9edb] hover:bg-[#ff80cb] text-white text-[11px] font-bold transition-colors cursor-pointer"
                             >
                               <ShoppingBag className="w-3.5 h-3.5" />
                               Carrinho
@@ -268,7 +268,7 @@ export default function ContaPage() {
                     Seus pedidos finalizados via WhatsApp aparecerão aqui em breve.
                   </p>
                   <Link href="/produtos">
-                    <Button className="bg-[#b83070] hover:bg-[#9e2860] text-white font-bold">
+                    <Button className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold">
                       Começar a Comprar
                     </Button>
                   </Link>

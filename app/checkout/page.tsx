@@ -88,8 +88,11 @@ export default function CheckoutPage() {
     const subtotal = syncCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
     const discount = appliedCoupon === 'BEMVINDAS' ? subtotal * 0.05 : 0
     const cepLimpo = formData.zipCode.replace(/\D/g, '')
+    const isCampinasCity = formData.city.toLowerCase().includes('campinas')
+    const isCampinasCepNum = cepLimpo.length === 8 && parseInt(cepLimpo, 10) >= 13000000 && parseInt(cepLimpo, 10) <= 13139999
+    const isCampinas = isCampinasCity || isCampinasCepNum
     let shipping = 15 // Fallback padrão caso cep não preenchido ou inválido
-    if (subtotal > 0 && (subtotal - discount) >= 400) {
+    if (subtotal > 0 && (subtotal - discount) >= 400 && isCampinas) {
       shipping = 0
     } else if (cepLimpo.length === 8) {
       const storeCep = 13056272
@@ -144,8 +147,11 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
 
   const getShippingCost = () => {
     if (subtotal === 0) return 0
-    if (subtotal - discount >= 400) return 0
     const cepLimpo = formData.zipCode.replace(/\D/g, '')
+    const isCampinasCity = formData.city.toLowerCase().includes('campinas')
+    const isCampinasCepNum = cepLimpo.length === 8 && parseInt(cepLimpo, 10) >= 13000000 && parseInt(cepLimpo, 10) <= 13139999
+    const isCampinas = isCampinasCity || isCampinasCepNum
+    if (subtotal - discount >= 400 && isCampinas) return 0
     if (cepLimpo.length !== 8) return null
     const storeCep = 13056272
     const diff = Math.abs(parseInt(cepLimpo) - storeCep)
@@ -307,7 +313,7 @@ ${discount > 0 ? `- *Desconto (Cupom BEMVINDAS 5% OFF):* -R$ ${discount.toFixed(
                         Voltar
                       </Button>
                     </Link>
-                    <Button type="submit" className="flex-1 bg-[#b83070] hover:bg-[#9e2860] text-white font-bold transition-colors cursor-pointer">
+                    <Button type="submit" className="flex-1 bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold transition-colors cursor-pointer">
                       Continuar para Finalização
                     </Button>
                   </div>

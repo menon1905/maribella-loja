@@ -47,7 +47,7 @@ export function ShippingCalculator() {
         </div>
         <Button
           onClick={handleCalculate}
-          className="bg-[#b83070] hover:bg-[#9e2860] text-white font-bold transition-colors cursor-pointer"
+          className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold transition-colors cursor-pointer"
         >
           Calcular
         </Button>

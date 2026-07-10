@@ -41,7 +41,7 @@ export default function ProductPage({ params }: ProductPageProps) {
           <h1 className="text-3xl font-bold mb-4">Produto não encontrado</h1>
           <p className="text-muted-foreground mb-8">O produto que você está procurando não existe ou foi removido.</p>
           <Link href="/produtos">
-            <Button className="bg-[#b83070] hover:bg-[#9e2860] text-white font-bold">Ver todos os produtos</Button>
+            <Button className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold">Ver todos os produtos</Button>
           </Link>
         </div>
         <Footer />
@@ -154,7 +154,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               <div className="flex gap-4">
                 <Truck className="w-6 h-6 text-primary flex-shrink-0" />
                 <div>
-                  <p className="font-semibold">Frete Grátis</p>
+                  <p className="font-semibold">Frete Grátis (Campinas)</p>
                   <p className="text-sm text-muted-foreground">Em compras acima de R$ 400</p>
                 </div>
               </div>
@@ -379,7 +379,7 @@ function ProductInfo({ product }: { product: Product }) {
       <div className="flex gap-3 pt-4">
         <Button
           size="lg"
-          className="flex-1 bg-[#b83070] hover:bg-[#9e2860] text-white font-bold text-lg transition-colors"
+          className="flex-1 bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold text-lg transition-colors"
           onClick={handleAddToCart}
           disabled={!product.inStock}
         >

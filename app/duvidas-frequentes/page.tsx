@@ -37,7 +37,7 @@ const faqs = [
   {
     question: 'O frete é grátis?',
     answer:
-      'Sim! Para compras acima de R$ 400,00 o frete é grátis via PAC para todo o Brasil. Para compras menores, o valor do frete é calculado de acordo com o seu CEP.',
+      'Sim! Oferecemos frete grátis via PAC para compras acima de R$ 400,00 exclusivamente para a cidade de Campinas/SP. Para as demais cidades ou compras de menor valor, o frete é calculado de acordo com o seu CEP.',
   },
 
   {

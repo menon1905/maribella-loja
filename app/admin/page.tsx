@@ -1459,7 +1459,7 @@ function AdminDashboard() {
 
               <div className="border-t border-gray-100 pt-5 mt-6 flex justify-end gap-3">
                 <Button type="button" variant="outline" onClick={() => setIsProductModalOpen(false)}>Cancelar</Button>
-                <Button type="submit" className="bg-[#b83070] text-white font-bold">Salvar Alterações</Button>
+                <Button type="submit" className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold transition-colors">Salvar Alterações</Button>
               </div>
             </form>
           </div>
@@ -1528,7 +1528,7 @@ function AdminDashboard() {
 
               <div className="border-t border-gray-100 pt-4 flex justify-end gap-3 mt-4">
                 <Button type="button" variant="outline" onClick={() => setIsCategoryModalOpen(false)}>Cancelar</Button>
-                <Button type="submit" className="bg-[#b83070] text-white font-bold">Salvar Categoria</Button>
+                <Button type="submit" className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold transition-colors">Salvar Categoria</Button>
               </div>
             </form>
           </div>
@@ -1614,7 +1614,7 @@ function AdminDashboard() {
 
               <div className="border-t border-gray-100 pt-4 flex justify-end gap-3 mt-4">
                 <Button type="button" variant="outline" onClick={() => setIsBannerModalOpen(false)}>Cancelar</Button>
-                <Button type="submit" className="bg-[#b83070] text-white font-bold">Salvar Banner</Button>
+                <Button type="submit" className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold transition-colors">Salvar Banner</Button>
               </div>
             </form>
           </div>
@@ -1684,7 +1684,7 @@ function AdminDashboard() {
 
               <div className="border-t border-gray-100 pt-4 flex justify-end gap-3 mt-4">
                 <Button type="button" variant="outline" onClick={() => setIsCollectionModalOpen(false)}>Cancelar</Button>
-                <Button type="submit" className="bg-[#b83070] text-white font-bold">Salvar Coleção</Button>
+                <Button type="submit" className="bg-[#ff9edb] hover:bg-[#ff80cb] text-white font-bold transition-colors">Salvar Coleção</Button>
               </div>
             </form>
           </div>
