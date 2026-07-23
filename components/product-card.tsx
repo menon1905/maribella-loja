@@ -61,8 +61,14 @@ const getColorHex = (colorName: string): string => {
 
 export function ProductCard({ product, variant = 'default' }: ProductCardProps) {
   const [isFavorited, setIsFavorited] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const discount = product.discount || 0
   const hasDiscount = !!(product.originalPrice && product.originalPrice > product.price)
+
+  // Deduplicate and gather all product images
+  const allImages = Array.from(
+    new Set([product.image, ...(product.images || [])].filter(Boolean))
+  )
 
   // Load favorite status on mount
   useEffect(() => {
@@ -142,21 +148,29 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
       <div className="flex flex-col">
 
         {/* Image Container — portrait, clean */}
-        <div className="relative overflow-hidden aspect-[2/3] bg-gray-100">
+        <div 
+          className="relative overflow-hidden aspect-[2/3] bg-gray-100"
+          onMouseEnter={() => {
+            if (allImages.length > 1) setCurrentImageIndex(1)
+          }}
+          onMouseLeave={() => {
+            setCurrentImageIndex(0)
+          }}
+        >
           <Image
-            src={product.image}
+            src={allImages[currentImageIndex] || product.image}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-103 transition-transform duration-500"
+            className="object-cover group-hover:scale-103 transition-all duration-500"
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
           />
 
           {/* Slide Indicator Badge */}
-          {((product.images && product.images.length > 1) ? (
-            <div className="absolute top-2.5 right-2.5 z-10 bg-black/40 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow-sm">
-              1/{product.images.length}
+          {allImages.length > 1 && (
+            <div className="absolute top-2.5 right-2.5 z-10 bg-black/50 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow-sm select-none">
+              {currentImageIndex + 1}/{allImages.length}
             </div>
-          ) : null)}
+          )}
 
           {/* Wishlist Button */}
           <button
@@ -196,7 +210,8 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
               {product.colors.slice(0, 3).map((color) => (
                 <div
                   key={color}
-                  className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full border border-gray-200 shadow-xs"
+                  title={`Cor: ${color}`}
+                  className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full border border-gray-200 shadow-xs cursor-pointer hover:scale-110 transition-transform"
                   style={{ background: getColorHex(color) }}
                 />
               ))}
