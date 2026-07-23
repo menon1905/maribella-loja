@@ -8,7 +8,6 @@ import { FloatingActions } from '@/components/floating-actions'
 import { ProductCarousel } from '@/components/product-carousel'
 import { CategoryGrid } from '@/components/category-grid'
 import { PromoSection } from '@/components/promo-section'
-import { NewsletterSection } from '@/components/newsletter-section'
 import { PROMO_ITEMS } from '@/lib/mock-data'
 import { useProducts } from '@/components/products-context'
 
@@ -47,9 +46,6 @@ export default function Page() {
           title="Novidades"
           viewAllHref="/produtos?filter=new"
         />
-
-        {/* Newsletter */}
-        <NewsletterSection />
 
         <Footer />
       </main>

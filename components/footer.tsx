@@ -2,33 +2,10 @@
 
 import Link from 'next/link'
 import { Instagram, Mail } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 
 export function Footer() {
   return (
     <footer className="bg-white border-t border-gray-100 text-gray-600">
-      {/* Newsletter Section */}
-      <div className="bg-[#ff9edb] text-white py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="text-xl font-semibold mb-2 tracking-wide">Fique por dentro das novidades</h3>
-              <p className="text-sm opacity-80 tracking-wide">Receba ofertas exclusivas e dicas de moda diretamente no seu email</p>
-            </div>
-            <div className="flex gap-2">
-              <Input
-                type="email"
-                placeholder="Seu e-mail"
-                className="bg-white text-foreground placeholder:text-muted-foreground"
-              />
-              <Button variant="outline" className="bg-white text-[#ff9edb] hover:bg-white/90 hover:text-[#ff80cb] rounded-none uppercase text-xs tracking-widest font-semibold">
-                Inscrever
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

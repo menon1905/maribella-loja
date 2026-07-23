@@ -7,7 +7,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Jóias | Maribella',
-  description: 'Conheça nossa coleção exclusiva Veridiana Joias. Peças sofisticadas sob encomenda e atendimento personalizado via WhatsApp.',
+  description: 'Conheça nossa coleção exclusiva Veridiana. Peças sofisticadas sob encomenda e atendimento personalizado via WhatsApp.',
 }
 
 export default function JoiasCategoryPage() {
@@ -57,13 +57,13 @@ export default function JoiasCategoryPage() {
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-pink-100/60 border border-pink-200 text-[#ff80cb] text-xs font-bold uppercase tracking-wider">
                 <Gem className="w-3.5 h-3.5" />
-                Revenda Autorizada Veridiana Joias
+                Revenda Autorizada Veridiana
               </div>
               <h2 className="text-3xl md:text-4.5xl font-bold text-gray-900 tracking-tight leading-tight">
                 Descubra a nossa <span className="text-[#ff80cb] bg-gradient-to-r from-[#ff80cb] to-[#ffb5e4] bg-clip-text text-transparent">Maleta de Jóias</span>
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed font-normal">
-                Trabalhamos com as semijoias exclusivas da <strong>Veridiana Joias</strong>! Peças selecionadas que unem sofisticação, brilho impecável e alta durabilidade para completar o seu visual em qualquer ocasião especial.
+                Trabalhamos com as semijoias exclusivas da <strong>Veridiana</strong>! Peças selecionadas que unem sofisticação, brilho impecável e alta durabilidade para completar o seu visual em qualquer ocasião especial.
               </p>
             </div>
 

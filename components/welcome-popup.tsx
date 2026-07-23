@@ -70,7 +70,7 @@ export function WelcomePopup() {
           
           {/* Top Half */}
           <div className="text-center pt-8 pb-5 border-b-2 border-dashed border-gray-100 mx-6">
-             <span className="text-5xl font-black text-black tracking-tighter">5%</span>
+             <span className="text-5xl font-black text-[#ff9edb] tracking-tighter">5%</span>
           </div>
           
           {/* Bottom Half */}
@@ -81,7 +81,7 @@ export function WelcomePopup() {
                onClick={copyCoupon} 
                className="border-2 border-dashed border-gray-300 rounded-xl py-3 px-6 flex items-center justify-center gap-3 mx-auto hover:bg-gray-50 active:scale-95 transition-all w-full max-w-[240px]"
              >
-               <span className="text-black font-black text-xl tracking-widest">BEMVINDAS</span>
+               <span className="text-[#ff9edb] font-black text-xl tracking-widest">BEMVINDAS</span>
                {copied ? (
                  <Check className="w-5 h-5 text-green-500" />
                ) : (
