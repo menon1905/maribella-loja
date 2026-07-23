@@ -152,9 +152,11 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
           />
 
           {/* Slide Indicator Badge */}
-          <div className="absolute top-2.5 right-2.5 z-10 bg-black/40 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow-sm">
-            1/{product.id === '1' ? '5' : product.id === '2' ? '4' : '3'}
-          </div>
+          {((product.images && product.images.length > 1) ? (
+            <div className="absolute top-2.5 right-2.5 z-10 bg-black/40 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow-sm">
+              1/{product.images.length}
+            </div>
+          ) : null)}
 
           {/* Wishlist Button */}
           <button
